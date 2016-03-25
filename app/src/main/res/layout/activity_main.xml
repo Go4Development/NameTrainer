@@ -9,7 +9,54 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name Trainer"
+        android:id="@+id/NameTrainer_tV"
+        android:layout_marginTop="39dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/start_button"
+        android:layout_alignEnd="@+id/start_button" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:id="@+id/start_button"
+        android:layout_below="@+id/NameTrainer_tV"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:onClick="startSelectionActivtiy" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teilen"
+        android:id="@+id/sharing_button"
+        android:onClick="startSharingActivity"
+        android:layout_marginTop="44dp"
+        android:layout_below="@+id/option_button"
+        android:layout_alignLeft="@+id/start_button"
+        android:layout_alignStart="@+id/start_button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Beenden"
+        android:id="@+id/exit_button"
+        android:layout_below="@+id/sharing_button"
+        android:layout_alignRight="@+id/sharing_button"
+        android:layout_alignEnd="@+id/sharing_button"
+        android:layout_marginTop="54dp"
+        android:onClick="exit"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Einstellungen"
+        android:id="@+id/option_button"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="startOptionsActivity"/>
 </RelativeLayout>
