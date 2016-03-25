@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -28,6 +29,7 @@ public class GroupEditorActivity extends AppCompatActivity
     private LinearLayout portraitLinearLayout;
 
     private ArrayList<GroupListViewItem> GLVIList;
+    private ArrayList<String> groupNames;
 
     //holds a list of groups containing multiple students
     private ListView groupListView;
@@ -40,6 +42,9 @@ public class GroupEditorActivity extends AppCompatActivity
 
         //TODO Hier Datenbank Anfrage machen, um die benötigten Daten zu laden
 
+        groupNames = new ArrayList<String>();
+        for (int i = 0; i < 10; i++)
+            groupNames.add("t" + i);
         //sets the layout to the specified "groupeditor layout"
         setContentView(R.layout.activity_groupeditor);
 
@@ -49,9 +54,9 @@ public class GroupEditorActivity extends AppCompatActivity
         portraitScrollView = (CustomHorizontalScrollView)findViewById(R.id.portrait_scrollview);
         portraitLinearLayout = (LinearLayout)findViewById(R.id.portrait_linearlayout);
 
-        groupListViewAdapter = new GroupEditorListViewAdapter();
+       // groupListViewAdapter = new GroupEditorListViewAdapter();
         groupListView = (ListView)findViewById(R.id.group_listview);
-        //groupListView.setAdapter(groupListViewAdapter);
+        groupListView.setAdapter(new ArrayAdapter<String>(this,R.layout.activity_groupeditor_list_textview,groupNames));
 
         GLVIList = new ArrayList<GroupListViewItem>();
 
@@ -71,7 +76,5 @@ public class GroupEditorActivity extends AppCompatActivity
         GroupListViewItem item = (GroupListViewItem)v;
         //Toast.makeText(this, String.valueOf(item.getPosition()), Toast.LENGTH_LONG).show();
     }
-    public void onScrollEnd(){
 
-    }
 }
