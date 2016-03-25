@@ -8,7 +8,7 @@
         android:label="@string/appName"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".groupeditor.GroupEditorActivity"
+            android:name=".main.MainActivity"
 
             android:label="@string/appName" >
             <intent-filter>
@@ -20,11 +20,6 @@
         <activity
             android:name=".options.OptionsActivity"
             android:label="@string/options">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
