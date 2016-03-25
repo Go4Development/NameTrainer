@@ -53,4 +53,15 @@ public class GroupListViewItem extends LinearLayout {
         return location[0];
     }
 
+    public void setHighlightOn(){
+
+        this.setBackgroundColor(Color.parseColor("#ffff00"));
+
+    }
+    public void setHighlightOff(){
+        this.setBackgroundColor(Color.parseColor("#ffffff"));
+
+
+    }
+
 }

@@ -53,12 +53,13 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         ArrayList<Integer> differenceToScreenCenter = new ArrayList<Integer>();
         Integer screenCenter = getWidth()/2;
         for(GroupListViewItem i : GLVIList){
-         differenceToScreenCenter.add(Math.abs(screenCenter - (i.getPosition() + (i.getWidth() / 2))));
+            i.setHighlightOff();
+            differenceToScreenCenter.add(Math.abs(screenCenter - (i.getPosition() + (i.getWidth() / 2))));
         }
         int minIndex = differenceToScreenCenter.indexOf(Collections.min(differenceToScreenCenter));
         //Toast.makeText(this.getContext(),String.valueOf(minIndex),Toast.LENGTH_LONG).show();
 
-        GLVIList.get(minIndex).setBackgroundColor(Color.parseColor("#ffff00"));
+        GLVIList.get(minIndex).setHighlightOn();
 
     }
     public void setItemList(ArrayList<GroupListViewItem> GLVIList) {
