@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.options.OptionsActivity;
@@ -42,18 +41,21 @@ public class MainActivity extends AppCompatActivity {
     /** Called when the user clicks the Send button */
     public void startSelectionActivtiy(View view) {
         intent = new Intent(this, SelectionActivity.class);
+        startActivity(intent);
 
     }
 
     /** Called when the user clicks the Send button */
     public void startSharingActivity(View view) {
         intent = new Intent(this, SharingActivity.class);
+        startActivity(intent);
 
     }
 
     /** Called when the user clicks the Send button */
     public void startOptionsActivity(View view) {
         intent = new Intent(this, OptionsActivity.class);
+        startActivity(intent);
 
     }
 
