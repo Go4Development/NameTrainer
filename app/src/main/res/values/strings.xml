@@ -1,6 +1,15 @@
 <resources>
-    <string name="app_name">NameTrainer</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="appName">NameTrainer</string>
     <string name="action_settings">Settings</string>
+
+   <!-- OPTIONS -->
+    <string name="options">Optionen</string>
+
+    <string name="sound_options">Ton An/Aus</string>
+    <string name="soundOn_options">Ton An</string>
+    <string name="soundOff_options">Ton Aus</string>
+
+    <string name="lastName_options">Nachname Abfragen</string>
+    <string name="lastNameOn_options">Nachname Abfragen An</string>
+    <string name="lastNameOff_options">Nachname Abfragen Aus</string>
 </resources>
