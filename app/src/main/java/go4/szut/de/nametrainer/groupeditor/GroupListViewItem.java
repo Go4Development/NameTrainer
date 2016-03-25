@@ -46,6 +46,11 @@ public class GroupListViewItem extends LinearLayout {
         return galleryName;
     }
 
-
+    public Integer getPosition(){
+        int[] location;
+        location = new int[2];
+        galleryImageView.getLocationOnScreen(location);
+        return location[0];
+    }
 
 }

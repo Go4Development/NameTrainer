@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.selection.SelectionActivity;
 import go4.szut.de.nametrainer.sharing.SharingActivity;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        startActivity(new Intent(this, GroupEditorActivity.class));
     }
 
 
@@ -39,8 +42,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Called when the user clicks the Send button */
-    public void startSelectionActivtiy(View view) {
+    public void startSelectionActivity(View view) {
         intent = new Intent(this, SelectionActivity.class);
+        startActivity(intent);
+
+    }
+    public void startGroupActivity(View view) {
+        intent = new Intent(this, GroupEditorActivity.class);
         startActivity(intent);
 
     }

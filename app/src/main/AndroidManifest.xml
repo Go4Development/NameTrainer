@@ -21,6 +21,10 @@
             android:name=".options.OptionsActivity"
             android:label="@string/options">
         </activity>
+        <activity
+            android:name=".groupeditor.GroupEditorActivity"
+            android:label="@string/groupeditor">
+        </activity>
     </application>
 
 </manifest>

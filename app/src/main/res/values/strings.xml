@@ -4,6 +4,7 @@
 
    <!-- OPTIONS -->
     <string name="options">Optionen</string>
+    <string name="groupeditor">Gruppenauswahl</string>
 
     <string name="sound_options">Ton An/Aus</string>
     <string name="soundOn_options">Ton An</string>
