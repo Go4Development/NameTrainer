@@ -39,7 +39,7 @@ public class OptionsActivity extends Activity {
                 if (isChecked) {
                     switchLastNameState();
                 } else {
-                    switchSoundState();
+                    switchLastNameState();
                 }
             }
         });
