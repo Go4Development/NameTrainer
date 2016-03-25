@@ -5,6 +5,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 
 /**
  * Created by Rene on 24.03.2016.
@@ -27,12 +29,24 @@ public class Util {
     }
 
     /**
+     * Creates an ArrayList with numberOfNonSenseItems strings.
+     * @param numberOfNonSenseItems - the number of non sense items
+     */
+    public static ArrayList<String> createArrayListWithNonSense(int numberOfNonSenseItems) {
+        ArrayList<String> list = new ArrayList<String>();
+        for(int i = 0; i < numberOfNonSenseItems; i++) {
+            list.add("NonSense #" + i);
+        }
+        return list;
+    }
+
+    /**
      * Wrapper method for Log.d
-     * @param activity - the activity for TAG
+     * @param obj - the obj for TAG
      * @param message - the message that should be displayed
      */
-    public static void l(Activity activity, String message) {
-        Log.d(activity.getClass().getSimpleName(), message);
+    public static void l(Object obj, String message) {
+        Log.d(obj.getClass().getSimpleName(), message);
     }
 
 

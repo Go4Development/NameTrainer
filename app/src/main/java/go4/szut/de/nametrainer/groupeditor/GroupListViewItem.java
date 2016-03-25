@@ -19,15 +19,20 @@ public class GroupListViewItem extends LinearLayout {
     //displays the name of the currently selected student
     private TextView galleryNameTextView;
 
+    //holds the path to the corresponding image of the student
     private String galleryPath;
-    private String galleryName;
+
+    //holds the name of the student
+    private String firstname;
+    private String surname;
 
 
-    public GroupListViewItem(Context context, String galleryPath, String galleryName) {
+    public GroupListViewItem(Context context, String galleryPath, String firstname, String surname) {
         super(context);
 
         this.galleryPath = galleryPath;
-        this.galleryName = galleryName;
+        this.firstname = firstname;
+        this.surname = surname;
 
         //inflates the layout for the GroupListViewItem class
         inflate(context, R.layout.activity_groupeditor_listviewitem, this);
@@ -38,30 +43,31 @@ public class GroupListViewItem extends LinearLayout {
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
 
         galleryImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        galleryNameTextView.setText(galleryName);
+        galleryNameTextView.setText(this.firstname + " " + this.surname);
 
     }
 
-    public String getGalleryName() {
-        return galleryName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public Integer getPosition(){
-        int[] location;
-        location = new int[2];
+    public String getSurname() {
+        return surname;
+    }
+
+    public Integer getPosition() {
+        int[] location = new int[2];
         galleryImageView.getLocationOnScreen(location);
         return location[0];
     }
 
-    public void setHighlightOn(){
-
-        this.setBackgroundColor(Color.parseColor("#ffff00"));
-
+    public void setHighlightOn() {
+        //TODO Definition for color in XML
+        setBackgroundColor(Color.parseColor("#ffff00"));
     }
-    public void setHighlightOff(){
-        this.setBackgroundColor(Color.parseColor("#ffffff"));
-
-
+    public void setHighlightOff() {
+        //TODO Definition for color in XML
+        setBackgroundColor(Color.parseColor("#ffffff"));
     }
 
 }
