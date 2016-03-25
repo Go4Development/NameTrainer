@@ -7,8 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Random;
-
 import go4.szut.de.nametrainer.R;
 
 /**
@@ -16,9 +14,9 @@ import go4.szut.de.nametrainer.R;
  */
 public class GroupListViewItem extends LinearLayout {
 
-    //holds an image of the currently selected student
+    //displays an image of the currently selected student
     private ImageView galleryImageView;
-    //holds the name of the currently selected student
+    //displays the name of the currently selected student
     private TextView galleryNameTextView;
 
     private String galleryPath;
@@ -38,10 +36,6 @@ public class GroupListViewItem extends LinearLayout {
         galleryImageView = (ImageView)findViewById(R.id.gallery_imageview);
         //the TextView that shows the name of the currently selected student
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
-
-        Random r = new Random();
-
-        galleryImageView.setBackgroundColor(Color.argb(255, r.nextInt(255), r.nextInt(255), r.nextInt(255)));
 
         galleryImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         galleryNameTextView.setText(galleryName);
