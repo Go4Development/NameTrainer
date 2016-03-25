@@ -3,4 +3,20 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ToggleButton
+        android:id="@+id/toggleButtonSound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="@string/soundOn_options"
+        android:textOff="@string/soundOff_options"
+        android:text="@string/sound_options" />
+
+    <ToggleButton
+        android:id="@+id/toggleButtonLastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="@string/lastNameOn_options"
+        android:textOff="@string/lastNameOff_options"
+        android:text="@string/lastName_options" />
+
 </LinearLayout>
