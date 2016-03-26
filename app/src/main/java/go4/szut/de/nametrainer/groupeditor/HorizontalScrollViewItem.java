@@ -35,7 +35,7 @@ public class HorizontalScrollViewItem extends LinearLayout {
         this.surname = surname;
 
         //inflates the layout for the GroupListViewItem class
-        inflate(context, R.layout.activity_groupeditor_listviewitem, this);
+        inflate(context, R.layout.activity_groupeditor_portraititem, this);
 
         //the ImageView that shows an image of the currently selected student
         galleryImageView = (ImageView)findViewById(R.id.gallery_imageview);
