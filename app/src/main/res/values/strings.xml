@@ -13,4 +13,14 @@
     <string name="lastName_options">Nachname Abfragen</string>
     <string name="lastNameOn_options">Nachname Abfragen An</string>
     <string name="lastNameOff_options">Nachname Abfragen Aus</string>
+
+
+    <!-- GROUP EDITOR -->
+    <string name="groupeditor_item_dialog_title">Optionen</string>
+    <string-array name="groupeditor_item_dialog_options">
+        <item>Bearbeiten</item>
+        <item>Löschen</item>
+    </string-array>
+
+
 </resources>

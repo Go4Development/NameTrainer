@@ -43,7 +43,7 @@ public class GroupListViewItem extends LinearLayout {
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
 
         galleryImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        galleryNameTextView.setText(this.firstname + " " + this.surname);
+        galleryNameTextView.setText(getName());
 
     }
 
@@ -53,6 +53,10 @@ public class GroupListViewItem extends LinearLayout {
 
     public String getSurname() {
         return surname;
+    }
+
+    public String getName() {
+        return firstname + " " + surname;
     }
 
     public Integer getPosition() {
