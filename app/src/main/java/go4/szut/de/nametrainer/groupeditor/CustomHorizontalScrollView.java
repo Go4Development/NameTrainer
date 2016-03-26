@@ -9,20 +9,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import go4.szut.de.nametrainer.R;
-import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by ramazan on 25.03.2016.
  */
 public class CustomHorizontalScrollView extends HorizontalScrollView {
 
-    //holds the linear layout of this CustomHorizontalScrollView
+    //holds the linear layout of this CustomHorizontalScrollVie
     private LinearLayout portraitLinearLayout;
 
     //holds the timestamp of the last scroll update
     private long lastScrollUpdate = -1;
 
-    private ArrayList<GroupListViewItem> groupListViewItemList;
+    private ArrayList<HorizontalScrollViewItem> horizontalScrollViewItems;
 
     public CustomHorizontalScrollView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -39,18 +38,14 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         lastScrollUpdate = System.currentTimeMillis();
     }
 
-    /**
-     * Sets the groupListViewItemList
-     * @param groupListViewItemList - the groupListViewItemList
-     */
-    public void setGroupViewItemList(ArrayList<GroupListViewItem> groupListViewItemList) {
-        this.groupListViewItemList = groupListViewItemList;
+    public void setGroupViewItemList(ArrayList<HorizontalScrollViewItem> horizontalScrollViewItems) {
+        this.horizontalScrollViewItems = horizontalScrollViewItems;
         portraitLinearLayout = (LinearLayout)findViewById(R.id.portrait_linearlayout);
         attachListViewItems();
     }
 
     private void attachListViewItems() {
-        for(GroupListViewItem item : groupListViewItemList) {
+        for(HorizontalScrollViewItem item : horizontalScrollViewItems) {
             portraitLinearLayout.addView(item);
         }
     }
@@ -68,13 +63,13 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
     private void onScrollEnd() {
         ArrayList<Integer> differenceToScreenCenter = new ArrayList<Integer>();
         Integer screenCenter = getWidth() / 2;
-        for(GroupListViewItem groupListViewItem : groupListViewItemList){
-            groupListViewItem.setHighlightOff();
+        for(HorizontalScrollViewItem item : horizontalScrollViewItems){
+            item.setHighlightOff();
             differenceToScreenCenter.add(Math.abs(screenCenter - (
-                    groupListViewItem.getPosition() + (groupListViewItem.getWidth() / 2))));
+                    item.getPosition() + (item.getWidth() / 2))));
         }
         int minIndex = differenceToScreenCenter.indexOf(Collections.min(differenceToScreenCenter));
-        groupListViewItemList.get(minIndex).setHighlightOn();
+        horizontalScrollViewItems.get(minIndex).setHighlightOn();
 
     }
 

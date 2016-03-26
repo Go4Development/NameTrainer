@@ -12,7 +12,7 @@ import go4.szut.de.nametrainer.R;
 /**
  * Created by Rene on 24.03.2016.
  */
-public class GroupListViewItem extends LinearLayout {
+public class HorizontalScrollViewItem extends LinearLayout {
 
     //displays an image of the currently selected student
     private ImageView galleryImageView;
@@ -27,7 +27,7 @@ public class GroupListViewItem extends LinearLayout {
     private String surname;
 
 
-    public GroupListViewItem(Context context, String galleryPath, String firstname, String surname) {
+    public HorizontalScrollViewItem(Context context, String galleryPath, String firstname, String surname) {
         super(context);
 
         this.galleryPath = galleryPath;

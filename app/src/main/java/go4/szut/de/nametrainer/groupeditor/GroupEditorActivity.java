@@ -26,7 +26,7 @@ public class GroupEditorActivity extends AppCompatActivity
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
 
-    private ArrayList<GroupListViewItem> groupListViewItemList;
+    private ArrayList<HorizontalScrollViewItem> portraitItems;
 
     //holds a list of groups containing multiple students
     private ListView groupListView;
@@ -58,13 +58,13 @@ public class GroupEditorActivity extends AppCompatActivity
                 getResources().getStringArray(R.array.groupeditor_item_dialog_options));
 
         groupListViewAdapter = new GroupEditorListViewAdapter(this);
-        groupListViewItemList = new ArrayList<GroupListViewItem>();
+        portraitItems = new ArrayList<HorizontalScrollViewItem>();
 
         for(int i = 0; i < 10; i++) {
-            GroupListViewItem item = new GroupListViewItem(this, "Hans Vadder", "Vorname" + i, "Nachname" + i);
+            HorizontalScrollViewItem item = new HorizontalScrollViewItem(this, "Hans Vadder", "Vorname" + i, "Nachname" + i);
             item.setOnClickListener(this);
             item.setOnLongClickListener(this);
-            groupListViewItemList.add(item);
+            portraitItems.add(item);
         }
 
         /**
@@ -79,26 +79,26 @@ public class GroupEditorActivity extends AppCompatActivity
         groupListView.setAdapter(groupListViewAdapter);
 
         //sets the list containing the GroupListViewItems
-        portraitScrollView.setGroupViewItemList(groupListViewItemList);
+        portraitScrollView.setGroupViewItemList(portraitItems);
 
     }
 
     @Override
     public void onClick(View v) {
-        GroupListViewItem item = (GroupListViewItem)v;
+        HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
         //TODO Maybe for other function or displaying information
     }
 
     @Override
     public boolean onLongClick(View v) {
-        GroupListViewItem item = (GroupListViewItem)v;
+        HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
         openItemDialog(item);
         return true;
     }
 
 
 
-    private void openItemDialog(final GroupListViewItem item) {
+    private void openItemDialog(final HorizontalScrollViewItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(item.getName());
         builder.setCancelable(true);
@@ -117,12 +117,12 @@ public class GroupEditorActivity extends AppCompatActivity
         builder.show();
     }
 
-    private void onEdit(GroupListViewItem item) {
+    private void onEdit(HorizontalScrollViewItem item) {
         //TODO Open an EditDialog in order to be able to change data of item and save it to database
         Toast.makeText(this, item.getName() + " on Edit", Toast.LENGTH_LONG).show();
     }
 
-    private void onDelete(GroupListViewItem item) {
+    private void onDelete(HorizontalScrollViewItem item) {
         //TODO Do a delete on the data in database corresponding to this item
         Toast.makeText(this, item.getName() + " on Remove", Toast.LENGTH_LONG).show();
     }
