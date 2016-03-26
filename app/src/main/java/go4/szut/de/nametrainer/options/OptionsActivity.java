@@ -12,6 +12,7 @@ import go4.szut.de.nametrainer.R;
  * Created by Rene on 24.03.2016.
  */
 public class OptionsActivity extends Activity {
+
     private boolean soundEnabled;
     private boolean lastNameEnabled;
     private ToggleButton soundButton;
