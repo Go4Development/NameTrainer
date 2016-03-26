@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_FIRSTNAME = "firstname";
     public static final String COLUMN_IMAGEPATH = "imagepath";
 
-    public static final String TABLE_GROUP = "group";
+    public static final String TABLE_GROUP = "[group]";
     public static final String COLUMN_GROUP_NAME = "group_name";
 
     private static final String DATABASE_NAME = "groups.db";
@@ -24,16 +24,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database creation sql statement
     private static final String DATABASE_CREATE_MEMBER =
-            "create table " + TABLE_MEMBER
+            " create table " + TABLE_MEMBER
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_GROUP_ID + " integer , FOREIGN KEY(" + COLUMN_GROUP_ID + ") REFERENCES group(id), "
-            + COLUMN_SURNAME + " text "
-            + COLUMN_FIRSTNAME + " text not null "
-            +COLUMN_IMAGEPATH + "text not null" + ");";
+            + COLUMN_GROUP_ID + " integer, " //, FOREIGN KEY(" + COLUMN_GROUP_ID + ") REFERENCES [group](_id)
+            + COLUMN_SURNAME + " text, "
+            + COLUMN_FIRSTNAME + " text not null, "
+            +COLUMN_IMAGEPATH + " text not null" + ");";
 
     private static final String DATABASE_CREATE_GROUP =
-            "create table " + TABLE_GROUP
-                    + "(" + COLUMN_ID + " integer primary key autoincrement, "
+            " create table " + TABLE_GROUP
+                    + " (" + COLUMN_ID + " integer primary key autoincrement, "
                     + COLUMN_GROUP_NAME + " text not null );";
 
     public DatabaseHelper(Context context) {
@@ -42,7 +42,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(DATABASE_CREATE_GROUP + DATABASE_CREATE_MEMBER);
+        sqLiteDatabase.execSQL(DATABASE_CREATE_GROUP );
+        sqLiteDatabase.execSQL(DATABASE_CREATE_MEMBER);
     }
 
     @Override

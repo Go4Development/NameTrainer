@@ -7,7 +7,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import go4.szut.de.nametrainer.util.Util;
+
 
 /**
  * Created by ramazan on 26.03.2016.
@@ -61,7 +63,7 @@ public class GroupDataSource {
 
 
         ContentValues values = new ContentValues();
-        //TODO keine ahnung
+
         values.put(DatabaseHelper.COLUMN_GROUP_NAME, name);
 
         long insertId = database.insert(DatabaseHelper.TABLE_GROUP, null,
@@ -120,6 +122,17 @@ public class GroupDataSource {
         group.setName(cursor.getString(1));
 
         return group;
+    }
+
+    public void tables(){
+        Cursor c = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+
+        if (c.moveToFirst()) {
+            while ( !c.isAfterLast() ) {
+                Util.l(this, "Table Name=> " + c.getString(0));
+                c.moveToNext();
+            }
+        }
     }
 }
 
