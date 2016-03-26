@@ -2,14 +2,13 @@ package go4.szut.de.nametrainer.options;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import go4.szut.de.nametrainer.R;
 
 /**
- * Created by Rene on 24.03.2016.
+ * Created by Michele on 24.03.2016.
  */
 public class OptionsActivity extends Activity {
     private boolean soundEnabled;
@@ -75,5 +74,12 @@ public class OptionsActivity extends Activity {
         return lastNameEnabled;
     }
 
+    public boolean isSoundEnabled() {
+        return soundEnabled;
+    }
+
+    public boolean isLastNameEnabled() {
+        return lastNameEnabled;
+    }
 
 }

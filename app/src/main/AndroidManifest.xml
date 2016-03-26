@@ -25,6 +25,9 @@
             android:name=".groupeditor.GroupEditorActivity"
             android:label="@string/groupeditor">
         </activity>
+        <activity android:name=".selection.SelectionActivity"
+            android:label="@string/selection_label">
+        </activity>
     </application>
 
 </manifest>

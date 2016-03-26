@@ -22,5 +22,7 @@
         <item>Löschen</item>
     </string-array>
 
+    <!-- SELECTION -->
+    <string name="selection_label">Gruppenauswahl</string>
 
 </resources>
