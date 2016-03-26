@@ -38,6 +38,7 @@ public class SelectionActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         TextView textView = (TextView)v;
+        //Toast
         Toast.makeText(this, textView.getText(), Toast.LENGTH_LONG).show();
     }
 }
