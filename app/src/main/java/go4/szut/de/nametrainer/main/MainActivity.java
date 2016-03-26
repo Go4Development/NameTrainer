@@ -7,11 +7,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.Group;
+import go4.szut.de.nametrainer.database.GroupDataSource;
+import go4.szut.de.nametrainer.database.Member;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.selection.SelectionActivity;
 import go4.szut.de.nametrainer.sharing.SharingActivity;
+import go4.szut.de.nametrainer.util.Util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startActivity(new Intent(this, GroupEditorActivity.class));
+
+
     }
 
 
