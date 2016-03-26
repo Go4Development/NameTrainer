@@ -79,7 +79,7 @@ public class GroupEditorActivity extends AppCompatActivity
         groupListView.setAdapter(groupListViewAdapter);
 
         //sets the list containing the GroupListViewItems
-        portraitScrollView.setGroupViewItemList(portraitItems);
+        portraitScrollView.setPortraitItems(portraitItems);
 
     }
 

@@ -38,7 +38,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         lastScrollUpdate = System.currentTimeMillis();
     }
 
-    public void setGroupViewItemList(ArrayList<HorizontalScrollViewItem> horizontalScrollViewItems) {
+    public void setPortraitItems(ArrayList<HorizontalScrollViewItem> horizontalScrollViewItems) {
         this.horizontalScrollViewItems = horizontalScrollViewItems;
         portraitLinearLayout = (LinearLayout)findViewById(R.id.portrait_linearlayout);
         attachListViewItems();
