@@ -1,6 +1,7 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,13 @@ import go4.szut.de.nametrainer.util.Util;
 public class GroupEditorActivity extends AppCompatActivity
     implements View.OnClickListener, View.OnLongClickListener {
 
+    //option identifier for editing a member
     private static final int DIALOG_OPTION_EDIT = 0;
+    //option identifier for deleting a member
     private static final int DIALOG_OPTION_DELETE = 1;
+
+    //request code identifier for editing a member
+    private static final int RC_MEMBER_EDITOR = 1337;
 
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
@@ -96,7 +102,16 @@ public class GroupEditorActivity extends AppCompatActivity
         return true;
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK) {
+            switch(requestCode) {
+                case RC_MEMBER_EDITOR:
+                    //TODO hier Daten in der Datenbank updaten
+                    break;
+            }
+        }
+    }
 
     private void openItemDialog(final HorizontalScrollViewItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -118,15 +133,14 @@ public class GroupEditorActivity extends AppCompatActivity
     }
 
     private void onEdit(HorizontalScrollViewItem item) {
-        //TODO Open an EditDialog in order to be able to change data of item and save it to database
-        Toast.makeText(this, item.getName() + " on Edit", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, MemberEditorActivity.class);
+        startActivityForResult(intent, RC_MEMBER_EDITOR);
     }
 
     private void onDelete(HorizontalScrollViewItem item) {
         //TODO Do a delete on the data in database corresponding to this item
         Toast.makeText(this, item.getName() + " on Remove", Toast.LENGTH_LONG).show();
     }
-
 
 
 }

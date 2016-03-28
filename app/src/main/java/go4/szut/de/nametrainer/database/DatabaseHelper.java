@@ -9,32 +9,32 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_MEMBER = "member";
+    //name of the table member
+    public static final String TABLE_MEMBER = Member.class.getSimpleName();
+    //name of table group
+    public static final String TABLE_GROUP = Group.class.getSimpleName();
+
+    //column identifier id
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_GROUP_ID = "group_id";
-    public static final String COLUMN_SURNAME = "surname";
-    public static final String COLUMN_FIRSTNAME = "firstname";
-    public static final String COLUMN_IMAGEPATH = "imagepath";
 
-    public static final String TABLE_GROUP = "[group]";
-    public static final String COLUMN_GROUP_NAME = "group_name";
-
+    //database attributes
     private static final String DATABASE_NAME = "groups.db";
     private static final int DATABASE_VERSION = 1;
 
-    // Database creation sql statement
+    //database creation statement of table member
     private static final String DATABASE_CREATE_MEMBER =
             " create table " + TABLE_MEMBER
             + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_GROUP_ID + " integer, " //, FOREIGN KEY(" + COLUMN_GROUP_ID + ") REFERENCES [group](_id)
-            + COLUMN_SURNAME + " text, "
-            + COLUMN_FIRSTNAME + " text not null, "
-            +COLUMN_IMAGEPATH + " text not null" + ");";
+            + Member.COLUMN_GROUP_ID + " integer, "
+            + Member.COLUMN_SURNAME + " text, "
+            + Member.COLUMN_FIRSTNAME + " text not null, "
+            + Member.COLUMN_IMAGEPATH + " text not null" + ");";
 
+    //database creation statement of table group
     private static final String DATABASE_CREATE_GROUP =
             " create table " + TABLE_GROUP
                     + " (" + COLUMN_ID + " integer primary key autoincrement, "
-                    + COLUMN_GROUP_NAME + " text not null );";
+                    + Group.COLUMN_GROUP_NAME + " text not null );";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(DATABASE_CREATE_GROUP );
+        sqLiteDatabase.execSQL(DATABASE_CREATE_GROUP);
         sqLiteDatabase.execSQL(DATABASE_CREATE_MEMBER);
     }
 

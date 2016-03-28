@@ -1,22 +1,36 @@
 package go4.szut.de.nametrainer.database;
 
+
+import android.content.ContentValues;
+import android.database.Cursor;
+
 /**
  * Created by ramazan on 26.03.2016.
  */
 public class Member {
 
-    private Integer _id;
+    //table columns identifier of member
+    public static final String COLUMN_GROUP_ID = "group_id";
+    public static final String COLUMN_SURNAME = "surname";
+    public static final String COLUMN_FIRSTNAME = "firstname";
+    public static final String COLUMN_IMAGEPATH = "imagepath";
+
+    private Integer id;
     private String surname;
     private String firstname;
     private Integer groupID;
     private String imagePath;
 
-    public Integer get_id() {
-        return _id;
+    public Member() {
+
     }
 
-    public void set_id(Integer _id) {
-        this._id = _id;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getSurname() {
@@ -50,4 +64,50 @@ public class Member {
     public void setGroupID(Integer groupID) {
         this.groupID = groupID;
     }
+
+    /**
+     * Creates a content values representation of this member instance.
+     * @return the content values
+     */
+    public ContentValues getContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_GROUP_ID, groupID);
+        contentValues.put(COLUMN_SURNAME, surname);
+        contentValues.put(COLUMN_FIRSTNAME, firstname);
+        contentValues.put(COLUMN_IMAGEPATH, imagePath);
+        return contentValues;
+    }
+
+    /**
+     * Creates a member object instance by the passed cursor object.
+     * @param cursor - the cursor object retrieved from database request
+     * @return a member object instance
+     */
+    public static Member toMember(Cursor cursor) {
+        Member member = new Member();
+        member.id = cursor.getInt(0);
+        member.groupID = cursor.getInt(1);
+        member.surname = cursor.getString(2);
+        member.firstname = cursor.getString(3);
+        member.imagePath = cursor.getString(4);
+        return member;
+    }
+
+    /**
+     * Creates a member object instance by the passed parameters.
+     * @param groupID - the groupid the member is in
+     * @param firstname - the firstname of the member
+     * @param surname - the surname of the member
+     * @param imagePath - the path to the image of the member
+     * @return a member object instance
+     */
+    public static Member toMember(Integer groupID, String firstname, String surname, String imagePath) {
+        Member member = new Member();
+        member.groupID = groupID;
+        member.firstname = firstname;
+        member.surname = surname;
+        member.imagePath = imagePath;
+        return member;
+    }
+
 }

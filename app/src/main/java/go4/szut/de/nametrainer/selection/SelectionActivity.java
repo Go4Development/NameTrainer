@@ -17,10 +17,11 @@ import go4.szut.de.nametrainer.R;
  * Created by raven on 25.03.2016.
  */
 public class SelectionActivity extends Activity implements View.OnClickListener{
+
     private ListView listView;
 
     public SelectionActivity(){
-        //We got a Constructor :3
+
     }
 
     @Override
