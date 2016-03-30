@@ -134,6 +134,7 @@ public class GroupEditorActivity extends AppCompatActivity
 
     private void onEdit(HorizontalScrollViewItem item) {
         Intent intent = new Intent(this, MemberEditorActivity.class);
+        //intent.putExtra( HERE PARCELABLE EXTRA )
         startActivityForResult(intent, RC_MEMBER_EDITOR);
     }
 

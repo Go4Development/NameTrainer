@@ -3,11 +3,16 @@ package go4.szut.de.nametrainer.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by ramazan on 26.03.2016.
  */
-public class Member {
+public class Member implements Parcelable {
+
+    //parcelable identifier member
+    public static final String DEFAULT_PARCELABLE_IDENTIFIER = "parcelable_member";
 
     //table columns identifier of member
     public static final String COLUMN_GROUP_ID = "group_id";
@@ -108,6 +113,41 @@ public class Member {
         member.surname = surname;
         member.imagePath = imagePath;
         return member;
+    }
+
+    protected Member(Parcel in) {
+        id = in.readInt();
+        surname = in.readString();
+        firstname = in.readString();
+        groupID = in.readInt();
+        imagePath = in.readString();
+    }
+
+    public static final Creator<Member> CREATOR = new Creator<Member>() {
+        @Override
+        public Member createFromParcel(Parcel in) {
+            return new Member(in);
+        }
+
+        @Override
+        public Member[] newArray(int size) {
+            return new Member[size];
+        }
+    };
+
+
+    @Override
+    public int describeContents() {
+        return 5;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(surname);
+        dest.writeString(firstname);
+        dest.writeInt(groupID);
+        dest.writeString(imagePath);
     }
 
 }

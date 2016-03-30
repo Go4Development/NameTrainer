@@ -10,31 +10,31 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     //name of the table member
-    public static final String TABLE_MEMBER = Member.class.getSimpleName();
+    public static final String TABLE_MEMBER = "[" + Member.class.getSimpleName() + "]";
     //name of table group
-    public static final String TABLE_GROUP = Group.class.getSimpleName();
+    public static final String TABLE_GROUP = "[" + Group.class.getSimpleName() + "]";
 
     //column identifier id
-    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_ID = "id";
 
     //database attributes
-    private static final String DATABASE_NAME = "groups.db";
+    private static final String DATABASE_NAME = "nt_data.db";
     private static final int DATABASE_VERSION = 1;
 
     //database creation statement of table member
     private static final String DATABASE_CREATE_MEMBER =
-            " create table " + TABLE_MEMBER
-            + "(" + COLUMN_ID + " integer primary key autoincrement, "
-            + Member.COLUMN_GROUP_ID + " integer, "
-            + Member.COLUMN_SURNAME + " text, "
-            + Member.COLUMN_FIRSTNAME + " text not null, "
-            + Member.COLUMN_IMAGEPATH + " text not null" + ");";
+            " CREATE TABLE " + TABLE_MEMBER
+            + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + Member.COLUMN_GROUP_ID + " INTEGER, "
+            + Member.COLUMN_SURNAME + " TEXT, "
+            + Member.COLUMN_FIRSTNAME + " TEXT NOT NULL, "
+            + Member.COLUMN_IMAGEPATH + " TEXT NOT NULL" + ");";
 
     //database creation statement of table group
     private static final String DATABASE_CREATE_GROUP =
-            " create table " + TABLE_GROUP
-                    + " (" + COLUMN_ID + " integer primary key autoincrement, "
-                    + Group.COLUMN_GROUP_NAME + " text not null );";
+            " CREATE TABLE " + TABLE_GROUP
+                    + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + Group.COLUMN_GROUP_NAME + " TEXT NOT NULL );";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,13 +48,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE [Group]");
-        sqLiteDatabase.execSQL("DROP TABLE Member");
+        sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_GROUP);
+        sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_MEMBER);
         onCreate(sqLiteDatabase);
     }
 
-    public static String where(String primaryKeyColumn, long id) {
-        return primaryKeyColumn + " = " + id;
+    /**
+     * Builds the where-condition string for database requests.
+     * @param column - the column that should have the passed value
+     * @param value - the value
+     * @return the built where-condition
+     */
+    public static String where(String column, long value) {
+        return column + " = " + value;
     }
 
 

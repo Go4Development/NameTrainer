@@ -1,6 +1,5 @@
 package go4.szut.de.nametrainer.main;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import go4.szut.de.nametrainer.R;
-import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.selection.SelectionActivity;
@@ -25,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         startActivity(new Intent(this, GroupEditorActivity.class));
-
-
 
     }
 

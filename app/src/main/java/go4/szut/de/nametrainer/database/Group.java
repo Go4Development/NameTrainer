@@ -2,11 +2,17 @@ package go4.szut.de.nametrainer.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 /**
  * Created by ramazan on 26.03.2016.
  */
-public class Group {
+public class Group implements Parcelable {
+
+    //parcelable identifier group
+    public static final String DEFAULT_PARCELABLE_IDENTIFIER = "parcelable_group";
 
     //table columns identifier of group
     public static final String COLUMN_GROUP_NAME = "group_name";
@@ -51,5 +57,33 @@ public class Group {
         Group group = new Group();
         group.name = name;
         return group;
+    }
+
+    //PARCELABLE STUFF STARTS HERE
+
+    protected Group(Parcel in) {
+        name = in.readString();
+    }
+
+    public static final Creator<Group> CREATOR = new Creator<Group>() {
+        @Override
+        public Group createFromParcel(Parcel in) {
+            return new Group(in);
+        }
+
+        @Override
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 1;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
     }
 }
