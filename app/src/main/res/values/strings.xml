@@ -21,6 +21,10 @@
         <item>Bearbeiten</item>
         <item>Löschen</item>
     </string-array>
+    <string name="groupeditor_add_action_title">Gruppe hinzufügen</string>
+    <string name="groupeditor_add_action_edittext">Gruppenname</string>
+    <string name="groupeditor_add_action_posbutton">Hinzufügen</string>
+    <string name="groupeditor_add_action_negbutton">Abbrechen</string>
 
     <!-- SELECTION -->
     <string name="selection_label">Gruppenauswahl</string>

@@ -5,8 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,7 +56,7 @@ public class GroupEditorActivity extends AppCompatActivity
         setContentView(R.layout.activity_groupeditor);
 
         //hides the ActionBar of AppCompatActivity class
-        Util.hideActionBar(this);
+        //Util.hideActionBar(this);
 
         /**
          * Load Data - Start
@@ -90,9 +95,26 @@ public class GroupEditorActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.groupeditor_action_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.group_add_action:
+                onAddGroup();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View v) {
         HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
-        //TODO Maybe for other function or displaying information
+        //to something here
     }
 
     @Override
@@ -141,6 +163,25 @@ public class GroupEditorActivity extends AppCompatActivity
     private void onDelete(HorizontalScrollViewItem item) {
         //TODO Do a delete on the data in database corresponding to this item
         Toast.makeText(this, item.getName() + " on Remove", Toast.LENGTH_LONG).show();
+    }
+
+    private void onAddGroup() {
+
+
+        final EditText groupNameEditText = new EditText(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        groupNameEditText.setLayoutParams(layoutParams);
+
+        GroupEditorAddActionListener listener = new GroupEditorAddActionListener(this, groupNameEditText);
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setPositiveButton(getResources().getString(R.string.groupeditor_add_action_posbutton), listener)
+                .setNegativeButton(getResources().getString(R.string.groupeditor_add_action_negbutton), listener);
+        alertDialog.setView(groupNameEditText);
+        alertDialog.show();
     }
 
 
