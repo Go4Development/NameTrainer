@@ -48,6 +48,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL("DROP TABLE [Group]");
+        sqLiteDatabase.execSQL("DROP TABLE Member");
+        onCreate(sqLiteDatabase);
     }
+
+    public static String where(String primaryKeyColumn, long id) {
+        return primaryKeyColumn + " = " + id;
+    }
+
+
 }

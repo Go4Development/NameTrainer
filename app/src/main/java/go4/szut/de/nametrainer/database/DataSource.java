@@ -36,7 +36,10 @@ public class DataSource {
             Group.COLUMN_GROUP_NAME
     };
 
-    public DataSource(Context context) {
+
+    private static DataSource instance;
+
+    private DataSource(Context context) {
         dbHelper = new DatabaseHelper(context);
     }
 
@@ -78,6 +81,27 @@ public class DataSource {
     }
 
     /**
+     * Updates a member in database.
+     * @param member - the values of the member to update
+     * @return the passed member object
+     */
+    public Member updateMember(Member member) {
+        ContentValues values = member.getContentValues();
+        database.update(DatabaseHelper.TABLE_MEMBER, values,
+                DatabaseHelper.where(DatabaseHelper.COLUMN_ID, member.getId()), null);
+        return member;
+    }
+
+    /**
+     * Deletes a member from the database.
+     * @param member - the member to delete
+     */
+    public void deleteMember(Member member) {
+        database.delete(DatabaseHelper.TABLE_MEMBER,
+                DatabaseHelper.where(DatabaseHelper.COLUMN_ID, member.getId()), null);
+    }
+
+    /**
      * Inserts a group to database.
      * @param name - the name of the group
      * @return a complete group object instance containing the id of row entry
@@ -88,24 +112,37 @@ public class DataSource {
         long insertId = database.insert(DatabaseHelper.TABLE_GROUP, null,
                 values);
         Cursor cursor = database.query(DatabaseHelper.TABLE_GROUP,
-                ALL_COLUMNS_GROUP, DatabaseHelper.COLUMN_ID + " = " + insertId, null,
+                ALL_COLUMNS_GROUP,
+                DatabaseHelper.where(DatabaseHelper.COLUMN_ID, insertId), null,
                 null, null, null);
         cursor.moveToFirst();
         Group group = Group.toGroup(cursor);
         cursor.close();
         return group;
-
     }
 
     /**
-     * Deletes a member from the database.
-     * @param member - the member to delete
+     * Updates a group in database.
+     * @param group - the values of the group to update
+     * @return the passed group object
      */
-    public void deleteMember(Member member) {
-        Integer id = member.getId();
-        database.delete(DatabaseHelper.TABLE_MEMBER, DatabaseHelper.COLUMN_ID
-                + " = " + id, null);
+    public Group updateGroup(Group group) {
+        ContentValues values = group.getContentValues();
+        database.update(DatabaseHelper.TABLE_MEMBER, values,
+                DatabaseHelper.where(DatabaseHelper.COLUMN_ID, group.getId()), null);
+        return group;
     }
+
+    /**
+     * Deletes a group from the database.
+     * @param group - the group to delete
+     */
+    public void deleteGroup(Group group) {
+        database.delete(DatabaseHelper.TABLE_GROUP,
+                DatabaseHelper.where(DatabaseHelper.COLUMN_ID, group.getId()), null);
+    }
+
+
 
     /**
      * Returns a list of all members.
@@ -128,11 +165,25 @@ public class DataSource {
     public void tables(){
         Cursor c = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         if (c.moveToFirst()) {
-            while ( !c.isAfterLast() ) {
+            while (!c.isAfterLast()) {
                 Util.l(this, "Table Name=> " + c.getString(0));
                 c.moveToNext();
             }
         }
+        c.close();
     }
+
+    /**
+     * Singleton for DataSource instance.
+     * @param context - the context of MainActivity
+     * @return the instance of DataSource class
+     */
+    public static DataSource getDataSourceInstance(Context context) {
+        if(instance == null) {
+            instance = new DataSource(context);
+        }
+        return instance;
+    }
+
 }
 
