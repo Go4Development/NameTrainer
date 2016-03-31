@@ -24,6 +24,7 @@ public class GroupListViewAdapter extends BaseAdapter {
     private ArrayList<Group> groups;
     private DataSource source;
 
+    private GroupListViewItemRemoveListener removeListener;
 
     public GroupListViewAdapter(Context context) {
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -31,18 +32,14 @@ public class GroupListViewAdapter extends BaseAdapter {
         source.open();
         groups = source.getAllGroups();
         source.close();
+
+        removeListener = new GroupListViewItemRemoveListener(context);
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        updateGroupList();
-        super.notifyDataSetChanged();
-    }
 
-    private void updateGroupList() {
-        source.open();
-        groups = source.getAllGroups();
-        source.close();
+    public void notifyDataSetChanged(Group group) {
+        groups.add(group);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -70,6 +67,7 @@ public class GroupListViewAdapter extends BaseAdapter {
         button.setText("+");
 
         TextView groupNameTextView = (TextView)convertView.findViewById(R.id.group_name_textview);
+        groupNameTextView.setOnLongClickListener(removeListener);
         groupNameTextView.setText(groups.get(position).getName());
 
         return convertView;

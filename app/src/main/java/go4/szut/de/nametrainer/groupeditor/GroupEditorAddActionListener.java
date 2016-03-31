@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import go4.szut.de.nametrainer.database.DataSource;
+import go4.szut.de.nametrainer.database.Group;
 
 /**
  * Created by Rene on 31.03.2016.
@@ -35,10 +36,10 @@ public class GroupEditorAddActionListener implements DialogInterface.OnClickList
                 //retrieves the DataSource instance and inserts the new group
                 DataSource source = DataSource.getDataSourceInstance(context);
                 source.open();
-                source.insertGroup(groupName);
+                Group group = source.insertGroup(groupName);
                 source.close();
                 //notifies the adapter to update
-                groupListViewAdapter.notifyDataSetChanged();
+                groupListViewAdapter.notifyDataSetChanged(group);
                 break;
         }
         dialog.dismiss();
