@@ -2,10 +2,13 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import go4.szut.de.nametrainer.R;
@@ -66,36 +69,44 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
 
     private void onEdit(final Member member) {
 
+        LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
+
+        final EditText firstnameEditText = (EditText)dialogView.findViewById(R.id.dialog_firstname);
+        firstnameEditText.setText(member.getFirstname());
+
+        final EditText surnameEditText = (EditText)dialogView.findViewById(R.id.dialog_surname);
+        surnameEditText.setText(member.getSurname());
+
+        ImageView previewImageView = (ImageView)dialogView.findViewById(R.id.dialog_preview_image);
+        previewImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+
         DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch(which) {
                     case DialogInterface.BUTTON_NEGATIVE:
-                        Toast.makeText(context, "Button Negative", Toast.LENGTH_LONG).show();
                         break;
                     case DialogInterface.BUTTON_POSITIVE:
-                        Toast.makeText(context, "Button Positive Edit", Toast.LENGTH_LONG).show();
+                        String firstname = firstnameEditText.getText().toString();
+                        String surname = surnameEditText.getText().toString();
+                        member.setFirstname(firstname);
+                        member.setSurname(surname);
+                        source.open();
+                        source.updateMember(member);
+                        source.close();
                         break;
                 }
+                dialog.dismiss();
             }
         };
 
-
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setCancelable(true)
-                .setPositiveButton(context.getResources().getString(R.string.groupeditor_add_action_posbutton), listener)
-                .setNegativeButton(context.getResources().getString(R.string.groupeditor_add_action_negbutton), listener)
-                .setView(R.layout.activity_groupeditor_portraititem_dialog);
-
-        AlertDialog dialog = builder.show();
-
-        EditText firstnameEditText = (EditText)dialog.findViewById(R.id.dialog_firstname);
-        firstnameEditText.setText(member.getFirstname());
-
-        EditText surnameEditText = (EditText)dialog.findViewById(R.id.dialog_surname);
-        surnameEditText.setText(member.getSurname());
-
-        //here image f
+                .setPositiveButton(context.getResources().getString(R.string.groupeditor_edit_action_posbutton), listener)
+                .setNegativeButton(context.getResources().getString(R.string.groupeditor_edit_action_negbutton), listener)
+                .setView(dialogView);
+        builder.show();
 
     }
 
