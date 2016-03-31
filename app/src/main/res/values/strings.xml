@@ -25,6 +25,8 @@
     <string name="groupeditor_add_action_edittext">Gruppenname</string>
     <string name="groupeditor_add_action_posbutton">Hinzufügen</string>
     <string name="groupeditor_add_action_negbutton">Abbrechen</string>
+    <string name="groupeditor_edit_action_posbutton">Bearbeiten</string>
+    <string name="groupeditor_edit_action_negbutton">Abbrechen</string>
 
     <!-- SELECTION -->
     <string name="selection_label">Gruppenauswahl</string>

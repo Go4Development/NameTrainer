@@ -13,30 +13,25 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.Group;
 
 /**
  * Created by Rene on 24.03.2016.
  */
 public class GroupEditorActivity extends AppCompatActivity
-    implements View.OnClickListener, View.OnLongClickListener {
+    implements View.OnLongClickListener {
 
     //option identifier for editing a member
     private static final int DIALOG_OPTION_EDIT = 0;
     //option identifier for deleting a member
     private static final int DIALOG_OPTION_DELETE = 1;
 
-    //request code identifier for editing a member
-    private static final int RC_MEMBER_EDITOR = 1337;
-
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
-
-    private ArrayList<HorizontalScrollViewItem> portraitItems;
 
     //holds a list of groups containing multiple students
     private ListView groupListView;
@@ -68,14 +63,6 @@ public class GroupEditorActivity extends AppCompatActivity
                 getResources().getStringArray(R.array.groupeditor_item_dialog_options));
 
         groupListViewAdapter = new GroupListViewAdapter(this);
-        portraitItems = new ArrayList<HorizontalScrollViewItem>();
-
-        for(int i = 0; i < 10; i++) {
-            HorizontalScrollViewItem item = new HorizontalScrollViewItem(this, "Hans Vadder", "Vorname" + i, "Nachname" + i);
-            item.setOnClickListener(this);
-            item.setOnLongClickListener(this);
-            portraitItems.add(item);
-        }
 
         /**
          * Load Data - End
@@ -89,7 +76,11 @@ public class GroupEditorActivity extends AppCompatActivity
         groupListView.setAdapter(groupListViewAdapter);
 
         //sets the list containing the GroupListViewItems
-        portraitScrollView.setPortraitItems(portraitItems);
+        Group group = new Group();
+        group.setId(1);
+        group.setName("T15A");
+        portraitScrollView.setAdapter(new HorizontalScrollViewAdapter(this, portraitScrollView, group));
+
 
     }
 
@@ -111,32 +102,15 @@ public class GroupEditorActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(View v) {
-        HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
-        //to something here
-    }
-
-    @Override
     public boolean onLongClick(View v) {
         HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
         openItemDialog(item);
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK) {
-            switch(requestCode) {
-                case RC_MEMBER_EDITOR:
-                    //TODO hier Daten in der Datenbank updaten
-                    break;
-            }
-        }
-    }
-
     private void openItemDialog(final HorizontalScrollViewItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(item.getName());
+        //builder.setTitle(item.getName());
         builder.setCancelable(true);
         builder.setAdapter(groupItemDialogAdapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -154,14 +128,11 @@ public class GroupEditorActivity extends AppCompatActivity
     }
 
     private void onEdit(HorizontalScrollViewItem item) {
-        Intent intent = new Intent(this, MemberEditorActivity.class);
-        //intent.putExtra( HERE PARCELABLE EXTRA )
-        startActivityForResult(intent, RC_MEMBER_EDITOR);
+
     }
 
     private void onDelete(HorizontalScrollViewItem item) {
-        //TODO Do a delete on the data in database corresponding to this item
-        Toast.makeText(this, item.getName() + " on Remove", Toast.LENGTH_LONG).show();
+
     }
 
     private void onAddGroup() {

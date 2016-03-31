@@ -128,7 +128,7 @@ public class DataSource {
      */
     public Group updateGroup(Group group) {
         ContentValues values = group.getContentValues();
-        database.update(DatabaseHelper.TABLE_MEMBER, values,
+        database.update(DatabaseHelper.TABLE_GROUP, values,
                 DatabaseHelper.where(DatabaseHelper.COLUMN_ID, group.getId()), null);
         return group;
     }
@@ -143,15 +143,16 @@ public class DataSource {
     }
 
     /**
-     * Returns a list of all members.
+     * Returns a list of all members that are members of specified group.
+     * @param id - the group id
      * @return list containing all members
      */
-    public ArrayList<Member> getAllMembers() {
+    public ArrayList<Member> getMembers(Integer id) {
         ArrayList<Member> members = new ArrayList<Member>();
         Cursor cursor = database.query(DatabaseHelper.TABLE_MEMBER,
-                ALL_COLUMNS_MEMBER, null, null, null, null, null);
+                ALL_COLUMNS_MEMBER, DatabaseHelper.where(Member.COLUMN_GROUP_ID, id), null, null, null, null);
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
+        while(!cursor.isAfterLast()) {
             Member member = Member.toMember(cursor);
             members.add(member);
             cursor.moveToNext();
@@ -199,7 +200,6 @@ public class DataSource {
         }
         return instance;
     }
-
 
 
 }

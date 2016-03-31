@@ -70,6 +70,10 @@ public class Member implements Parcelable {
         this.groupID = groupID;
     }
 
+    public String getFullName() {
+        return firstname + " " + surname;
+    }
+
     /**
      * Creates a content values representation of this member instance.
      * @return the content values

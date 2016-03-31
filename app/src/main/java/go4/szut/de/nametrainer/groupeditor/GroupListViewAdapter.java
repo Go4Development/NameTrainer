@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
-import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -24,7 +23,7 @@ public class GroupListViewAdapter extends BaseAdapter {
     private ArrayList<Group> groups;
     private DataSource source;
 
-    private GroupListViewItemRemoveListener removeListener;
+    private GroupListViewItemListener listener;
 
     public GroupListViewAdapter(Context context) {
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -33,13 +32,15 @@ public class GroupListViewAdapter extends BaseAdapter {
         groups = source.getAllGroups();
         source.close();
 
-        removeListener = new GroupListViewItemRemoveListener(context);
+        listener = new GroupListViewItemListener(context, this);
     }
 
 
-    public void notifyDataSetChanged(Group group) {
-        groups.add(group);
-        notifyDataSetChanged();
+    public void notifyDataSetChanged() {
+        source.open();
+        groups = source.getAllGroups();
+        source.close();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -68,9 +69,10 @@ public class GroupListViewAdapter extends BaseAdapter {
 
         TextView groupNameTextView = (TextView)convertView.findViewById(R.id.group_name_textview);
         groupNameTextView.setTag(groups.get(position));
-        groupNameTextView.setOnLongClickListener(removeListener);
+        groupNameTextView.setOnLongClickListener(listener);
         groupNameTextView.setText(groups.get(position).getName());
 
         return convertView;
     }
+
 }
