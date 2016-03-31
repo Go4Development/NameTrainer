@@ -67,6 +67,7 @@ public class GroupListViewAdapter extends BaseAdapter {
         button.setText("+");
 
         TextView groupNameTextView = (TextView)convertView.findViewById(R.id.group_name_textview);
+        groupNameTextView.setTag(groups.get(position));
         groupNameTextView.setOnLongClickListener(removeListener);
         groupNameTextView.setText(groups.get(position).getName());
 

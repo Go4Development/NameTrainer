@@ -16,7 +16,7 @@ public class GroupListViewItemRemoveListener implements View.OnLongClickListener
 
     @Override
     public boolean onLongClick(View v) {
-
+        //TODO Hier AlertDialog zum Bearbeiten und Löschen bauen
         return false;
     }
 }

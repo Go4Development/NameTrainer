@@ -3,9 +3,11 @@ package go4.szut.de.nametrainer.options;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Michele on 24.03.2016.
@@ -45,6 +47,17 @@ public class OptionsActivity extends Activity {
         });
         //addListenerOnButton();
 
+        /*
+        Util.Settings settings = new Util.Settings();
+        settings.addSetting(Util.Settings.Type.BOOLEAN, "sound", soundButton.isActivated());
+        Util.saveSettings(this, "settings", settings);
+
+        Util.Settings set = new Util.Settings();
+        settings.addSetting(Util.Settings.Type.BOOLEAN, "sound", null);
+
+        settings = Util.getSettings(this, "settings", set);
+        boolean sound = settings.getBooleanValue("sound");
+        */
     }
 
     public boolean switchSoundState(){
