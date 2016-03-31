@@ -11,21 +11,38 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.DataSource;
+import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
  */
-public class GroupEditorListViewAdapter extends BaseAdapter {
+public class GroupListViewAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
+    private ArrayList<Group> groups;
+    private DataSource source;
 
-    private ArrayList<String> groups;
 
-
-    public GroupEditorListViewAdapter(Context context) {
+    public GroupListViewAdapter(Context context) {
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        groups = Util.createArrayListWithNonSense(10);
+        source = DataSource.getDataSourceInstance(context);
+        source.open();
+        groups = source.getAllGroups();
+        source.close();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        updateGroupList();
+        super.notifyDataSetChanged();
+    }
+
+    private void updateGroupList() {
+        source.open();
+        groups = source.getAllGroups();
+        source.close();
     }
 
     @Override
@@ -53,7 +70,7 @@ public class GroupEditorListViewAdapter extends BaseAdapter {
         button.setText("+");
 
         TextView groupNameTextView = (TextView)convertView.findViewById(R.id.group_name_textview);
-        groupNameTextView.setText(groups.get(position));
+        groupNameTextView.setText(groups.get(position).getName());
 
         return convertView;
     }

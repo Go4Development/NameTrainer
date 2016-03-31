@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.selection.SelectionActivity;
@@ -20,10 +21,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         startActivity(new Intent(this, GroupEditorActivity.class));
-
     }
 
 

@@ -18,7 +18,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
-import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -42,7 +41,7 @@ public class GroupEditorActivity extends AppCompatActivity
     //holds a list of groups containing multiple students
     private ListView groupListView;
     //holds the data for the groupListView
-    private GroupEditorListViewAdapter groupListViewAdapter;
+    private GroupListViewAdapter groupListViewAdapter;
 
     //holds all options that needs to be displayed in OptionsDialog
     //of a GroupListViewItem if a onLongClick event occurs
@@ -68,7 +67,7 @@ public class GroupEditorActivity extends AppCompatActivity
                 android.R.layout.select_dialog_item,
                 getResources().getStringArray(R.array.groupeditor_item_dialog_options));
 
-        groupListViewAdapter = new GroupEditorListViewAdapter(this);
+        groupListViewAdapter = new GroupListViewAdapter(this);
         portraitItems = new ArrayList<HorizontalScrollViewItem>();
 
         for(int i = 0; i < 10; i++) {
@@ -166,16 +165,20 @@ public class GroupEditorActivity extends AppCompatActivity
     }
 
     private void onAddGroup() {
-
-
-        final EditText groupNameEditText = new EditText(this);
+        //TODO Komponenten vll auslagern
+        //EditText that is on AlertDialog for input
+        EditText groupNameEditText = new EditText(this);
+        groupNameEditText.setHint(getResources().getString(R.string.groupeditor_add_action_edittext));
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         groupNameEditText.setLayoutParams(layoutParams);
 
-        GroupEditorAddActionListener listener = new GroupEditorAddActionListener(this, groupNameEditText);
+        //Listener for AlertDialog buttons
+        GroupEditorAddActionListener listener = new GroupEditorAddActionListener(
+                this, groupNameEditText, groupListViewAdapter);
 
+        //AlertDialog that pops up
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
                 .setCancelable(true)
                 .setPositiveButton(getResources().getString(R.string.groupeditor_add_action_posbutton), listener)
