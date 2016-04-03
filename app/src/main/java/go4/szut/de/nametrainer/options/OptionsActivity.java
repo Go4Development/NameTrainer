@@ -2,6 +2,7 @@ package go4.szut.de.nametrainer.options;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -19,12 +20,20 @@ public class OptionsActivity extends Activity {
     private ToggleButton soundButton;
     private ToggleButton lastNameButton;
 
+    public OptionsActivity(){
+        //may initialisize something to save settings
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+
         soundButton = (ToggleButton) findViewById(R.id.toggleButtonSound);
         soundEnabled = soundButton.isChecked();
+
+        //soundButton.setChecked(-- load settings --);
+
         soundButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -32,10 +41,14 @@ public class OptionsActivity extends Activity {
                 } else {
                     switchSoundState();
                 }
+                Log.d("options","State of Sound got changed");
             }
+
         });
         lastNameButton = (ToggleButton) findViewById(R.id.toggleButtonLastName);
-        lastNameEnabled= lastNameButton.isChecked();
+        lastNameEnabled = lastNameButton.isChecked();
+        //lastNameButton.setChecked(--load settings-);
+
         lastNameButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -43,26 +56,15 @@ public class OptionsActivity extends Activity {
                 } else {
                     switchLastNameState();
                 }
+                Log.d("options","State of lastName changed");
             }
         });
-        //addListenerOnButton();
 
-        /*
-        Util.Settings settings = new Util.Settings();
-        settings.addSetting(Util.Settings.Type.BOOLEAN, "sound", soundButton.isActivated());
-        Util.saveSettings(this, "settings", settings);
-
-        Util.Settings set = new Util.Settings();
-        settings.addSetting(Util.Settings.Type.BOOLEAN, "sound", null);
-
-        settings = Util.getSettings(this, "settings", set);
-        boolean sound = settings.getBooleanValue("sound");
-        */
     }
 
     public boolean switchSoundState(){
 
-        //Need to enable or diable Sound somehow
+        //Need to enable or disable Sound somehow
 
         if(soundEnabled){
             soundEnabled = false;
@@ -86,6 +88,22 @@ public class OptionsActivity extends Activity {
             lastNameButton.setChecked(lastNameEnabled);
         }
         return lastNameEnabled;
+    }
+
+    public void saveSettings(){
+        //Save settings at this Point ha ha ha
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        saveSettings();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveSettings();
     }
 
     public boolean isSoundEnabled() {
