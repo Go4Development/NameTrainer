@@ -1,6 +1,8 @@
 package go4.szut.de.nametrainer.options;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CompoundButton;
@@ -13,24 +15,30 @@ import go4.szut.de.nametrainer.R;
  */
 public class OptionsActivity extends Activity {
 
+    //Button States
     private boolean soundEnabled;
     private boolean lastNameEnabled;
+
+   //Button
     private ToggleButton soundButton;
     private ToggleButton lastNameButton;
 
-    public OptionsActivity(){
-        //may initialisize something to save settings
-    }
+    //Shared-Prefereces Key-Value
+    private SharedPreferences spref;
+    private SharedPreferences.Editor sprefEdit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
 
-        soundButton = (ToggleButton) findViewById(R.id.toggleButtonSound);
-        soundEnabled = soundButton.isChecked();
+        spref = this.getPreferences(Context.MODE_PRIVATE);
 
-        //soundButton.setChecked(-- load settings --);
+        soundButton = (ToggleButton) findViewById(R.id.toggleButtonSound);
+        boolean soundState = spref.getBoolean(getResources().getString(R.string.sound_state_key), false);
+        soundEnabled = soundState;
+        soundButton.setChecked(soundState);
+
 
         soundButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -44,8 +52,9 @@ public class OptionsActivity extends Activity {
 
         });
         lastNameButton = (ToggleButton) findViewById(R.id.toggleButtonLastName);
-        lastNameEnabled = lastNameButton.isChecked();
-        //lastNameButton.setChecked(--load settings-);
+        boolean lastNameState = spref.getBoolean(getResources().getString(R.string.lastName_state_key), false);
+        lastNameEnabled = lastNameState;
+        lastNameButton.setChecked(lastNameState);
 
         lastNameButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -62,8 +71,6 @@ public class OptionsActivity extends Activity {
 
     public boolean switchSoundState(){
 
-        //Need to enable or disable Sound somehow
-
         if(soundEnabled){
             soundEnabled = false;
             soundButton.setChecked(soundEnabled);
@@ -71,12 +78,14 @@ public class OptionsActivity extends Activity {
             soundEnabled = true;
             soundButton.setChecked(soundEnabled);
         }
+
+        sprefEdit = spref.edit();
+        sprefEdit.putBoolean(getResources().getString(R.string.sound_state_key), soundEnabled);
+        sprefEdit.commit();
         return soundEnabled;
     }
 
     public boolean switchLastNameState(){
-
-        //Need to save this in global varibale for future requests
 
         if(lastNameEnabled){
             lastNameEnabled = false;
@@ -85,11 +94,17 @@ public class OptionsActivity extends Activity {
             lastNameEnabled = true;
             lastNameButton.setChecked(lastNameEnabled);
         }
+        sprefEdit = spref.edit();
+        sprefEdit.putBoolean(getResources().getString(R.string.lastName_state_key), lastNameEnabled);
+        sprefEdit.commit();
         return lastNameEnabled;
     }
 
     public void saveSettings(){
-        //Save settings at this Point ha ha ha
+        sprefEdit = spref.edit();
+        sprefEdit.putBoolean(getResources().getString(R.string.sound_state_key), isSoundEnabled());
+        sprefEdit.putBoolean(getResources().getString(R.string.lastName_state_key), isLastNameEnabled());
+        sprefEdit.commit();
     }
 
     @Override
