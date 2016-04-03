@@ -9,10 +9,14 @@
 <string name="sound_options">Ton An/Aus</string>
 <string name="soundOn_options">Ton An</string>
 <string name="soundOff_options">Ton Aus</string>
+    <string name="sound_state_key">Sound_Key</string>
 
 <string name="lastName_options">Nachname Abfragen</string>
 <string name="lastNameOn_options">Nachname Abfragen An</string>
 <string name="lastNameOff_options">Nachname Abfragen Aus</string>
+    <string name="lastName_state_key">LastName_Key</string>
+
+
 
 
 <!-- GROUP EDITOR -->
