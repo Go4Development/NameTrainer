@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
@@ -141,15 +143,9 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
 
     }
 
-    public void onImageSelected(Uri selectedImageUri, Member member) {
-        member.setImagePath(selectedImageUri.toString());
-        Bitmap bm = null;
-        try {
-            bm = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImageUri));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        previewImageView.setImageBitmap(bm);
+    public void onImageSelected(String selectedImageUri, Member member) {
+        member.setImagePath(selectedImageUri);
+
     }
 
 

@@ -103,8 +103,8 @@ public class MemberAddActionListener implements View.OnClickListener {
 
     }
 
-    public void onImageSelected(Uri selectedImageUri) {
-        previewImageView.setImageURI(selectedImageUri);
-        Util.l(this, "pURI" + selectedImageUri.getPath());
+    public void onImageSelected(String selectedImageUri) {
+        previewImageView.setImageBitmap(BitmapFactory.decodeFile(selectedImageUri));
+
     }
 }

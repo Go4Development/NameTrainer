@@ -2,8 +2,10 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -18,6 +20,8 @@ import android.widget.ListView;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.util.RealPathUtil;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -99,7 +103,7 @@ public class GroupEditorActivity extends AppCompatActivity
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = getIntent().getParcelableExtra("member");
-                    horizontalScrollViewAdapter.getListener().onImageSelected(selectedImageUri, member);
+                    horizontalScrollViewAdapter.getListener().onImageSelected(RealPathUtil.getRealPathFromURI_API19(this,selectedImageUri), member);
                 }
             } else if(requestCode == SELECT_PICTURE_ADD) {
                 if(data != null && data.getData() != null) {
@@ -107,7 +111,15 @@ public class GroupEditorActivity extends AppCompatActivity
                     Member member = new Member();
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
-                    groupListViewAdapter.getAddActionListener().onImageSelected(selectedImageUri);
+                    groupListViewAdapter.getAddActionListener().onImageSelected(RealPathUtil.getRealPathFromURI_API19(this,selectedImageUri));
+
+                }
+            }
+            else if(requestCode == HorizontalScrollViewItem.CHOOSE_IMAGE){
+                if(data != null && data.getData() != null) {
+                    Uri selectedImageUri = data.getData();
+                    Util.l(this, "Das ist die URI:" + selectedImageUri);
+
                 }
             }
         }
