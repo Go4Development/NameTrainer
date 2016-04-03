@@ -13,7 +13,7 @@ import go4.szut.de.nametrainer.database.Member;
  */
 public class HorizontalScrollViewAdapter {
 
-    private Context context;
+    private GroupEditorActivity activity;
     private Group group;
     private DataSource source;
 
@@ -23,12 +23,12 @@ public class HorizontalScrollViewAdapter {
     private CustomHorizontalScrollView scrollView;
     private HorizontalScrollViewItemListener listener;
 
-    public HorizontalScrollViewAdapter(Context context, CustomHorizontalScrollView scrollView, Group group) {
-        this.context = context;
+    public HorizontalScrollViewAdapter(GroupEditorActivity activity, CustomHorizontalScrollView scrollView, Group group) {
+        this.activity = activity;
         this.group = group;
         this.scrollView = scrollView;
 
-        listener = new HorizontalScrollViewItemListener(context, this);
+        listener = new HorizontalScrollViewItemListener(activity, this);
 
         members = new ArrayList<Member>();
         members.add(Member.toMember(1, "Hans", "Vadder", "Test"));
@@ -56,7 +56,7 @@ public class HorizontalScrollViewAdapter {
     }
 
     public void update() {
-        source = DataSource.getDataSourceInstance(context);
+        source = DataSource.getDataSourceInstance(activity);
         source.open();
         members = source.getMembers(group.getId());
         source.close();
@@ -67,11 +67,15 @@ public class HorizontalScrollViewAdapter {
     public ArrayList<HorizontalScrollViewItem> createHorizontalScrollViewItems() {
         ArrayList<HorizontalScrollViewItem> items = new ArrayList<HorizontalScrollViewItem>();
         for(Member member : members) {
-            HorizontalScrollViewItem item = new HorizontalScrollViewItem(context, member);
+            HorizontalScrollViewItem item = new HorizontalScrollViewItem(activity, member);
             item.setOnLongClickListener(listener);
             items.add(item);
         }
         return items;
+    }
+
+    public HorizontalScrollViewItemListener getListener() {
+        return listener;
     }
 
 

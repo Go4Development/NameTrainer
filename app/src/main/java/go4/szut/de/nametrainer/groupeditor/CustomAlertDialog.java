@@ -91,7 +91,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
 
 
     @Override
-    public void onClick(final DialogInterface dialog, int which) {
+    public void onClick(final DialogInterface dialog, final int which) {
         CustomDialogInterface customDialogInterface = new CustomDialogInterface() {
 
             @Override
@@ -123,6 +123,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
             public void close() {
                 dialog.dismiss();
             }
+
+            public int getSelection() {
+                return which;
+            }
+
         };
 
         switch(which) {
@@ -144,7 +149,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         }
 
         if(optionSelectionListener != null) {
-            optionSelectionListener.onDefaultSelection(customDialogInterface, which);
+            optionSelectionListener.onDefaultSelection(customDialogInterface);
         }
     }
 
@@ -152,7 +157,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         public void onPositiveSelection(CustomDialogInterface customDialogInterface);
         public void onNegativeSelection(CustomDialogInterface customDialogInterface);
         public void onNeutralSelection(CustomDialogInterface customDialogInterface);
-        public void onDefaultSelection(CustomDialogInterface customDialogInterface, int which);
+        public void onDefaultSelection(CustomDialogInterface customDialogInterface);
     }
 
     public interface CustomDialogInterface {
@@ -162,6 +167,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         public Object getAdapter();
         public Object getValue();
         public void close();
+        public int getSelection();
     }
 
 }

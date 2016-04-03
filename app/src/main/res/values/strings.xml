@@ -1,40 +1,51 @@
 <resources>
-    <string name="appName">NameTrainer</string>
-    <string name="action_settings">Settings</string>
+<string name="appName">NameTrainer</string>
+<string name="action_settings">Settings</string>
 
-   <!-- OPTIONS -->
-    <string name="options">Optionen</string>
-    <string name="groupeditor">Gruppenauswahl</string>
+<!-- OPTIONS -->
+<string name="options">Optionen</string>
+<string name="groupeditor">Gruppenauswahl</string>
 
-    <string name="sound_options">Ton An/Aus</string>
-    <string name="soundOn_options">Ton An</string>
-    <string name="soundOff_options">Ton Aus</string>
+<string name="sound_options">Ton An/Aus</string>
+<string name="soundOn_options">Ton An</string>
+<string name="soundOff_options">Ton Aus</string>
 
-    <string name="lastName_options">Nachname Abfragen</string>
-    <string name="lastNameOn_options">Nachname Abfragen An</string>
-    <string name="lastNameOff_options">Nachname Abfragen Aus</string>
+<string name="lastName_options">Nachname Abfragen</string>
+<string name="lastNameOn_options">Nachname Abfragen An</string>
+<string name="lastNameOff_options">Nachname Abfragen Aus</string>
 
 
-    <!-- GROUP EDITOR -->
-    <string name="groupeditor_item_dialog_title">Optionen</string>
-    <string-array name="groupeditor_item_dialog_options">
-        <item>Bearbeiten</item>
-        <item>Löschen</item>
-    </string-array>
+<!-- GROUP EDITOR -->
+<string name="groupeditor_item_dialog_title">Optionen</string>
+<string-array name="groupeditor_item_dialog_options">
+    <item>Bearbeiten</item>
+    <item>Löschen</item>
+</string-array>
 
-    <string name="groupeditor_add_action_title">Gruppe hinzufügen</string>
-    <string name="groupeditor_add_action_edittext">Gruppenname</string>
+<string name="groupeditor_add_action_title">Gruppe hinzufügen</string>
+<string name="groupeditor_add_action_edittext">Gruppenname</string>
 
-    <string name="groupeditor_add_action_posbutton">Hinzufügen</string>
-    <string name="groupeditor_add_action_negbutton">Abbrechen</string>
+<string name="groupeditor_add_action_posbutton">Hinzufügen</string>
+<string name="groupeditor_add_action_negbutton">Abbrechen</string>
 
-    <string name="groupeditor_edit_action_posbutton">Bearbeiten</string>
-    <string name="groupeditor_edit_action_negbutton">Abbrechen</string>
+<string name="groupeditor_edit_action_posbutton">Bearbeiten</string>
+<string name="groupeditor_edit_action_negbutton">Abbrechen</string>
 
-    <string name="groupeditor_member_edit_posbutton">Bearbeiten</string>
-    <string name="groupeditor_member_edit_negbutton">Abbrechen</string>
+<string name="groupeditor_member_edit_posbutton">Bearbeiten</string>
+<string name="groupeditor_member_edit_negbutton">Abbrechen</string>
 
-    <!-- SELECTION -->
-    <string name="selection_label">Gruppenauswahl</string>
+<string name="groupeditor_gallerychooser_title">Bild auswählen</string>
+
+<!-- SELECTION -->
+<string name="selection_label">Gruppenauswahl</string>
+
+<!-- Buttons -->
+<string name="button_title_cancel">Abbrechen</string>
+<string name="button_title_add">Hinzufügen</string>
+
+<!-- Hints -->
+<string name="hint_firstname">Vorname</string>
+<string name="hint_surname">Nachname</string>
+<string name="hint_image">Bild</string>
 
 </resources>

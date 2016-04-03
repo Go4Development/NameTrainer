@@ -2,6 +2,7 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,16 +15,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
+import go4.szut.de.nametrainer.database.Member;
 
 /**
  * Created by Rene on 24.03.2016.
  */
 public class GroupEditorActivity extends AppCompatActivity
     implements View.OnLongClickListener {
+
+    public static final int SELECT_PICTURE_EDIT = 1337;
+    public static final int SELECT_PICTURE_ADD = 1338;
 
     //option identifier for editing a member
     private static final int DIALOG_OPTION_EDIT = 0;
@@ -32,6 +35,7 @@ public class GroupEditorActivity extends AppCompatActivity
 
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
+    private HorizontalScrollViewAdapter horizontalScrollViewAdapter;
 
     //holds a list of groups containing multiple students
     private ListView groupListView;
@@ -79,8 +83,32 @@ public class GroupEditorActivity extends AppCompatActivity
         Group group = new Group();
         group.setId(1);
         group.setName("T15A");
-        portraitScrollView.setAdapter(new HorizontalScrollViewAdapter(this, portraitScrollView, group));
 
+        horizontalScrollViewAdapter = new HorizontalScrollViewAdapter(this, portraitScrollView, group);
+        portraitScrollView.setAdapter(horizontalScrollViewAdapter);
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            if(requestCode == SELECT_PICTURE_EDIT) {
+                if(data != null && data.getData() != null) {
+                    Uri selectedImageUri = data.getData();
+                    Member member = getIntent().getParcelableExtra("member");
+                    horizontalScrollViewAdapter.getListener().onImageSelected(selectedImageUri, member);
+                }
+            } else if(requestCode == SELECT_PICTURE_ADD) {
+                if(data != null && data.getData() != null) {
+                    Uri selectedImageUri = data.getData();
+                    Member member = new Member();
+                    member.setImagePath(selectedImageUri.toString());
+                    getIntent().putExtra("member", member);
+                }
+            }
+        }
 
     }
 

@@ -24,15 +24,17 @@ public class GroupListViewAdapter extends BaseAdapter {
     private DataSource source;
 
     private GroupListViewItemListener listener;
+    private MemberAddActionListener addActionListener;
 
-    public GroupListViewAdapter(Context context) {
-        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        source = DataSource.getDataSourceInstance(context);
+    public GroupListViewAdapter(GroupEditorActivity activity) {
+        layoutInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        source = DataSource.getDataSourceInstance(activity);
         source.open();
         groups = source.getAllGroups();
         source.close();
 
-        listener = new GroupListViewItemListener(context, this);
+        listener = new GroupListViewItemListener(activity, this);
+        addActionListener = new MemberAddActionListener(activity);
     }
 
 
@@ -65,6 +67,8 @@ public class GroupListViewAdapter extends BaseAdapter {
         }
 
         Button button = (Button)convertView.findViewById(R.id.group_add_member_button);
+        button.setOnClickListener(addActionListener);
+        button.setTag(groups.get(position));
         button.setText("+");
 
         TextView groupNameTextView = (TextView)convertView.findViewById(R.id.group_name_textview);
@@ -73,6 +77,10 @@ public class GroupListViewAdapter extends BaseAdapter {
         groupNameTextView.setText(groups.get(position).getName());
 
         return convertView;
+    }
+
+    public MemberAddActionListener getAddActionListener() {
+        return addActionListener;
     }
 
 }

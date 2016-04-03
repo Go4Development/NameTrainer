@@ -2,15 +2,15 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Member;
@@ -18,29 +18,34 @@ import go4.szut.de.nametrainer.database.Member;
 /**
  * Created by Rene on 31.03.2016.
  */
-public class HorizontalScrollViewItemListener implements View.OnLongClickListener {
+public class HorizontalScrollViewItemListener implements View.OnLongClickListener, View.OnClickListener {
 
     //option identifier for editing a member
     private static final int DIALOG_OPTION_EDIT = 0;
     //option identifier for deleting a member
     private static final int DIALOG_OPTION_DELETE = 1;
 
-    private Context context;
+    private GroupEditorActivity activity;
     private ArrayAdapter<String> horizontalScrollViewItemDialogAdapter;
 
     private HorizontalScrollViewAdapter adapter;
-
     private DataSource source;
 
-    public HorizontalScrollViewItemListener(Context context, HorizontalScrollViewAdapter adapter) {
-        this.context = context;
+    private AlertDialog.Builder memberEditorDialog;
+    private View memberEditorDialogView;
+    private EditText firstnameEditText;
+    private EditText surnameEditText;
+    private ImageView previewImageView;
+
+    public HorizontalScrollViewItemListener(GroupEditorActivity activity, HorizontalScrollViewAdapter adapter) {
+        this.activity = activity;
         this.adapter = adapter;
 
-        horizontalScrollViewItemDialogAdapter = new ArrayAdapter<String>(context,
+        horizontalScrollViewItemDialogAdapter = new ArrayAdapter<String>(activity,
                 android.R.layout.select_dialog_item,
-                context.getResources().getStringArray(R.array.groupeditor_item_dialog_options));
+                activity.getResources().getStringArray(R.array.groupeditor_item_dialog_options));
 
-        source = DataSource.getDataSourceInstance(context);
+        source = DataSource.getDataSourceInstance(activity);
     }
 
     @Override
@@ -48,7 +53,7 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
         HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
         final Member member = item.getMember();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(member.getFullName());
         builder.setCancelable(true);
         builder.setAdapter(horizontalScrollViewItemDialogAdapter, new DialogInterface.OnClickListener() {
@@ -67,23 +72,13 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
         return false;
     }
 
-    private void onEdit(final Member member) {
+    private void onEdit(Member member) {
 
-        LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View dialogView = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
 
-        final EditText firstnameEditText = (EditText)dialogView.findViewById(R.id.dialog_firstname);
-        firstnameEditText.setText(member.getFirstname());
-
-        final EditText surnameEditText = (EditText)dialogView.findViewById(R.id.dialog_surname);
-        surnameEditText.setText(member.getSurname());
-
-        ImageView previewImageView = (ImageView)dialogView.findViewById(R.id.dialog_preview_image);
-        previewImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
-
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+        CustomDialogOnClickListener listener = new CustomDialogOnClickListener(member) {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which, Object object) {
+                Member member = (Member)object;
                 switch(which) {
                     case DialogInterface.BUTTON_NEGATIVE:
                         break;
@@ -101,12 +96,24 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
             }
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+        LayoutInflater layoutInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        memberEditorDialogView = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
+        memberEditorDialog = new AlertDialog.Builder(activity)
                 .setCancelable(true)
-                .setPositiveButton(context.getResources().getString(R.string.groupeditor_edit_action_posbutton), listener)
-                .setNegativeButton(context.getResources().getString(R.string.groupeditor_edit_action_negbutton), listener)
-                .setView(dialogView);
-        builder.show();
+                .setPositiveButton(activity.getResources().getString(R.string.groupeditor_edit_action_posbutton), listener)
+                .setNegativeButton(activity.getResources().getString(R.string.groupeditor_edit_action_negbutton), listener)
+                .setView(memberEditorDialogView);
+
+        memberEditorDialog.show();
+
+        firstnameEditText = (EditText)memberEditorDialogView.findViewById(R.id.dialog_firstname);
+        firstnameEditText.setText(member.getFirstname());
+        surnameEditText = (EditText)memberEditorDialogView.findViewById(R.id.dialog_surname);
+        surnameEditText.setText(member.getSurname());
+        previewImageView = (ImageView)memberEditorDialogView.findViewById(R.id.dialog_preview_image);
+        previewImageView.setOnClickListener(this);
+        previewImageView.setTag(member);
+        previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
 
     }
 
@@ -116,5 +123,24 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
         source.close();
         adapter.update();
     }
+
+    @Override
+    public void onClick(View v) {
+        ImageView previewImageView = (ImageView)v;
+        Member member = (Member)previewImageView.getTag();
+        Intent galleryChooserIntent = new Intent();
+        activity.getIntent().putExtra("member", member);
+        galleryChooserIntent.setType("image/*");
+        galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
+        activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                activity.getResources().getString(R.string.groupeditor_gallerychooser_title)), GroupEditorActivity.SELECT_PICTURE_EDIT);
+
+    }
+
+    public void onImageSelected(Uri selectedImageUri, Member member) {
+        member.setImagePath(selectedImageUri.toString());
+        previewImageView.setImageURI(selectedImageUri);
+    }
+
 
 }
