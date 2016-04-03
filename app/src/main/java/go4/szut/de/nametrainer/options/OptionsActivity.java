@@ -109,14 +109,14 @@ public class OptionsActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         saveSettings();
+        super.onDestroy();
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
         saveSettings();
+        super.onStop();
     }
 
     public boolean isSoundEnabled() {
