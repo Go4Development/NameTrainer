@@ -80,6 +80,10 @@ public class DataSource {
         return member;
     }
 
+    public Member insertMember(Member member){
+        return insertMember(member.getGroupID(), member.getSurname(),member.getFirstname(), member.getImagePath());
+    }
+
     /**
      * Updates a member in database.
      * @param member - the values of the member to update

@@ -64,7 +64,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
      *
      */
     private void onScrollStart() {
-        //TODO Hm?
+        //nothing
     }
 
     /**

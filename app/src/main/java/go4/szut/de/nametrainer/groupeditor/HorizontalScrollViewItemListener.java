@@ -3,6 +3,7 @@ package go4.szut.de.nametrainer.groupeditor;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import java.io.FileNotFoundException;
+
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Member;
@@ -139,7 +143,13 @@ public class HorizontalScrollViewItemListener implements View.OnLongClickListene
 
     public void onImageSelected(Uri selectedImageUri, Member member) {
         member.setImagePath(selectedImageUri.toString());
-        previewImageView.setImageURI(selectedImageUri);
+        Bitmap bm = null;
+        try {
+            bm = BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImageUri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        previewImageView.setImageBitmap(bm);
     }
 
 

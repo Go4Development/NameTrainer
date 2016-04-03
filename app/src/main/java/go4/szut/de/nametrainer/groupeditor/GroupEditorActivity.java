@@ -36,6 +36,7 @@ public class GroupEditorActivity extends AppCompatActivity
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
     private HorizontalScrollViewAdapter horizontalScrollViewAdapter;
+    private MemberAddActionListener addActionListener;
 
     //holds a list of groups containing multiple students
     private ListView groupListView;
@@ -65,8 +66,8 @@ public class GroupEditorActivity extends AppCompatActivity
         groupItemDialogAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.select_dialog_item,
                 getResources().getStringArray(R.array.groupeditor_item_dialog_options));
-
-        groupListViewAdapter = new GroupListViewAdapter(this);
+        addActionListener  = new MemberAddActionListener(this);
+        groupListViewAdapter = new GroupListViewAdapter(this, addActionListener);
 
         /**
          * Load Data - End
@@ -106,9 +107,12 @@ public class GroupEditorActivity extends AppCompatActivity
                     Member member = new Member();
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
+                    groupListViewAdapter.getAddActionListener().onImageSelected(selectedImageUri);
                 }
             }
         }
+
+
 
     }
 
@@ -186,5 +190,7 @@ public class GroupEditorActivity extends AppCompatActivity
         alertDialog.show();
     }
 
-
+    public HorizontalScrollViewAdapter getHorizontalScrollViewAdapter() {
+        return horizontalScrollViewAdapter;
+    }
 }
