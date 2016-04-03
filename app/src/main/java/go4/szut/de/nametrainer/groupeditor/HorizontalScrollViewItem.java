@@ -1,14 +1,17 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.net.Uri;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -36,8 +39,16 @@ public class HorizontalScrollViewItem extends LinearLayout {
         galleryImageView = (ImageView)findViewById(R.id.gallery_imageview);
         //the TextView that shows the name of the currently selected student
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
+        Uri uri = Uri.parse(member.getImagePath());
+        if(uri != null){
+            galleryImageView.setImageURI(null);
+            galleryImageView.setImageURI(uri);
 
-        galleryImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+            Util.l(this, "URI:");
+        }
+        else{
+            galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+        }
         galleryNameTextView.setText(member.getFullName());
 
     }

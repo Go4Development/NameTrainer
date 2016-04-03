@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
+import go4.szut.de.nametrainer.database.Member;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -22,11 +23,11 @@ public class GroupListViewAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private ArrayList<Group> groups;
     private DataSource source;
-
-    private GroupListViewItemListener listener;
     private MemberAddActionListener addActionListener;
+    private GroupListViewItemListener listener;
 
-    public GroupListViewAdapter(GroupEditorActivity activity) {
+
+    public GroupListViewAdapter(GroupEditorActivity activity, MemberAddActionListener addActionListener) {
         layoutInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         source = DataSource.getDataSourceInstance(activity);
         source.open();
@@ -34,7 +35,7 @@ public class GroupListViewAdapter extends BaseAdapter {
         source.close();
 
         listener = new GroupListViewItemListener(activity, this);
-        addActionListener = new MemberAddActionListener(activity);
+        this.addActionListener = addActionListener;
     }
 
 

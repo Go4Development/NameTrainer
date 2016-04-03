@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 03.04.2016.
@@ -54,6 +56,12 @@ public class MemberAddActionListener implements View.OnClickListener {
                         member.setSurname(surname);
                         member.setGroupID(group.getId());
 
+                        DataSource source = DataSource.getDataSourceInstance(activity);
+                        source.open();
+                        source.insertMember(member);
+                        source.close();
+                        activity.getHorizontalScrollViewAdapter().update();
+
                         break;
                 }
                 dialog.dismiss();
@@ -86,7 +94,7 @@ public class MemberAddActionListener implements View.OnClickListener {
                 galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
                 activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
                         activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
-                        GroupEditorActivity.SELECT_PICTURE_EDIT);
+                        GroupEditorActivity.SELECT_PICTURE_ADD);
 
             }
         });
@@ -95,4 +103,8 @@ public class MemberAddActionListener implements View.OnClickListener {
 
     }
 
+    public void onImageSelected(Uri selectedImageUri) {
+        previewImageView.setImageURI(selectedImageUri);
+        Util.l(this, "pURI" + selectedImageUri.getPath());
+    }
 }

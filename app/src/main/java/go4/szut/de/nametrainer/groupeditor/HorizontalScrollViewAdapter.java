@@ -30,21 +30,15 @@ public class HorizontalScrollViewAdapter {
 
         listener = new HorizontalScrollViewItemListener(activity, this);
 
-        members = new ArrayList<Member>();
-        members.add(Member.toMember(1, "Hans", "Vadder", "Test"));
-        members.add(Member.toMember(1, "Hansa", "Vaddera", "Test"));
-        members.add(Member.toMember(1, "Hansas", "Vadderas", "Test"));
-        members.add(Member.toMember(1, "Hans", "Vadder", "Test"));
-        members.add(Member.toMember(1, "Hansa", "Vaddera", "Test"));
-        members.add(Member.toMember(1, "Hansas", "Vadderas", "Test"));
 
-        items = createHorizontalScrollViewItems();
-
-       /* source = DataSource.getDataSourceInstance(context);
+        source = DataSource.getDataSourceInstance(activity);
         source.open();
         members = source.getMembers(group.getId());
         source.close();
-        */
+
+        items = createHorizontalScrollViewItems();
+
+
     }
 
     public HorizontalScrollViewItem getHorizontalScrollViewItemAt(int index) {
@@ -60,7 +54,7 @@ public class HorizontalScrollViewAdapter {
         source.open();
         members = source.getMembers(group.getId());
         source.close();
-        createHorizontalScrollViewItems();
+        items = createHorizontalScrollViewItems();
         scrollView.update();
     }
 
