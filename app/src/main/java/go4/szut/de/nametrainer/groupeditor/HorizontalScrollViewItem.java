@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.Member;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -19,20 +20,14 @@ public class HorizontalScrollViewItem extends LinearLayout {
     //displays the name of the currently selected student
     private TextView galleryNameTextView;
 
-    //holds the path to the corresponding image of the student
-    private String galleryPath;
-
-    //holds the name of the student
-    private String firstname;
-    private String surname;
+    //holds a member object
+    private Member member;
 
 
-    public HorizontalScrollViewItem(Context context, String galleryPath, String firstname, String surname) {
+    public HorizontalScrollViewItem(Context context, Member member) {
         super(context);
 
-        this.galleryPath = galleryPath;
-        this.firstname = firstname;
-        this.surname = surname;
+        this.member = member;
 
         //inflates the layout for the GroupListViewItem class
         inflate(context, R.layout.activity_groupeditor_portraititem, this);
@@ -43,20 +38,12 @@ public class HorizontalScrollViewItem extends LinearLayout {
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
 
         galleryImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        galleryNameTextView.setText(getName());
+        galleryNameTextView.setText(member.getFullName());
 
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getName() {
-        return firstname + " " + surname;
+    public Member getMember() {
+        return member;
     }
 
     public Integer getPosition() {
@@ -66,12 +53,12 @@ public class HorizontalScrollViewItem extends LinearLayout {
     }
 
     public void setHighlightOn() {
-        //TODO Definition for color in XML
-        setBackgroundColor(Color.parseColor("#ffff00"));
+        galleryImageView.setScaleX(1.25f);
+        galleryImageView.setScaleY(1.25f);
     }
     public void setHighlightOff() {
-        //TODO Definition for color in XML
-        setBackgroundColor(Color.parseColor("#ffffff"));
+        galleryImageView.setScaleX(1);
+        galleryImageView.setScaleY(1);
     }
 
 }

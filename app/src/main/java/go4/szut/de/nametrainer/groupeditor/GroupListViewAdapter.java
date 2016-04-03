@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
-import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -24,22 +23,26 @@ public class GroupListViewAdapter extends BaseAdapter {
     private ArrayList<Group> groups;
     private DataSource source;
 
-    private GroupListViewItemRemoveListener removeListener;
+    private GroupListViewItemListener listener;
+    private MemberAddActionListener addActionListener;
 
-    public GroupListViewAdapter(Context context) {
-        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        source = DataSource.getDataSourceInstance(context);
+    public GroupListViewAdapter(GroupEditorActivity activity) {
+        layoutInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        source = DataSource.getDataSourceInstance(activity);
         source.open();
         groups = source.getAllGroups();
         source.close();
 
-        removeListener = new GroupListViewItemRemoveListener(context);
+        listener = new GroupListViewItemListener(activity, this);
+        addActionListener = new MemberAddActionListener(activity);
     }
 
 
-    public void notifyDataSetChanged(Group group) {
-        groups.add(group);
-        notifyDataSetChanged();
+    public void notifyDataSetChanged() {
+        source.open();
+        groups = source.getAllGroups();
+        source.close();
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -64,13 +67,20 @@ public class GroupListViewAdapter extends BaseAdapter {
         }
 
         Button button = (Button)convertView.findViewById(R.id.group_add_member_button);
+        button.setOnClickListener(addActionListener);
+        button.setTag(groups.get(position));
         button.setText("+");
 
         TextView groupNameTextView = (TextView)convertView.findViewById(R.id.group_name_textview);
         groupNameTextView.setTag(groups.get(position));
-        groupNameTextView.setOnLongClickListener(removeListener);
+        groupNameTextView.setOnLongClickListener(listener);
         groupNameTextView.setText(groups.get(position).getName());
 
         return convertView;
     }
+
+    public MemberAddActionListener getAddActionListener() {
+        return addActionListener;
+    }
+
 }

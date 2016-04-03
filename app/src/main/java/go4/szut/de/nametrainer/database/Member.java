@@ -27,7 +27,7 @@ public class Member implements Parcelable {
     private String imagePath;
 
     public Member() {
-
+        id = 0;
     }
 
     public Integer getId() {
@@ -68,6 +68,10 @@ public class Member implements Parcelable {
 
     public void setGroupID(Integer groupID) {
         this.groupID = groupID;
+    }
+
+    public String getFullName() {
+        return firstname + " " + surname;
     }
 
     /**

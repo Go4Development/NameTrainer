@@ -1,49 +1,45 @@
 package go4.szut.de.nametrainer.groupeditor;
 
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import go4.szut.de.nametrainer.database.DataSource;
+import go4.szut.de.nametrainer.database.Group;
 
 /**
  * Created by Rene on 31.03.2016.
  */
-public class GroupEditorAddActionListener implements DialogInterface.OnClickListener {
+public class GroupEditorEditActionListener implements DialogInterface.OnClickListener {
 
     private Context context;
     private EditText groupNameEditText;
     private GroupListViewAdapter groupListViewAdapter;
+    private Group group;
 
-    public GroupEditorAddActionListener(Context context, EditText groupNameEditText,
-                                        GroupListViewAdapter groupListViewAdapter) {
+    public GroupEditorEditActionListener(Context context, EditText groupNameEditText,
+                                         GroupListViewAdapter groupListViewAdapter, Group group) {
         this.context = context;
-        this.groupNameEditText = groupNameEditText;
         this.groupListViewAdapter = groupListViewAdapter;
+        this.groupNameEditText = groupNameEditText;
+        this.group = group;
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
         switch(which) {
             case DialogInterface.BUTTON_NEGATIVE:
-                Toast.makeText(context, "Negative Button Selected", Toast.LENGTH_LONG).show();
+                //chill out
                 break;
             case DialogInterface.BUTTON_POSITIVE:
                 String groupName = groupNameEditText.getText().toString();
-                //retrieves the DataSource instance and inserts the new group
+                group.setName(groupName);
                 DataSource source = DataSource.getDataSourceInstance(context);
                 source.open();
-                source.insertGroup(groupName);
+                source.updateGroup(group);
                 source.close();
-                //notifies the adapter to update
-                groupListViewAdapter.notifyDataSetChanged();
                 break;
         }
         dialog.dismiss();
     }
-
-
-
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,9 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
     //holds the timestamp of the last scroll update
     private long lastScrollUpdate = -1;
 
-    private ArrayList<HorizontalScrollViewItem> horizontalScrollViewItems;
+    //adapter that holds data
+    private HorizontalScrollViewAdapter adapter;
+
 
     public CustomHorizontalScrollView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -38,16 +41,23 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         lastScrollUpdate = System.currentTimeMillis();
     }
 
-    public void setPortraitItems(ArrayList<HorizontalScrollViewItem> horizontalScrollViewItems) {
-        this.horizontalScrollViewItems = horizontalScrollViewItems;
+    public void setAdapter(HorizontalScrollViewAdapter adapter) {
+        this.adapter = adapter;
         portraitLinearLayout = (LinearLayout)findViewById(R.id.portrait_linearlayout);
         attachListViewItems();
     }
 
     private void attachListViewItems() {
-        for(HorizontalScrollViewItem item : horizontalScrollViewItems) {
-            portraitLinearLayout.addView(item);
+        if(adapter != null) {
+            for (int i = 0; i < adapter.getSize(); i++) {
+                portraitLinearLayout.addView(adapter.getHorizontalScrollViewItemAt(i));
+            }
         }
+    }
+
+    public void update() {
+        portraitLinearLayout.removeAllViews();
+        attachListViewItems();
     }
 
     /**
@@ -63,13 +73,14 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
     private void onScrollEnd() {
         ArrayList<Integer> differenceToScreenCenter = new ArrayList<Integer>();
         Integer screenCenter = getWidth() / 2;
-        for(HorizontalScrollViewItem item : horizontalScrollViewItems){
+
+        for(int i = 0; i < adapter.getSize(); i++) {
+            HorizontalScrollViewItem item = adapter.getHorizontalScrollViewItemAt(i);
             item.setHighlightOff();
-            differenceToScreenCenter.add(Math.abs(screenCenter - (
-                    item.getPosition() + (item.getWidth() / 2))));
+            differenceToScreenCenter.add(Math.abs(screenCenter - (item.getPosition() + (item.getWidth() / 2))));
         }
         int minIndex = differenceToScreenCenter.indexOf(Collections.min(differenceToScreenCenter));
-        horizontalScrollViewItems.get(minIndex).setHighlightOn();
+        adapter.getHorizontalScrollViewItemAt(minIndex).setHighlightOn();
 
     }
 

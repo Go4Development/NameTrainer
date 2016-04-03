@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import go4.szut.de.nametrainer.R;
-import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Michele on 24.03.2016.
