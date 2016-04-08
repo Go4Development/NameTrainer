@@ -1,13 +1,21 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+
+import java.io.IOException;
+
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -19,20 +27,16 @@ public class HorizontalScrollViewItem extends LinearLayout {
     //displays the name of the currently selected student
     private TextView galleryNameTextView;
 
-    //holds the path to the corresponding image of the student
-    private String galleryPath;
+    //holds a member object
+    private Member member;
 
-    //holds the name of the student
-    private String firstname;
-    private String surname;
+    public static int CHOOSE_IMAGE = 1339;
 
 
-    public HorizontalScrollViewItem(Context context, String galleryPath, String firstname, String surname) {
+    public HorizontalScrollViewItem(Context context, Member member) {
         super(context);
 
-        this.galleryPath = galleryPath;
-        this.firstname = firstname;
-        this.surname = surname;
+        this.member = member;
 
         //inflates the layout for the GroupListViewItem class
         inflate(context, R.layout.activity_groupeditor_portraititem, this);
@@ -41,22 +45,23 @@ public class HorizontalScrollViewItem extends LinearLayout {
         galleryImageView = (ImageView)findViewById(R.id.gallery_imageview);
         //the TextView that shows the name of the currently selected student
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
-
-        galleryImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        galleryNameTextView.setText(getName());
+        String uri = member.getImagePath();
+        if(uri != null){
+           Intent i = new Intent(Intent.ACTION_GET_CONTENT, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            ((GroupEditorActivity)context).startActivityForResult(i, CHOOSE_IMAGE);
+        galleryImageView.setImageBitmap(BitmapFactory.decodeFile(uri));
+            Util.l(this,"PATH: " + uri);
+        galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+        }
+        else{
+            galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+        }
+        galleryNameTextView.setText(member.getFullName());
 
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getName() {
-        return firstname + " " + surname;
+    public Member getMember() {
+        return member;
     }
 
     public Integer getPosition() {
@@ -66,12 +71,12 @@ public class HorizontalScrollViewItem extends LinearLayout {
     }
 
     public void setHighlightOn() {
-        //TODO Definition for color in XML
-        setBackgroundColor(Color.parseColor("#ffff00"));
+        galleryImageView.setScaleX(1.25f);
+        galleryImageView.setScaleY(1.25f);
     }
     public void setHighlightOff() {
-        //TODO Definition for color in XML
-        setBackgroundColor(Color.parseColor("#ffffff"));
+        galleryImageView.setScaleX(1);
+        galleryImageView.setScaleY(1);
     }
 
 }

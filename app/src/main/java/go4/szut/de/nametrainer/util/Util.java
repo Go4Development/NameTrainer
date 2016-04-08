@@ -3,6 +3,10 @@ package go4.szut.de.nametrainer.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -86,6 +90,13 @@ public class Util {
         editor.apply();
     }
 
+    /**
+     *
+     * @param context
+     * @param preferenceName
+     * @param settings
+     * @return
+     */
     public static Util.Settings getSettings(Context context, String preferenceName, Util.Settings settings) {
         SharedPreferences preferences = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
         Util.Settings settingsContainingValues = new Util.Settings();
@@ -250,6 +261,18 @@ public class Util {
                 return Long.parseLong(values.get(keys.indexOf(key)).toString());
             }
             return -1;
+        }
+
+        /**
+         * Get a boolean value to the corresponding key.
+         * @param key - the key
+         * @return the value
+         */
+        public boolean getBooleanValue(String key) {
+            if(isTypeOf(Type.BOOLEAN, key)) {
+                return Boolean.parseBoolean(values.get(keys.indexOf(key)).toString());
+            }
+            return false;
         }
 
         /**

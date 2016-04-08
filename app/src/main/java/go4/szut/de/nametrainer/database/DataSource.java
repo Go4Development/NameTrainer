@@ -80,6 +80,10 @@ public class DataSource {
         return member;
     }
 
+    public Member insertMember(Member member){
+        return insertMember(member.getGroupID(), member.getSurname(),member.getFirstname(), member.getImagePath());
+    }
+
     /**
      * Updates a member in database.
      * @param member - the values of the member to update
@@ -128,7 +132,7 @@ public class DataSource {
      */
     public Group updateGroup(Group group) {
         ContentValues values = group.getContentValues();
-        database.update(DatabaseHelper.TABLE_MEMBER, values,
+        database.update(DatabaseHelper.TABLE_GROUP, values,
                 DatabaseHelper.where(DatabaseHelper.COLUMN_ID, group.getId()), null);
         return group;
     }
@@ -142,24 +146,41 @@ public class DataSource {
                 DatabaseHelper.where(DatabaseHelper.COLUMN_ID, group.getId()), null);
     }
 
-
-
     /**
-     * Returns a list of all members.
+     * Returns a list of all members that are members of specified group.
+     * @param id - the group id
      * @return list containing all members
      */
-    public ArrayList<Member> getAllMember() {
+    public ArrayList<Member> getMembers(Integer id) {
         ArrayList<Member> members = new ArrayList<Member>();
         Cursor cursor = database.query(DatabaseHelper.TABLE_MEMBER,
-                ALL_COLUMNS_MEMBER, null, null, null, null, null);
+                ALL_COLUMNS_MEMBER, DatabaseHelper.where(Member.COLUMN_GROUP_ID, id), null, null, null, null);
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
+        while(!cursor.isAfterLast()) {
             Member member = Member.toMember(cursor);
             members.add(member);
             cursor.moveToNext();
         }
         cursor.close();
         return members;
+    }
+
+    /**
+     * Returns a list of all groups.
+     * @return list containing all groups
+     */
+    public ArrayList<Group> getAllGroups() {
+        ArrayList<Group> groups = new ArrayList<Group>();
+        Cursor cursor = database.query(DatabaseHelper.TABLE_GROUP,
+                ALL_COLUMNS_GROUP, null, null, null, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Group group = Group.toGroup(cursor);
+            groups.add(group);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return groups;
     }
 
     public void tables(){
@@ -174,8 +195,7 @@ public class DataSource {
     }
 
     /**
-     * Singleton for DataSource instance.
-     * @param context - the context of MainActivity
+     * Singleton for DataSource instance. Only one instance of DataSource is necessary.
      * @return the instance of DataSource class
      */
     public static DataSource getDataSourceInstance(Context context) {
@@ -184,6 +204,7 @@ public class DataSource {
         }
         return instance;
     }
+
 
 }
 
