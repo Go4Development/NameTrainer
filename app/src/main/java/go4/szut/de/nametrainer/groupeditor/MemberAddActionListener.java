@@ -91,7 +91,7 @@ public class MemberAddActionListener implements View.OnClickListener {
                 Intent galleryChooserIntent = new Intent();
                 activity.getIntent().putExtra("member", member);
                 galleryChooserIntent.setType("image/*");
-                galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
                         activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
                         GroupEditorActivity.SELECT_PICTURE_ADD);
@@ -103,8 +103,8 @@ public class MemberAddActionListener implements View.OnClickListener {
 
     }
 
-    public void onImageSelected(String selectedImageUri) {
-        previewImageView.setImageBitmap(BitmapFactory.decodeFile(selectedImageUri));
+    public void onImageSelected(Uri selectedImageUri) {
+        previewImageView.setImageURI(selectedImageUri);
 
     }
 }

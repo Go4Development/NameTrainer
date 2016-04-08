@@ -2,9 +2,9 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import java.io.File;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
@@ -103,15 +105,16 @@ public class GroupEditorActivity extends AppCompatActivity
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = getIntent().getParcelableExtra("member");
-                    horizontalScrollViewAdapter.getListener().onImageSelected(RealPathUtil.getRealPathFromURI_API19(this,selectedImageUri), member);
+                    horizontalScrollViewAdapter.getListener().onImageSelected(selectedImageUri.toString(), member);
                 }
             } else if(requestCode == SELECT_PICTURE_ADD) {
                 if(data != null && data.getData() != null) {
+                    //File picDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                     Uri selectedImageUri = data.getData();
                     Member member = new Member();
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
-                    groupListViewAdapter.getAddActionListener().onImageSelected(RealPathUtil.getRealPathFromURI_API19(this,selectedImageUri));
+                    groupListViewAdapter.getAddActionListener().onImageSelected(selectedImageUri);
 
                 }
             }
@@ -123,9 +126,6 @@ public class GroupEditorActivity extends AppCompatActivity
                 }
             }
         }
-
-
-
     }
 
     @Override

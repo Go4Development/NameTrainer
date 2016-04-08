@@ -1,15 +1,11 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import android.net.Uri;
 
 import java.io.IOException;
 
@@ -45,13 +41,9 @@ public class HorizontalScrollViewItem extends LinearLayout {
         galleryImageView = (ImageView)findViewById(R.id.gallery_imageview);
         //the TextView that shows the name of the currently selected student
         galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
-        String uri = member.getImagePath();
+        Uri uri = Uri.parse(member.getImagePath());
         if(uri != null){
-           Intent i = new Intent(Intent.ACTION_GET_CONTENT, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            ((GroupEditorActivity)context).startActivityForResult(i, CHOOSE_IMAGE);
-        galleryImageView.setImageBitmap(BitmapFactory.decodeFile(uri));
-            Util.l(this,"PATH: " + uri);
-        galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+            galleryImageView.setImageURI(uri);
         }
         else{
             galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
