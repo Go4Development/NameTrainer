@@ -3,6 +3,8 @@ package go4.szut.de.nametrainer.selection;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -16,7 +18,7 @@ import go4.szut.de.nametrainer.R;
 /**
  * Created by raven on 25.03.2016.
  */
-public class SelectionActivity extends Activity implements View.OnClickListener{
+public class SelectionActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ListView listView;
 
@@ -32,7 +34,10 @@ public class SelectionActivity extends Activity implements View.OnClickListener{
         listView = (ListView)findViewById(R.id.group_listview);
         SelectionActivityAdapter adapter = new SelectionActivityAdapter(this);
         listView.setAdapter(adapter);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 

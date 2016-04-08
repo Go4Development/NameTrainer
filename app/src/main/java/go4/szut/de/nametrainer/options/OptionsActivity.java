@@ -1,8 +1,12 @@
 package go4.szut.de.nametrainer.options;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import go4.szut.de.nametrainer.R;
@@ -10,18 +14,22 @@ import go4.szut.de.nametrainer.R;
 /**
  * Created by Michele on 24.03.2016.
  */
-public class OptionsActivity extends Activity {
+public class OptionsActivity extends AppCompatActivity {
 
     private boolean soundEnabled;
     private boolean lastNameEnabled;
-    private ToggleButton soundButton;
-    private ToggleButton lastNameButton;
+    private Switch soundButton;
+    private Switch lastNameButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
-        soundButton = (ToggleButton) findViewById(R.id.toggleButtonSound);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        soundButton = (Switch) findViewById(R.id.toggleButtonSound);
         soundEnabled = soundButton.isChecked();
         soundButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -32,7 +40,7 @@ public class OptionsActivity extends Activity {
                 }
             }
         });
-        lastNameButton = (ToggleButton) findViewById(R.id.toggleButtonLastName);
+        lastNameButton = (Switch) findViewById(R.id.toggleButtonLastName);
         lastNameEnabled= lastNameButton.isChecked();
         lastNameButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -44,7 +52,6 @@ public class OptionsActivity extends Activity {
             }
         });
         //addListenerOnButton();
-
     }
 
     public boolean switchSoundState(){
@@ -81,6 +88,18 @@ public class OptionsActivity extends Activity {
 
     public boolean isLastNameEnabled() {
         return lastNameEnabled;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
