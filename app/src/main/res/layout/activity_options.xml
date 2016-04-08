@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sound_options"
-        android:gravity="center"
         android:textAppearance="?android:textAppearanceLarge"/>
+
 
     <Switch
         android:id="@+id/toggleButtonSound"
@@ -23,16 +23,14 @@
         android:layout_height="wrap_content"
         android:textOn="@string/soundOn_options"
         android:textOff="@string/soundOff_options"
-        android:text="@string/sound_options"
-        android:layout_gravity="center"/>
+        android:text="@string/sound_options" />
 
     <TextView
         android:id="@+id/textViewLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/lastName_options"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:gravity="center"/>
+        android:textAppearance="?android:textAppearanceLarge" />
 
     <Switch
         android:id="@+id/toggleButtonLastName"
@@ -40,7 +38,6 @@
         android:layout_height="wrap_content"
         android:textOn="@string/lastNameOn_options"
         android:textOff="@string/lastNameOff_options"
-        android:text="@string/lastName_options"
-        android:layout_gravity="center"/>
+        android:text="@string/lastName_options" />
 
 </LinearLayout>
