@@ -6,8 +6,8 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
 
-
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
@@ -28,6 +28,7 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"></meta-data>
         </activity>
         <activity
+            android:permission="android.permission.READ_EXTERNAL_STORAGE"
             android:name=".groupeditor.GroupEditorActivity"
             android:label="@string/groupeditor">
         </activity>
