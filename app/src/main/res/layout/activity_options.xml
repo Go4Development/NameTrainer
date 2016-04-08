@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="@string/sound_options"
         android:textAppearance="?android:textAppearanceLarge"/>
-    <!--._.-->
+
 
     <Switch
         android:id="@+id/toggleButtonSound"
