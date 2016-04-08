@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="blue" type="color">#FF33B5E5</item>
+    <color name="primaryColor">#00bcd4</color>
+    <color name="primaryColorDark">#0097a7</color>
+    <color name="accentColor">#7fb800</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
 </resources>
