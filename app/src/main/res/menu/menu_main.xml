@@ -11,5 +11,5 @@
         android:title="@string/add"
         android:orderInCategory="200"
         android:icon="@drawable/ic_add_black_48dp"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>
