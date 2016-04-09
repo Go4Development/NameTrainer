@@ -291,6 +291,7 @@ public class GroupEditorActivity extends AppCompatActivity
                     Group group = (Group)object;
                     switch(which) {
                         case DialogInterface.BUTTON_NEGATIVE:
+                            dialog.dismiss();
                             break;
                         case DialogInterface.BUTTON_POSITIVE:
                             if(activity.getIntent().getParcelableExtra("member") != null) {
@@ -306,12 +307,13 @@ public class GroupEditorActivity extends AppCompatActivity
                                 source.insertMember(member);
                                 source.close();
                                 activity.getHorizontalScrollViewAdapter().update(group.getId());
+                                dialog.dismiss();
                             }else{
                                 Toast.makeText(activity,"Bitte zuerst Bild auswählen?",Toast.LENGTH_LONG).show();
                             }
                             break;
                     }
-                    dialog.dismiss();
+
                 }
             };
 
