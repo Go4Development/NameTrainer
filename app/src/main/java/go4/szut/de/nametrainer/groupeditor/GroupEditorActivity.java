@@ -1,28 +1,30 @@
 package go4.szut.de.nametrainer.groupeditor;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
-import java.io.File;
+import android.widget.Toast;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
-import go4.szut.de.nametrainer.util.RealPathUtil;
 import go4.szut.de.nametrainer.util.Util;
 
 /**
@@ -40,7 +42,7 @@ public class GroupEditorActivity extends AppCompatActivity
     private static final int DIALOG_OPTION_DELETE = 1;
 
     //holds a bunch of horizontal positioned images of students of the current selected group
-    private CustomHorizontalScrollView portraitScrollView;
+    private HorizontalScrollViewAdapter.CustomHorizontalScrollView portraitScrollView;
     private HorizontalScrollViewAdapter horizontalScrollViewAdapter;
     private MemberAddActionListener addActionListener;
 
@@ -80,7 +82,7 @@ public class GroupEditorActivity extends AppCompatActivity
          */
 
         //portrait stuff
-        portraitScrollView = (CustomHorizontalScrollView)findViewById(R.id.portrait_scrollview);
+        portraitScrollView = (HorizontalScrollViewAdapter.CustomHorizontalScrollView)findViewById(R.id.portrait_scrollview);
 
         //grouplist stuff
         groupListView = (ListView)findViewById(R.id.group_listview);
@@ -109,7 +111,6 @@ public class GroupEditorActivity extends AppCompatActivity
                 }
             } else if(requestCode == SELECT_PICTURE_ADD) {
                 if(data != null && data.getData() != null) {
-                    //File picDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                     Uri selectedImageUri = data.getData();
                     Member member = new Member();
                     member.setImagePath(selectedImageUri.toString());
@@ -118,7 +119,7 @@ public class GroupEditorActivity extends AppCompatActivity
 
                 }
             }
-            else if(requestCode == HorizontalScrollViewItem.CHOOSE_IMAGE){
+            else if(requestCode == HorizontalScrollViewAdapter.HorizontalScrollViewItem.CHOOSE_IMAGE){
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Util.l(this, "Das ist die URI:" + selectedImageUri);
@@ -147,12 +148,12 @@ public class GroupEditorActivity extends AppCompatActivity
 
     @Override
     public boolean onLongClick(View v) {
-        HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
+        HorizontalScrollViewAdapter.HorizontalScrollViewItem item = (HorizontalScrollViewAdapter.HorizontalScrollViewItem)v;
         openItemDialog(item);
         return true;
     }
 
-    private void openItemDialog(final HorizontalScrollViewItem item) {
+    private void openItemDialog(final HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         //builder.setTitle(item.getName());
         builder.setCancelable(true);
@@ -171,11 +172,11 @@ public class GroupEditorActivity extends AppCompatActivity
         builder.show();
     }
 
-    private void onEdit(HorizontalScrollViewItem item) {
+    private void onEdit(HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
 
     }
 
-    private void onDelete(HorizontalScrollViewItem item) {
+    private void onDelete(HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
 
     }
 
@@ -204,5 +205,136 @@ public class GroupEditorActivity extends AppCompatActivity
 
     public HorizontalScrollViewAdapter getHorizontalScrollViewAdapter() {
         return horizontalScrollViewAdapter;
+    }
+
+    /**
+     * Created by Rene on 31.03.2016.
+     */
+    public static class GroupEditorAddActionListener implements DialogInterface.OnClickListener {
+
+        private Context context;
+        private EditText groupNameEditText;
+        private GroupListViewAdapter groupListViewAdapter;
+
+        public GroupEditorAddActionListener(Context context, EditText groupNameEditText,
+                                            GroupListViewAdapter groupListViewAdapter) {
+            this.context = context;
+            this.groupNameEditText = groupNameEditText;
+            this.groupListViewAdapter = groupListViewAdapter;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch(which) {
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(context, "Negative Button Selected", Toast.LENGTH_LONG).show();
+                    break;
+                case DialogInterface.BUTTON_POSITIVE:
+                    String groupName = groupNameEditText.getText().toString();
+                    //retrieves the DataSource instance and inserts the new group
+                    DataSource source = DataSource.getDataSourceInstance(context);
+                    source.open();
+                    source.insertGroup(groupName);
+                    source.close();
+                    //notifies the adapter to update
+                    groupListViewAdapter.notifyDataSetChanged();
+                    break;
+            }
+            dialog.dismiss();
+        }
+
+
+
+    }
+
+    /**
+     * Created by Rene on 03.04.2016.
+     */
+    public static class MemberAddActionListener implements View.OnClickListener {
+
+        private GroupEditorActivity activity;
+
+        private AlertDialog.Builder memberAddDialogView;
+        private View memberAddDialog;
+        private EditText firstnameEditText;
+        private EditText surnameEditText;
+        private ImageView previewImageView;
+
+        public MemberAddActionListener(GroupEditorActivity activity) {
+            this.activity = activity;
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            Button button = (Button)v;
+            Group group = (Group)button.getTag();
+
+            CustomAlertDialog.CustomDialogOnClickListener listener = new CustomAlertDialog.CustomDialogOnClickListener(group) {
+                @Override
+                public void onClick(DialogInterface dialog, int which, Object object) {
+                    Group group = (Group)object;
+                    switch(which) {
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+                        case DialogInterface.BUTTON_POSITIVE:
+                            String firstname = firstnameEditText.getText().toString();
+                            String surname = surnameEditText.getText().toString();
+                            Member member = activity.getIntent().getParcelableExtra("member");
+                            member.setFirstname(firstname);
+                            member.setSurname(surname);
+                            member.setGroupID(group.getId());
+
+                            DataSource source = DataSource.getDataSourceInstance(activity);
+                            source.open();
+                            source.insertMember(member);
+                            source.close();
+                            activity.getHorizontalScrollViewAdapter().update();
+
+                            break;
+                    }
+                    dialog.dismiss();
+                }
+            };
+
+            LayoutInflater layoutInflater = (LayoutInflater)activity.getSystemService(LAYOUT_INFLATER_SERVICE);
+            memberAddDialog = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
+            memberAddDialogView = new AlertDialog.Builder(activity)
+                    .setCancelable(true)
+                    .setPositiveButton(activity.getResources().getString(R.string.button_title_add), listener)
+                    .setNegativeButton(activity.getResources().getString(R.string.button_title_cancel), listener)
+                    .setView(memberAddDialog);
+
+            memberAddDialogView.show();
+
+            firstnameEditText = (EditText) memberAddDialog.findViewById(R.id.dialog_firstname);
+            firstnameEditText.setHint(activity.getResources().getString(R.string.hint_firstname));
+            surnameEditText = (EditText) memberAddDialog.findViewById(R.id.dialog_surname);
+            surnameEditText.setHint(activity.getResources().getString(R.string.hint_surname));
+            previewImageView = (ImageView) memberAddDialog.findViewById(R.id.dialog_preview_image);
+            previewImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ImageView previewImageView = (ImageView)v;
+                    Member member = (Member)previewImageView.getTag();
+                    Intent galleryChooserIntent = new Intent();
+                    activity.getIntent().putExtra("member", member);
+                    galleryChooserIntent.setType("image/*");
+                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                            activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
+                            SELECT_PICTURE_ADD);
+
+                }
+            });
+            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
+
+
+        }
+
+        public void onImageSelected(Uri selectedImageUri) {
+            previewImageView.setImageURI(selectedImageUri);
+
+        }
     }
 }
