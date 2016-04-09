@@ -107,7 +107,6 @@ public class GroupEditorActivity extends AppCompatActivity
         horizontalScrollViewAdapter = new HorizontalScrollViewAdapter(this, portraitScrollView, group);
         portraitScrollView.setAdapter(horizontalScrollViewAdapter);
 
-
     }
 
     @Override
@@ -144,6 +143,7 @@ public class GroupEditorActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.groupeditor_action_menu, menu);
+        Toast.makeText(this,"fvdvd",Toast.LENGTH_LONG).show();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -291,24 +291,29 @@ public class GroupEditorActivity extends AppCompatActivity
                     Group group = (Group)object;
                     switch(which) {
                         case DialogInterface.BUTTON_NEGATIVE:
+                            dialog.dismiss();
                             break;
                         case DialogInterface.BUTTON_POSITIVE:
-                            String firstname = firstnameEditText.getText().toString();
-                            String surname = surnameEditText.getText().toString();
-                            Member member = activity.getIntent().getParcelableExtra("member");
-                            member.setFirstname(firstname);
-                            member.setSurname(surname);
-                            member.setGroupID(group.getId());
+                            if(activity.getIntent().getParcelableExtra("member") != null) {
+                                String firstname = firstnameEditText.getText().toString();
+                                String surname = surnameEditText.getText().toString();
+                                Member member = activity.getIntent().getParcelableExtra("member");
+                                member.setFirstname(firstname);
+                                member.setSurname(surname);
+                                member.setGroupID(group.getId());
 
-                            DataSource source = DataSource.getDataSourceInstance(activity);
-                            source.open();
-                            source.insertMember(member);
-                            source.close();
-                            activity.getHorizontalScrollViewAdapter().update();
-
+                                DataSource source = DataSource.getDataSourceInstance(activity);
+                                source.open();
+                                source.insertMember(member);
+                                source.close();
+                                activity.getHorizontalScrollViewAdapter().update(group.getId());
+                                dialog.dismiss();
+                            }else{
+                                Toast.makeText(activity,"Bitte zuerst Bild auswählen?",Toast.LENGTH_LONG).show();
+                            }
                             break;
                     }
-                    dialog.dismiss();
+
                 }
             };
 
