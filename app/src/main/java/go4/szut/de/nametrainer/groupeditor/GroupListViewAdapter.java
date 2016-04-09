@@ -56,7 +56,7 @@ public class GroupListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Group getItem(int position) {
         return groups.get(position);
     }
 

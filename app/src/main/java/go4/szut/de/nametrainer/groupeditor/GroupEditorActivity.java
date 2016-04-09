@@ -42,7 +42,7 @@ public class GroupEditorActivity extends AppCompatActivity
     private static final int DIALOG_OPTION_DELETE = 1;
 
     //holds a bunch of horizontal positioned images of students of the current selected group
-    private HorizontalScrollViewAdapter.CustomHorizontalScrollView portraitScrollView;
+    private CustomHorizontalScrollView portraitScrollView;
     private HorizontalScrollViewAdapter horizontalScrollViewAdapter;
     private MemberAddActionListener addActionListener;
 
@@ -69,7 +69,6 @@ public class GroupEditorActivity extends AppCompatActivity
          * Load Data - Start
          */
 
-        //TODO Database Request right here
 
         groupItemDialogAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.select_dialog_item,
@@ -82,17 +81,22 @@ public class GroupEditorActivity extends AppCompatActivity
          */
 
         //portrait stuff
-        portraitScrollView = (HorizontalScrollViewAdapter.CustomHorizontalScrollView)findViewById(R.id.portrait_scrollview);
+        portraitScrollView = (CustomHorizontalScrollView)findViewById(R.id.portrait_scrollview);
 
         //grouplist stuff
         groupListView = (ListView)findViewById(R.id.group_listview);
         groupListView.setAdapter(groupListViewAdapter);
 
-        //sets the list containing the GroupListViewItems
-        Group group = new Group();
-        group.setId(1);
-        group.setName("T15A");
 
+        //sets the list containing the GroupListViewItems
+        Group group;
+        if(groupListViewAdapter.getCount() >= 1){
+            group = groupListViewAdapter.getItem(0);
+        }else {
+            group = new Group();
+            group.setId(1);
+            group.setName("T15A");
+        }
         horizontalScrollViewAdapter = new HorizontalScrollViewAdapter(this, portraitScrollView, group);
         portraitScrollView.setAdapter(horizontalScrollViewAdapter);
 

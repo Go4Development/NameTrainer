@@ -58,6 +58,7 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
         if (id == R.id.action_settings) {
             intent = new Intent(this, OptionsActivity.class);
             startActivity(intent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -68,4 +69,6 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
 }

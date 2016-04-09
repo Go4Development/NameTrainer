@@ -6,18 +6,15 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
@@ -88,95 +85,6 @@ public class HorizontalScrollViewAdapter {
         return listener;
     }
 
-
-    /**
-     * Created by ramazan on 25.03.2016.
-     */
-    public static class CustomHorizontalScrollView extends HorizontalScrollView {
-
-        //holds the linear layout of this CustomHorizontalScrollVie
-        private LinearLayout portraitLinearLayout;
-
-        //holds the timestamp of the last scroll update
-        private long lastScrollUpdate = -1;
-
-        //adapter that holds data
-        private HorizontalScrollViewAdapter adapter;
-
-
-        public CustomHorizontalScrollView(Context context, AttributeSet attributeSet) {
-            super(context, attributeSet);
-        }
-
-
-        @Override
-        protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-            super.onScrollChanged(l, t, oldl, oldt);
-            if (lastScrollUpdate == -1) {
-                onScrollStart();
-                postDelayed(new ScrollStateHandler(), 100);
-            }
-            lastScrollUpdate = System.currentTimeMillis();
-        }
-
-        public void setAdapter(HorizontalScrollViewAdapter adapter) {
-            this.adapter = adapter;
-            portraitLinearLayout = (LinearLayout)findViewById(R.id.portrait_linearlayout);
-            attachListViewItems();
-        }
-
-        private void attachListViewItems() {
-            if(adapter != null) {
-                for (int i = 0; i < adapter.getSize(); i++) {
-                    portraitLinearLayout.addView(adapter.getHorizontalScrollViewItemAt(i));
-                }
-            }
-        }
-
-        public void update() {
-            portraitLinearLayout.removeAllViews();
-            attachListViewItems();
-        }
-
-        /**
-         *
-         */
-        private void onScrollStart() {
-            //nothing
-        }
-
-        /**
-         *
-         */
-        private void onScrollEnd() {
-            ArrayList<Integer> differenceToScreenCenter = new ArrayList<Integer>();
-            Integer screenCenter = getWidth() / 2;
-
-            for(int i = 0; i < adapter.getSize(); i++) {
-                HorizontalScrollViewItem item = adapter.getHorizontalScrollViewItemAt(i);
-                item.setHighlightOff();
-                differenceToScreenCenter.add(Math.abs(screenCenter - (item.getPosition() + (item.getWidth() / 2))));
-            }
-            int minIndex = differenceToScreenCenter.indexOf(Collections.min(differenceToScreenCenter));
-            adapter.getHorizontalScrollViewItemAt(minIndex).setHighlightOn();
-
-        }
-
-        private class ScrollStateHandler implements Runnable {
-
-            @Override
-            public void run() {
-                long currentTime = System.currentTimeMillis();
-                if ((currentTime - lastScrollUpdate) > 100) {
-                    lastScrollUpdate = -1;
-                    onScrollEnd();
-                } else {
-                    postDelayed(this, 100);
-                }
-            }
-        }
-
-    }
 
     /**
      * Created by Rene on 31.03.2016.

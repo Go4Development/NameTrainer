@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <go4.szut.de.nametrainer.groupeditor.HorizontalScrollViewAdapter.CustomHorizontalScrollView
+    <go4.szut.de.nametrainer.groupeditor.CustomHorizontalScrollView
         android:id="@+id/portrait_scrollview"
         android:scrollbars="none"
 
@@ -39,7 +39,7 @@
 
         </LinearLayout>
 
-    </go4.szut.de.nametrainer.groupeditor.HorizontalScrollViewAdapter.CustomHorizontalScrollView>
+    </go4.szut.de.nametrainer.groupeditor.CustomHorizontalScrollView>
 
     <ListView
         android:id="@+id/group_listview"

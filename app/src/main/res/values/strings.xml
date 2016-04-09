@@ -57,5 +57,6 @@
     <string name="settings">Einstellungen</string>
     <string name="share">Teilen</string>
     <string name="exit">Beenden</string>
+    <string name="Group_edit">Gruppe editieren</string>
 
 </resources>

@@ -41,9 +41,9 @@
     <Button
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="@string/share"
+        android:text="@string/Group_edit"
         android:id="@+id/sharing_button"
-        android:onClick="startSharingActivity"
+        android:onClick="startGroupActivity"
         android:layout_marginTop="40dp"
         android:layout_gravity="center_horizontal" />
 
