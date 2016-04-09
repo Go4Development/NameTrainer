@@ -1,9 +1,11 @@
 package go4.szut.de.nametrainer.options;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -88,5 +90,6 @@ public class OptionsActivity extends AppCompatActivity {
     public boolean isLastNameEnabled() {
         return lastNameEnabled;
     }
+
 
 }

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,7 @@ import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.util.Util;
 
 /**
@@ -61,6 +63,11 @@ public class GroupEditorActivity extends AppCompatActivity
 
         //sets the layout to the specified "groupeditor layout"
         setContentView(R.layout.activity_groupeditor);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //hides the ActionBar of AppCompatActivity class
         //Util.hideActionBar(this);
@@ -145,6 +152,10 @@ public class GroupEditorActivity extends AppCompatActivity
         switch(item.getItemId()) {
             case R.id.group_add_action:
                 onAddGroup();
+                break;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, OptionsActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
