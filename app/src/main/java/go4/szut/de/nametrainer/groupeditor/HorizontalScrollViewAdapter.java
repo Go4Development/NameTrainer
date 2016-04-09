@@ -62,10 +62,10 @@ public class HorizontalScrollViewAdapter {
         return items.size();
     }
 
-    public void update() {
+    public void update(int id) {
         source = DataSource.getDataSourceInstance(activity);
         source.open();
-        members = source.getMembers(group.getId());
+        members = source.getMembers(id);
         source.close();
         items = createHorizontalScrollViewItems();
         scrollView.update();
@@ -192,7 +192,7 @@ public class HorizontalScrollViewAdapter {
             source.open();
             source.deleteMember(member);
             source.close();
-            adapter.update();
+            adapter.update(member.getGroupID());
         }
 
         @Override

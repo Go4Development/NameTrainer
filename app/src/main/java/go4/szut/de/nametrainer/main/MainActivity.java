@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         //startActivity(new Intent(this, GroupEditorActivity.class));
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().hide();
+       // getSupportActionBar().hide();
     }
 
 

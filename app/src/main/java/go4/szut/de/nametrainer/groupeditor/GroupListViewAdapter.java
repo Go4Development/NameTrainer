@@ -29,10 +29,12 @@ public class GroupListViewAdapter extends BaseAdapter {
     private DataSource source;
     private GroupEditorActivity.MemberAddActionListener addActionListener;
     private GroupListViewItemListener listener;
+    private GroupEditorActivity activity;
 
 
     public GroupListViewAdapter(GroupEditorActivity activity, GroupEditorActivity.MemberAddActionListener addActionListener) {
         layoutInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.activity = activity;
         source = DataSource.getDataSourceInstance(activity);
         source.open();
         groups = source.getAllGroups();
@@ -66,10 +68,16 @@ public class GroupListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
             convertView = layoutInflater.inflate(R.layout.activity_groupeditor_listitem, parent, false);
         }
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.getHorizontalScrollViewAdapter().update(getItem(position).getId());
+            }
+        });
 
         Button button = (Button)convertView.findViewById(R.id.group_add_member_button);
         button.setOnClickListener(addActionListener);
