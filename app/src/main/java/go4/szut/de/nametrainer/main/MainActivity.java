@@ -17,17 +17,12 @@ import go4.szut.de.nametrainer.sharing.SharingActivity;
 public class MainActivity extends AppCompatActivity {
 
     private Intent intent;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        //startActivity(new Intent(this, GroupEditorActivity.class));
-        toolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().hide();
     }
 
 
