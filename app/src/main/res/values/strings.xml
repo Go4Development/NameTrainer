@@ -52,5 +52,10 @@
     <string name="hint_surname">Nachname</string>
     <string name="hint_image">Bild</string>
     <string name="add">add</string>
+    <string name="name_trainer">Name Trainer</string>
+    <string name="start">Start</string>
+    <string name="settings">Einstellungen</string>
+    <string name="share">Teilen</string>
+    <string name="exit">Beenden</string>
 
 </resources>

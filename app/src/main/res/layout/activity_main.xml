@@ -1,62 +1,59 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
     <include
         android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+        layout="@layout/app_bar" />
 
     <TextView
-        android:layout_below="@id/app_bar"
-        android:layout_width="239dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name Trainer"
+        android:text="@string/name_trainer"
         android:id="@+id/NameTrainer_tV"
-        android:layout_marginTop="39dp"
-        android:layout_alignRight="@+id/start_button"
-        android:layout_alignEnd="@+id/start_button" />
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:clickable="false"
+        android:textStyle="bold"
+        android:textSize="35sp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="Start"
+        android:text="@string/start"
         android:id="@+id/start_button"
-        android:layout_below="@+id/NameTrainer_tV"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
-        android:onClick="startSelectionActivity" />
+        android:onClick="startSelectionActivity"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:height="0dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="Teilen"
+        android:text="@string/settings"
+        android:id="@+id/option_button"
+        android:onClick="startOptionsActivity"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:text="@string/share"
         android:id="@+id/sharing_button"
         android:onClick="startSharingActivity"
-        android:layout_marginTop="44dp"
-        android:layout_below="@+id/option_button"
-        android:layout_alignLeft="@+id/start_button"
-        android:layout_alignStart="@+id/start_button" />
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:text="Beenden"
+        android:text="@string/exit"
         android:id="@+id/exit_button"
-        android:layout_below="@+id/sharing_button"
-        android:layout_alignRight="@+id/sharing_button"
-        android:layout_alignEnd="@+id/sharing_button"
-        android:layout_marginTop="54dp"
-        android:onClick="exit"/>
+        android:layout_marginTop="40dp"
+        android:onClick="exit"
+        android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Einstellungen"
-        android:id="@+id/option_button"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="startOptionsActivity"/>
-</RelativeLayout>
+</LinearLayout>
