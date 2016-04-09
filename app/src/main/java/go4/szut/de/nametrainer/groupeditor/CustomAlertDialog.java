@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
     private String negativeButtonTitle;
 
     private ArrayList<View> views;
+    private Object callback;
     private Object adapter;
     private Object value;
 
@@ -47,6 +49,10 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
 
     public void setNegativeButtonTitle(int negativeButtonTitleId) {
         this.negativeButtonTitle = context.getResources().getString(negativeButtonTitleId);
+    }
+
+    public void setTitle(String title) {
+        dialogBuilder.setTitle(title);
     }
 
     public void setDialogView(View dialogView) {
@@ -81,8 +87,21 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         this.adapter = adapter;
     }
 
+    public void setCallback(Object callback) {
+        this.callback = callback;
+    }
+
+    public ArrayAdapter<String> setArrayAdapter(int selectionLayoutId, int selectionStringArrayId) {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, selectionLayoutId,
+                context.getResources().getStringArray(selectionStringArrayId));
+        dialogBuilder.setAdapter(arrayAdapter, this);
+        return arrayAdapter;
+    }
+
     public void show() {
-        dialogBuilder.setView(dialogView);
+        if(dialogView != null) {
+            dialogBuilder.setView(dialogView);
+        }
         dialogBuilder.setCancelable(true);
         dialogBuilder.setPositiveButton(positiveButtonTitle, this);
         dialogBuilder.setNegativeButton(negativeButtonTitle, this);
@@ -92,7 +111,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
 
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
-        CustomDialogInterface customDialogInterface = new CustomDialogInterface() {
+        Interface anInterface = new Interface() {
 
             @Override
             public ArrayList<View> getViews() {
@@ -120,6 +139,21 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
             }
 
             @Override
+            public boolean hasValue() {
+                return value != null;
+            }
+
+            @Override
+            public Object getCallback() {
+                return callback;
+            }
+
+            @Override
+            public boolean hasCallback() {
+                return callback != null;
+            }
+
+            @Override
             public void close() {
                 dialog.dismiss();
             }
@@ -133,39 +167,42 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         switch(which) {
             case DialogInterface.BUTTON_NEGATIVE:
                 if(optionSelectionListener != null) {
-                    optionSelectionListener.onNegativeSelection(customDialogInterface);
+                    optionSelectionListener.onNegativeSelection(anInterface);
                 }
                 break;
             case DialogInterface.BUTTON_POSITIVE:
                 if(optionSelectionListener != null) {
-                    optionSelectionListener.onPositiveSelection(customDialogInterface);
+                    optionSelectionListener.onPositiveSelection(anInterface);
                 }
                 break;
             case DialogInterface.BUTTON_NEUTRAL:
                 if(optionSelectionListener != null) {
-                    optionSelectionListener.onNeutralSelection(customDialogInterface);
+                    optionSelectionListener.onNeutralSelection(anInterface);
                 }
                 break;
         }
 
         if(optionSelectionListener != null) {
-            optionSelectionListener.onDefaultSelection(customDialogInterface);
+            optionSelectionListener.onDefaultSelection(anInterface);
         }
     }
 
     public interface OnOptionSelectionListener {
-        public void onPositiveSelection(CustomDialogInterface customDialogInterface);
-        public void onNegativeSelection(CustomDialogInterface customDialogInterface);
-        public void onNeutralSelection(CustomDialogInterface customDialogInterface);
-        public void onDefaultSelection(CustomDialogInterface customDialogInterface);
+        public void onPositiveSelection(Interface i);
+        public void onNegativeSelection(Interface i);
+        public void onNeutralSelection(Interface i);
+        public void onDefaultSelection(Interface i);
     }
 
-    public interface CustomDialogInterface {
+    public interface Interface {
         public ArrayList<View> getViews();
         public View getViewAt(int index);
         public int getViewCount();
         public Object getAdapter();
         public Object getValue();
+        public boolean hasValue();
+        public Object getCallback();
+        public boolean hasCallback();
         public void close();
         public int getSelection();
     }

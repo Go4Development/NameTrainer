@@ -173,7 +173,7 @@ public class GroupEditorActivity extends AppCompatActivity
         builder.setCancelable(true);
         builder.setAdapter(groupItemDialogAdapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                switch(which) {
+                switch (which) {
                     case DIALOG_OPTION_EDIT:
                         onEdit(item);
                         break;
@@ -184,6 +184,47 @@ public class GroupEditorActivity extends AppCompatActivity
             }
         });
         builder.show();
+
+        /* Code Snippet for replacement
+
+        CustomAlertDialog itemOptionsDialog = new CustomAlertDialog(this);
+        itemOptionsDialog.setArrayAdapter(android.R.layout.select_dialog_item, R.array.groupeditor_item_dialog_options);
+        itemOptionsDialog.setValue(item);
+        itemOptionsDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+            @Override
+            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onDefaultSelection(CustomAlertDialog.Interface i) {
+                if(i.hasCallback() && i.hasValue()) {
+                    HorizontalScrollViewAdapter.HorizontalScrollViewItem item =
+                            (HorizontalScrollViewAdapter.HorizontalScrollViewItem)i.getValue();
+                    switch (i.getSelection()) {
+                        case DIALOG_OPTION_EDIT:
+                            onEdit(item);
+                            break;
+                        case DIALOG_OPTION_DELETE:
+                            onDelete(item);
+                            break;
+                    }
+                }
+            }
+        });
+        itemOptionsDialog.show();
+        */
+
     }
 
     private void onEdit(HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
@@ -215,6 +256,50 @@ public class GroupEditorActivity extends AppCompatActivity
                 .setNegativeButton(getResources().getString(R.string.groupeditor_add_action_negbutton), listener);
         alertDialog.setView(groupNameEditText);
         alertDialog.show();
+
+        /*
+        EditText groupNameEditText = new EditText(this);
+        groupNameEditText.setHint(getResources().getString(R.string.groupeditor_add_action_edittext));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        groupNameEditText.setLayoutParams(layoutParams);
+        CustomAlertDialog addGroupDialog = new CustomAlertDialog(this);
+        addGroupDialog.setAdapter(groupListViewAdapter);
+        addGroupDialog.setDialogView(groupNameEditText);
+        addGroupDialog.addView(groupNameEditText);
+        addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
+        addGroupDialog.setNegativeButtonTitle(R.string.groupeditor_add_action_negbutton);
+        addGroupDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+            @Override
+            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+                EditText groupNameEditText = (EditText)i.getViewAt(0);
+                String groupName = groupNameEditText.getText().toString();
+                DataSource source = DataSource.getDataSourceInstance(GroupEditorActivity.this);
+                source.open();
+                source.insertGroup(groupName);
+                source.close();
+                GroupListViewAdapter adapter = (GroupListViewAdapter)i.getAdapter();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onDefaultSelection(CustomAlertDialog.Interface i) {
+
+            }
+        });
+        addGroupDialog.show();
+        */
     }
 
     public HorizontalScrollViewAdapter getHorizontalScrollViewAdapter() {

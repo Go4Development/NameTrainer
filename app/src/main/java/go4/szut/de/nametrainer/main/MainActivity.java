@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        //startActivity(new Intent(this, GroupEditorActivity.class));
+        startActivity(new Intent(this, GroupEditorActivity.class));
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
        // getSupportActionBar().hide();
