@@ -143,7 +143,6 @@ public class GroupEditorActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.groupeditor_action_menu, menu);
-        Toast.makeText(this,"fvdvd",Toast.LENGTH_LONG).show();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -242,7 +241,6 @@ public class GroupEditorActivity extends AppCompatActivity
         public void onClick(DialogInterface dialog, int which) {
             switch(which) {
                 case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(context, "Negative Button Selected", Toast.LENGTH_LONG).show();
                     break;
                 case DialogInterface.BUTTON_POSITIVE:
                     String groupName = groupNameEditText.getText().toString();
@@ -309,7 +307,8 @@ public class GroupEditorActivity extends AppCompatActivity
                                 activity.getHorizontalScrollViewAdapter().update(group.getId());
                                 dialog.dismiss();
                             }else{
-                                Toast.makeText(activity,"Bitte zuerst Bild auswählen?",Toast.LENGTH_LONG).show();
+                                Toast.makeText(activity,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
+
                             }
                             break;
                     }
