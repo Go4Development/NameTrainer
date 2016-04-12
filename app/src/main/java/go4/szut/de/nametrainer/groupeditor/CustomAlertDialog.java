@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
+import go4.szut.de.nametrainer.database.DataSource;
+
 /**
  * Created by Rene on 01.04.2016.
  */
@@ -29,10 +31,13 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
     private Object adapter;
     private Object value;
 
+    private DataSource source;
+
     public CustomAlertDialog(Context context) {
         this.context = context;
         dialogBuilder = new AlertDialog.Builder(context);
         views = new ArrayList<View>();
+        source = DataSource.getDataSourceInstance(context);
     }
 
     public void setPositiveButtonTitle(String positiveButtonTitle) {
@@ -162,6 +167,10 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
                 return which;
             }
 
+            public DataSource getDataSource() {
+                return source;
+            }
+
         };
 
         switch(which) {
@@ -205,6 +214,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         public boolean hasCallback();
         public void close();
         public int getSelection();
+        public DataSource getDataSource();
     }
 
     /**

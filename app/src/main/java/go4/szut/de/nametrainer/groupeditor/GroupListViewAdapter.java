@@ -129,7 +129,7 @@ public class GroupListViewAdapter extends BaseAdapter {
             builder.setCancelable(true);
             builder.setAdapter(groupItemDialogAdapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    switch(which) {
+                    switch (which) {
                         case DIALOG_OPTION_EDIT:
                             onEdit(group);
                             break;
@@ -140,6 +140,44 @@ public class GroupListViewAdapter extends BaseAdapter {
                 }
             });
             builder.show();
+
+
+            /*CustomAlertDialog dialog = new CustomAlertDialog(context);
+            dialog.setTitle(group.getName());
+            dialog.setValue(group);
+            dialog.setArrayAdapter(android.R.layout.select_dialog_item, R.array.groupeditor_item_dialog_options);
+            dialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+                @Override
+                public void onPositiveSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onDefaultSelection(CustomAlertDialog.Interface i) {
+                    Group group = (Group)i.getValue();
+                    switch(i.getSelection()) {
+                        case DIALOG_OPTION_EDIT:
+                            onEdit(group);
+                            break;
+                        case DIALOG_OPTION_DELETE:
+                            onDelete(group);
+                            break;
+                    }
+                }
+            });
+            dialog.show();
+            */
+
             return false;
         }
 
