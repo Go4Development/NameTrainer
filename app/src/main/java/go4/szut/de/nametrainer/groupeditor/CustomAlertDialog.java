@@ -2,19 +2,24 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import go4.szut.de.nametrainer.database.DataSource;
 
 /**
  * Created by Rene on 01.04.2016.
  */
-public class CustomAlertDialog implements DialogInterface.OnClickListener {
+public class CustomAlertDialog implements DialogInterface.OnClickListener, View.OnClickListener {
+
+    public static final int NO_SELECTION = Integer.MAX_VALUE;
 
     private Context context;
 
@@ -26,7 +31,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
     private String positiveButtonTitle;
     private String negativeButtonTitle;
 
-    private ArrayList<View> views;
+    private SparseArray<View> views;
     private Object callback;
     private Object adapter;
     private Object value;
@@ -36,7 +41,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
     public CustomAlertDialog(Context context) {
         this.context = context;
         dialogBuilder = new AlertDialog.Builder(context);
-        views = new ArrayList<View>();
+        views = new SparseArray<View>();
         source = DataSource.getDataSourceInstance(context);
     }
 
@@ -69,15 +74,35 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(dialogViewId, null);
     }
 
-    public Object findViewById(int id) {
+    public View findViewById(int id) {
         if(dialogView != null) {
             return dialogView.findViewById(id);
         }
         return null;
     }
 
-    public void addView(View view) {
-        views.add(view);
+    public <T> T getView(Class<T> type, int id) {
+        View view = views.get(id);
+        if(view != null) {
+            return type.cast(view);
+        }
+        return null;
+    }
+
+    public View addView(int viewId) {
+        View view = findViewById(viewId);
+        if(view != null) {
+            views.put(viewId, view);
+            return view;
+        }
+        return null;
+    }
+
+    public void addViewIncludingOnClick(int viewId) {
+        View view = addView(viewId);
+        if(view != null) {
+            view.setOnClickListener(this);
+        }
     }
 
     public void setOptionSelectionListener(OnOptionSelectionListener optionSelectionListener) {
@@ -119,13 +144,18 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         Interface anInterface = new Interface() {
 
             @Override
-            public ArrayList<View> getViews() {
-                return views;
+            public <T extends View> T getView(Class<T> type, int viewId) {
+                return type.cast(views.get(viewId));
             }
 
             @Override
             public View getViewAt(int index) {
                 return views.get(index);
+            }
+
+            @Override
+            public View getClickedView() {
+                return null;
             }
 
             @Override
@@ -173,26 +203,95 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
 
         };
 
-        switch(which) {
+        switch (which) {
             case DialogInterface.BUTTON_NEGATIVE:
-                if(optionSelectionListener != null) {
+                if (optionSelectionListener != null) {
                     optionSelectionListener.onNegativeSelection(anInterface);
                 }
                 break;
             case DialogInterface.BUTTON_POSITIVE:
-                if(optionSelectionListener != null) {
+                if (optionSelectionListener != null) {
                     optionSelectionListener.onPositiveSelection(anInterface);
                 }
                 break;
             case DialogInterface.BUTTON_NEUTRAL:
-                if(optionSelectionListener != null) {
+                if (optionSelectionListener != null) {
                     optionSelectionListener.onNeutralSelection(anInterface);
                 }
                 break;
         }
 
-        if(optionSelectionListener != null) {
+        if (optionSelectionListener != null) {
             optionSelectionListener.onDefaultSelection(anInterface);
+        }
+    }
+
+    @Override
+    public void onClick(final View v) {
+        Interface anInterface = new Interface() {
+
+            @Override
+            public <T extends View> T getView(Class<T> type, int viewId) {
+                return type.cast(views.get(viewId));
+            }
+
+            @Override
+            public View getViewAt(int index) {
+                return views.get(index);
+            }
+
+            @Override
+            public View getClickedView() {
+                return v;
+            }
+
+            @Override
+            public int getViewCount() {
+                return views.size();
+            }
+
+            @Override
+            public Object getAdapter() {
+                return adapter;
+            }
+
+            @Override
+            public Object getValue() {
+                return value;
+            }
+
+            @Override
+            public boolean hasValue() {
+                return value != null;
+            }
+
+            @Override
+            public Object getCallback() {
+                return callback;
+            }
+
+            @Override
+            public boolean hasCallback() {
+                return callback != null;
+            }
+
+            @Override
+            public void close() {
+
+            }
+
+            public int getSelection() {
+                return NO_SELECTION;
+            }
+
+            public DataSource getDataSource() {
+                return source;
+            }
+
+        };
+
+        if(optionSelectionListener != null) {
+            optionSelectionListener.onViewOnClick(anInterface);
         }
     }
 
@@ -201,10 +300,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         public void onNegativeSelection(Interface i);
         public void onNeutralSelection(Interface i);
         public void onDefaultSelection(Interface i);
+        public void onViewOnClick(Interface i);
     }
 
     public interface Interface {
-        public ArrayList<View> getViews();
+        public <T extends View> T getView(Class<T> type, int viewId);
         public View getViewAt(int index);
         public int getViewCount();
         public Object getAdapter();
@@ -215,6 +315,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener {
         public void close();
         public int getSelection();
         public DataSource getDataSource();
+        public View getClickedView();
     }
 
     /**

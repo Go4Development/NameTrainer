@@ -257,8 +257,8 @@ public class GroupEditorActivity extends AppCompatActivity
         alertDialog.setView(groupNameEditText);
         alertDialog.show();
 
-        /*
-        EditText groupNameEditText = new EditText(this);
+
+        /*EditText groupNameEditText = new EditText(this);
         groupNameEditText.setHint(getResources().getString(R.string.groupeditor_add_action_edittext));
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -275,17 +275,18 @@ public class GroupEditorActivity extends AppCompatActivity
             public void onPositiveSelection(CustomAlertDialog.Interface i) {
                 EditText groupNameEditText = (EditText)i.getViewAt(0);
                 String groupName = groupNameEditText.getText().toString();
-                DataSource source = DataSource.getDataSourceInstance(GroupEditorActivity.this);
+                DataSource source = i.getDataSource();
                 source.open();
                 source.insertGroup(groupName);
                 source.close();
                 GroupListViewAdapter adapter = (GroupListViewAdapter)i.getAdapter();
                 adapter.notifyDataSetChanged();
+                i.close();
             }
 
             @Override
             public void onNegativeSelection(CustomAlertDialog.Interface i) {
-
+                i.close();
             }
 
             @Override
@@ -299,7 +300,9 @@ public class GroupEditorActivity extends AppCompatActivity
             }
         });
         addGroupDialog.show();
+
         */
+
     }
 
     public HorizontalScrollViewAdapter getHorizontalScrollViewAdapter() {
@@ -352,8 +355,9 @@ public class GroupEditorActivity extends AppCompatActivity
 
         private GroupEditorActivity activity;
 
-        private AlertDialog.Builder memberAddDialogView;
-        private View memberAddDialog;
+        //TODO This shit belongs to past if the old AlertDialog gets replaced through the wonderful CustomDialog
+        private AlertDialog.Builder memberAddDialog;
+        private View memberAddDialogView;
         private EditText firstnameEditText;
         private EditText surnameEditText;
         private ImageView previewImageView;
@@ -402,20 +406,90 @@ public class GroupEditorActivity extends AppCompatActivity
             };
 
             LayoutInflater layoutInflater = (LayoutInflater)activity.getSystemService(LAYOUT_INFLATER_SERVICE);
-            memberAddDialog = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
-            memberAddDialogView = new AlertDialog.Builder(activity)
+            memberAddDialogView = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
+            memberAddDialog = new AlertDialog.Builder(activity)
                     .setCancelable(true)
                     .setPositiveButton(activity.getResources().getString(R.string.button_title_add), listener)
                     .setNegativeButton(activity.getResources().getString(R.string.button_title_cancel), listener)
-                    .setView(memberAddDialog);
+                    .setView(memberAddDialogView);
 
-            memberAddDialogView.show();
+            memberAddDialog.show();
 
-            firstnameEditText = (EditText) memberAddDialog.findViewById(R.id.dialog_firstname);
+
+
+            /* Code Snippet for Replacement
+
+            CustomAlertDialog dialog = new CustomAlertDialog(activity);
+            dialog.setDialogView(R.layout.activity_groupeditor_portraititem_dialog);
+            dialog.setPositiveButtonTitle(R.string.button_title_add);
+            dialog.setNegativeButtonTitle(R.string.button_title_cancel);
+            dialog.setValue(group);
+            dialog.addView(R.id.dialog_firstname);
+            dialog.addView(R.id.dialog_surname);
+            dialog.addViewIncludingOnClick(R.id.dialog_preview_image);
+            dialog.getView(ImageView.class, R.id.dialog_preview_image).
+                    setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
+
+            dialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+                @Override
+                public void onPositiveSelection(CustomAlertDialog.Interface i) {
+                    if(activity.getIntent().getParcelableExtra("member") != null) {
+                        Group group = (Group) i.getValue();
+                        String firstname = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
+                        String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
+                        Member member = activity.getIntent().getParcelableExtra("member");
+                        member.setFirstname(firstname);
+                        member.setSurname(surname);
+                        member.setGroupID(group.getId());
+
+                        DataSource source = i.getDataSource();
+                        source.open();
+                        source.insertMember(member);
+                        source.close();
+                        activity.getHorizontalScrollViewAdapter().update(group.getId());
+                        i.close();
+                    }else{
+                        Toast.makeText(activity,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                @Override
+                public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onDefaultSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onViewOnClick(CustomAlertDialog.Interface i) {
+                    ImageView previewImageView = (ImageView)i.getClickedView();
+                    Member member = (Member)previewImageView.getTag();
+                    Intent galleryChooserIntent = new Intent();
+                    activity.getIntent().putExtra("member", member);
+                    galleryChooserIntent.setType("image/*");
+                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                            activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
+                            GroupEditorActivity.SELECT_PICTURE_ADD);
+                }
+            });
+            dialog.show(); */
+
+
+            firstnameEditText = (EditText) memberAddDialogView.findViewById(R.id.dialog_firstname);
             firstnameEditText.setHint(activity.getResources().getString(R.string.hint_firstname));
-            surnameEditText = (EditText) memberAddDialog.findViewById(R.id.dialog_surname);
+            surnameEditText = (EditText) memberAddDialogView.findViewById(R.id.dialog_surname);
             surnameEditText.setHint(activity.getResources().getString(R.string.hint_surname));
-            previewImageView = (ImageView) memberAddDialog.findViewById(R.id.dialog_preview_image);
+            previewImageView = (ImageView) memberAddDialogView.findViewById(R.id.dialog_preview_image);
             previewImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
