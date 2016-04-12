@@ -179,7 +179,7 @@ public class GroupEditorActivity extends AppCompatActivity
         });
         builder.show();
 
-        /* Code Snippet for replacement
+        /* Code Snippet for replacement wonderful dialog
 
         CustomAlertDialog itemOptionsDialog = new CustomAlertDialog(this);
         itemOptionsDialog.setArrayAdapter(android.R.layout.select_dialog_item, R.array.groupeditor_item_dialog_options);
