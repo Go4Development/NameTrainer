@@ -35,7 +35,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         super.onScrollChanged(l, t, oldl, oldt);
         if (lastScrollUpdate == -1) {
             onScrollStart();
-            postDelayed(new ScrollStateHandler(), 100);
+            postDelayed(new ScrollStateHandler(), 10);
         }
         lastScrollUpdate = System.currentTimeMillis();
     }

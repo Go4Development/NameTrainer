@@ -33,9 +33,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setupBuilder = new GameSetupBuilder(this);
-
     }
 
     @Override
