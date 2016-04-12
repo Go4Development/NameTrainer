@@ -424,7 +424,7 @@ public class GroupEditorActivity extends AppCompatActivity
 
                 }
             });
-            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
+            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_action_name));
 
 
         }
