@@ -65,10 +65,14 @@ public class HorizontalScrollViewAdapter {
     public void update(int id) {
         source = DataSource.getDataSourceInstance(activity);
         source.open();
-        members = source.getMembers(id);
+        ArrayList<Member> t_members = source.getMembers(id);
         source.close();
-        items = createHorizontalScrollViewItems();
-        scrollView.update();
+        if(t_members.size() != 0){
+            members = t_members;
+            items = createHorizontalScrollViewItems();
+            scrollView.update();
+        }
+
     }
 
     public ArrayList<HorizontalScrollViewItem> createHorizontalScrollViewItems() {
@@ -89,7 +93,7 @@ public class HorizontalScrollViewAdapter {
     /**
      * Created by Rene on 31.03.2016.
      */
-    public static class HorizontalScrollViewItemListener implements View.OnLongClickListener, View.OnClickListener {
+    public static class HorizontalScrollViewItemListener implements View.OnLongClickListener{
 
         //option identifier for editing a member
         private static final int DIALOG_OPTION_EDIT = 0;
@@ -121,6 +125,7 @@ public class HorizontalScrollViewAdapter {
 
         @Override
         public boolean onLongClick(View v) {
+
             HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
             final Member member = item.getMember();
 
@@ -140,7 +145,7 @@ public class HorizontalScrollViewAdapter {
                 }
             });
             builder.show();
-            return false;
+            return true;
         }
 
         private void onEdit(Member member) {
@@ -182,8 +187,22 @@ public class HorizontalScrollViewAdapter {
             surnameEditText = (EditText)memberEditorDialogView.findViewById(R.id.dialog_surname);
             surnameEditText.setText(member.getSurname());
             previewImageView = (ImageView)memberEditorDialogView.findViewById(R.id.dialog_preview_image);
-            previewImageView.setOnClickListener(this);
-            previewImageView.setTag(member);
+            previewImageView.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    ImageView previewImageView = (ImageView)v;
+                    Member member = (Member)previewImageView.getTag();
+                    Intent galleryChooserIntent = new Intent();
+                    activity.getIntent().putExtra("member", member);
+                    galleryChooserIntent.setType("image/*");
+                    galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
+                    activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                            activity.getResources().getString(R.string.groupeditor_gallerychooser_title)), GroupEditorActivity.SELECT_PICTURE_EDIT);
+
+                }
+            });
+            previewImageView.setTag(member); //right here bro
             previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
 
         }
@@ -195,18 +214,8 @@ public class HorizontalScrollViewAdapter {
             adapter.update(member.getGroupID());
         }
 
-        @Override
-        public void onClick(View v) {
-            ImageView previewImageView = (ImageView)v;
-            Member member = (Member)previewImageView.getTag();
-            Intent galleryChooserIntent = new Intent();
-            activity.getIntent().putExtra("member", member);
-            galleryChooserIntent.setType("image/*");
-            galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
-            activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
-                    activity.getResources().getString(R.string.groupeditor_gallerychooser_title)), GroupEditorActivity.SELECT_PICTURE_EDIT);
 
-        }
+
 
         public void onImageSelected(String selectedImageUri, Member member) {
             member.setImagePath(selectedImageUri);
