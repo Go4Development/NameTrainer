@@ -125,14 +125,8 @@ public class GroupEditorActivity extends AppCompatActivity
                     Member member = new Member();
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
+                    //move to ADDMemberListener
                     groupListViewAdapter.getAddActionListener().onImageSelected(selectedImageUri);
-
-                }
-            }
-            else if(requestCode == HorizontalScrollViewAdapter.HorizontalScrollViewItem.CHOOSE_IMAGE){
-                if(data != null && data.getData() != null) {
-                    Uri selectedImageUri = data.getData();
-                    Util.l(this, "Das ist die URI:" + selectedImageUri);
 
                 }
             }
@@ -381,6 +375,7 @@ public class GroupEditorActivity extends AppCompatActivity
                             dialog.dismiss();
                             break;
                         case DialogInterface.BUTTON_POSITIVE:
+                            Util.l(activity, "Das Extra ist Vorhanden: " + activity.getIntent().hasExtra("member"));
                             if(activity.getIntent().getParcelableExtra("member") != null) {
                                 String firstname = firstnameEditText.getText().toString();
                                 String surname = surnameEditText.getText().toString();
@@ -396,6 +391,7 @@ public class GroupEditorActivity extends AppCompatActivity
                                 activity.getHorizontalScrollViewAdapter().update(group.getId());
                                 dialog.dismiss();
                             }else{
+                                Util.l(activity,"ISSER NULL?  a:" + (activity.getIntent().getParcelableExtra("member") == null));
                                 Toast.makeText(activity,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
 
                             }
@@ -493,10 +489,7 @@ public class GroupEditorActivity extends AppCompatActivity
             previewImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ImageView previewImageView = (ImageView)v;
-                    Member member = (Member)previewImageView.getTag();
                     Intent galleryChooserIntent = new Intent();
-                    activity.getIntent().putExtra("member", member);
                     galleryChooserIntent.setType("image/*");
                     galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                     activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
@@ -505,7 +498,7 @@ public class GroupEditorActivity extends AppCompatActivity
 
                 }
             });
-            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
+            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_action_name));
 
 
         }
