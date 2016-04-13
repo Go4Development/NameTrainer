@@ -16,6 +16,7 @@ import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.util.CustomAlertDialog;
 
 /**
  * Created by Rene on 31.03.2016.

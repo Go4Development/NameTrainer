@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
+import go4.szut.de.nametrainer.util.CustomAlertDialog;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -194,6 +195,34 @@ public class GroupListViewAdapter extends BaseAdapter {
                     .setNegativeButton(context.getResources().getString(R.string.groupeditor_edit_action_negbutton), listener);
             alertDialog.setView(groupNameEditText);
             alertDialog.show();
+
+            CustomAlertDialog dialog = new CustomAlertDialog(context);
+            dialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
+                @Override
+                public void onDefault(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onClickedView(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onPositiveSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+                }
+            });
 
             /* Code Snippet for replacing
 

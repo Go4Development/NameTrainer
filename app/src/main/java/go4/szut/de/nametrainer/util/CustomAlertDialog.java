@@ -1,4 +1,4 @@
-package go4.szut.de.nametrainer.groupeditor;
+package go4.szut.de.nametrainer.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -500,6 +500,84 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         public int getSelection();
         public DataSource getDataSource();
         public View getClickedView();
+    }
+
+    /**
+     * Simple Implementation of onOptionSelectionListener
+     */
+    public static abstract class SimpleOnOptionSelectionListener
+            implements OnOptionSelectionListener {
+
+        public SimpleOnOptionSelectionListener() {
+
+        }
+
+        public abstract void onPositive(Interface i);
+        public abstract void onNegative(Interface i);
+
+        @Override
+        public void onPositiveSelection(Interface i) {
+            onPositive(i);
+        }
+
+        @Override
+        public void onNegativeSelection(Interface i) {
+            onNegative(i);
+        }
+
+        @Override
+        public void onDefaultSelection(Interface i) {
+
+        }
+
+        @Override
+        public void onNeutralSelection(Interface i) {
+
+        }
+
+        @Override
+        public void onViewOnClick(Interface i) {
+
+        }
+    }
+
+    /**
+     * Another implementation.
+     */
+    public static abstract class AdvancedSimpleOnOptionSelectionListener
+            implements OnOptionSelectionListener {
+
+        public AdvancedSimpleOnOptionSelectionListener() {
+
+        }
+
+        public abstract void onDefault(Interface i);
+        public abstract void onClickedView(Interface i);
+
+        @Override
+        public void onDefaultSelection(Interface i) {
+            onDefault(i);
+        }
+
+        @Override
+        public void onViewOnClick(Interface i) {
+            onClickedView(i);
+        }
+
+        @Override
+        public void onNegativeSelection(Interface i) {
+
+        }
+
+        @Override
+        public void onNeutralSelection(Interface i) {
+
+        }
+
+        @Override
+        public void onPositiveSelection(Interface i) {
+
+        }
     }
 
     /**
