@@ -1,19 +1,14 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
+import android.os.Build;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 
 import java.util.ArrayList;
 
@@ -25,7 +20,12 @@ import go4.szut.de.nametrainer.database.Member;
 /**
  * Created by Rene on 31.03.2016.
  */
-public class HorizontalScrollViewAdapter {
+public class HorizontalScrollViewAdapter implements View.OnLongClickListener {
+
+    //option identifier for editing a member
+    private static final int DIALOG_OPTION_EDIT = 0;
+    //option identifier for deleting a member
+    private static final int DIALOG_OPTION_DELETE = 1;
 
     private GroupEditorActivity activity;
     private Group group;
@@ -35,15 +35,13 @@ public class HorizontalScrollViewAdapter {
     private ArrayList<HorizontalScrollViewItem> items;
 
     private CustomHorizontalScrollView scrollView;
-    private HorizontalScrollViewItemListener listener;
+
+    private CustomAlertDialog memberEditorDialog;
 
     public HorizontalScrollViewAdapter(GroupEditorActivity activity, CustomHorizontalScrollView scrollView, Group group) {
         this.activity = activity;
         this.group = group;
         this.scrollView = scrollView;
-
-        listener = new HorizontalScrollViewItemListener(activity, this);
-
 
         source = DataSource.getDataSourceInstance(activity);
         source.open();
@@ -64,167 +62,160 @@ public class HorizontalScrollViewAdapter {
     }
 
     public void update(int id) {
+
         source = DataSource.getDataSourceInstance(activity);
         source.open();
         ArrayList<Member> t_members = source.getMembers(id);
         source.close();
-        if(t_members.size() != 0){
             members = t_members;
             items = createHorizontalScrollViewItems();
             scrollView.update();
-        }
 
     }
 
     public ArrayList<HorizontalScrollViewItem> createHorizontalScrollViewItems() {
-        ArrayList<HorizontalScrollViewItem> items = new ArrayList<HorizontalScrollViewItem>();
+        ArrayList<HorizontalScrollViewItem> items = new ArrayList<>();
         for(Member member : members) {
             HorizontalScrollViewItem item = new HorizontalScrollViewItem(activity, member);
-            item.setOnLongClickListener(listener);
+            item.setOnLongClickListener(this);
             items.add(item);
         }
         return items;
     }
 
-    public HorizontalScrollViewItemListener getListener() {
-        return listener;
+
+    @Override
+    public boolean onLongClick(View v) {
+        HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
+        Member member = (Member)item.getMember();
+
+        CustomAlertDialog itemOptionsDialog = new CustomAlertDialog(activity);
+        itemOptionsDialog.setArrayAdapter(android.R.layout.select_dialog_item, R.array.groupeditor_item_dialog_options);
+        itemOptionsDialog.setTitle(member.getFullName());
+        itemOptionsDialog.setValue(member);
+        itemOptionsDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+            @Override
+            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onDefaultSelection(CustomAlertDialog.Interface i) {
+                Member member = (Member)i.getValue();
+                switch(i.getSelection()) {
+                    case DIALOG_OPTION_EDIT:
+                        onEdit(member);
+                        break;
+                    case DIALOG_OPTION_DELETE:
+                        onDelete(member);
+                        break;
+                }
+            }
+
+            @Override
+            public void onViewOnClick(CustomAlertDialog.Interface i) {
+
+            }
+        });
+
+        itemOptionsDialog.show();
+
+        return true;
     }
 
+    private void onEdit(Member member) {
 
-    /**
-     * Created by Rene on 31.03.2016.
-     */
-    public static class HorizontalScrollViewItemListener implements View.OnLongClickListener{
+        memberEditorDialog = new CustomAlertDialog(activity);
+        memberEditorDialog.setDialogView(R.layout.activity_groupeditor_portraititem_dialog);
+        memberEditorDialog.setPositiveButtonTitle(R.string.groupeditor_edit_action_posbutton);
+        memberEditorDialog.setNegativeButtonTitle(R.string.groupeditor_edit_action_negbutton);
+        memberEditorDialog.setValue(member);
+        memberEditorDialog.setAdapter(this);
+        memberEditorDialog.addView(R.id.dialog_firstname);
+        memberEditorDialog.addView(R.id.dialog_surname);
+        memberEditorDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
+        memberEditorDialog.getView(EditText.class, R.id.dialog_firstname).setText(member.getFirstname());
+        memberEditorDialog.getView(EditText.class, R.id.dialog_surname).setText(member.getSurname());
+        memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image)
+                .setImageURI(Uri.parse(member.getImagePath()));
 
-        //option identifier for editing a member
-        private static final int DIALOG_OPTION_EDIT = 0;
-        //option identifier for deleting a member
-        private static final int DIALOG_OPTION_DELETE = 1;
+        memberEditorDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+            @Override
+            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+                Member member = (Member)i.getValue();
+                String firstname = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
+                String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
+                member.setFirstname(firstname);
+                member.setSurname(surname);
+                DataSource source = i.getDataSource();
+                source.open();
+                source.updateMember(member);
+                source.close();
+                ((HorizontalScrollViewAdapter)(i.getAdapter())).update(group.getId());
+                i.close();
+            }
 
-        private GroupEditorActivity activity;
-        private ArrayAdapter<String> horizontalScrollViewItemDialogAdapter;
+            @Override
+            public void onNegativeSelection(CustomAlertDialog.Interface i) {
+                i.close();
+            }
 
-        private HorizontalScrollViewAdapter adapter;
-        private DataSource source;
+            @Override
+            public void onNeutralSelection(CustomAlertDialog.Interface i) {
 
-        private AlertDialog.Builder memberEditorDialog;
-        private View memberEditorDialogView;
-        private EditText firstnameEditText;
-        private EditText surnameEditText;
-        private ImageView previewImageView;
+            }
 
-        public HorizontalScrollViewItemListener(GroupEditorActivity activity, HorizontalScrollViewAdapter adapter) {
-            this.activity = activity;
-            this.adapter = adapter;
+            @Override
+            public void onDefaultSelection(CustomAlertDialog.Interface i) {
 
-            horizontalScrollViewItemDialogAdapter = new ArrayAdapter<String>(activity,
-                    android.R.layout.select_dialog_item,
-                    activity.getResources().getStringArray(R.array.groupeditor_item_dialog_options));
+            }
 
-            source = DataSource.getDataSourceInstance(activity);
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-
-            HorizontalScrollViewItem item = (HorizontalScrollViewItem)v;
-            final Member member = item.getMember();
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle(member.getFullName());
-            builder.setCancelable(true);
-            builder.setAdapter(horizontalScrollViewItemDialogAdapter, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DIALOG_OPTION_EDIT:
-                            onEdit(member);
-                            break;
-                        case DIALOG_OPTION_DELETE:
-                            onDelete(member);
-                            break;
-                    }
-                }
-            });
-            builder.show();
-            return true;
-        }
-
-        private void onEdit(Member member) {
-
-
-            CustomAlertDialog.CustomDialogOnClickListener listener = new CustomAlertDialog.CustomDialogOnClickListener(member) {
-                @Override
-                public void onClick(DialogInterface dialog, int which, Object object) {
-                    Member member = (Member)object;
-                    switch(which) {
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            break;
-                        case DialogInterface.BUTTON_POSITIVE:
-                            String firstname = firstnameEditText.getText().toString();
-                            String surname = surnameEditText.getText().toString();
-                            member.setFirstname(firstname);
-                            member.setSurname(surname);
-                            source.open();
-                            source.updateMember(member);
-                            source.close();
-                            break;
-                    }
-                    dialog.dismiss();
-                }
-            };
-
-            LayoutInflater layoutInflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            memberEditorDialogView = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
-            memberEditorDialog = new AlertDialog.Builder(activity)
-                    .setCancelable(true)
-                    .setPositiveButton(activity.getResources().getString(R.string.groupeditor_edit_action_posbutton), listener)
-                    .setNegativeButton(activity.getResources().getString(R.string.groupeditor_edit_action_negbutton), listener)
-                    .setView(memberEditorDialogView);
-
-            memberEditorDialog.show();
-
-            firstnameEditText = (EditText)memberEditorDialogView.findViewById(R.id.dialog_firstname);
-            firstnameEditText.setText(member.getFirstname());
-            surnameEditText = (EditText)memberEditorDialogView.findViewById(R.id.dialog_surname);
-            surnameEditText.setText(member.getSurname());
-            previewImageView = (ImageView)memberEditorDialogView.findViewById(R.id.dialog_preview_image);
-            previewImageView.setOnClickListener(new View.OnClickListener(){
-
-                @Override
-                public void onClick(View v) {
-                    ImageView previewImageView = (ImageView)v;
-                    Member member = (Member)previewImageView.getTag();
-                    Intent galleryChooserIntent = new Intent();
-                    activity.getIntent().putExtra("member", member);
-                    galleryChooserIntent.setType("image/*");
+            @Override
+            public void onViewOnClick(CustomAlertDialog.Interface i) {
+                Member member = (Member)i.getValue();
+                Intent galleryChooserIntent = new Intent();
+                activity.getIntent().putExtra("member", member);
+                galleryChooserIntent.setType("image/*");
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
                     galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
-                    activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
-                            activity.getResources().getString(R.string.groupeditor_gallerychooser_title)), GroupEditorActivity.SELECT_PICTURE_EDIT);
+                else
+                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
 
-                }
-            });
-            previewImageView.setTag(member); //right here bro
-            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
-
-        }
-
-        private void onDelete(Member member) {
-            source.open();
-            source.deleteMember(member);
-            source.close();
-            adapter.update(member.getGroupID());
-        }
-
-
-
-
-        public void onImageSelected(String selectedImageUri, Member member) {
-            member.setImagePath(selectedImageUri);
-
-        }
+                activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                        activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
+                        GroupEditorActivity.SELECT_PICTURE_EDIT);
+            }
+        });
+        memberEditorDialog.show();
 
 
     }
+
+    private void onDelete(Member member) {
+        source.open();
+        source.deleteMember(member);
+        source.close();
+        update(member.getGroupID());
+    }
+
+    public void onImageSelected(Uri selectedImageUri) {
+        if(memberEditorDialog != null) {
+            memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image)
+                    .setImageURI(selectedImageUri);
+        }
+    }
+
+
 
     /**
      * Created by Rene on 24.03.2016.
@@ -255,12 +246,11 @@ public class HorizontalScrollViewAdapter {
             //the TextView that shows the name of the currently selected student
             galleryNameTextView = (TextView)findViewById(R.id.gallery_name_textview);
             Uri uri = Uri.parse(member.getImagePath());
-            if(uri != null){
-                galleryImageView.setImageURI(uri);
-            }
-            else{
-                galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
-            }
+            galleryImageView.setImageURI(uri);
+
+         //TODO uri überprüfen : falls uri nicht auf Bild verweist defaultimage setzen
+              //  galleryImageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
+
             galleryNameTextView.setText(member.getFullName());
 
         }
@@ -285,4 +275,5 @@ public class HorizontalScrollViewAdapter {
         }
 
     }
+
 }

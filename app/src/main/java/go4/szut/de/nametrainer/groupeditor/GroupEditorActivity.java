@@ -1,24 +1,19 @@
 package go4.szut.de.nametrainer.groupeditor;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -27,35 +22,25 @@ import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
 import go4.szut.de.nametrainer.options.OptionsActivity;
-import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
  */
-public class GroupEditorActivity extends AppCompatActivity
-    implements View.OnLongClickListener {
+public class GroupEditorActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final int SELECT_PICTURE_EDIT = 1337;
     public static final int SELECT_PICTURE_ADD = 1338;
 
-    //option identifier for editing a member
-    private static final int DIALOG_OPTION_EDIT = 0;
-    //option identifier for deleting a member
-    private static final int DIALOG_OPTION_DELETE = 1;
-
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
     private HorizontalScrollViewAdapter horizontalScrollViewAdapter;
-    private MemberAddActionListener addActionListener;
 
     //holds a list of groups containing multiple students
     private ListView groupListView;
     //holds the data for the groupListView
     private GroupListViewAdapter groupListViewAdapter;
 
-    //holds all options that needs to be displayed in OptionsDialog
-    //of a GroupListViewItem if a onLongClick event occurs
-    private ArrayAdapter<String> groupItemDialogAdapter;
+    private CustomAlertDialog memberAddDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,23 +54,7 @@ public class GroupEditorActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //hides the ActionBar of AppCompatActivity class
-        //Util.hideActionBar(this);
-
-        /**
-         * Load Data - Start
-         */
-
-
-        groupItemDialogAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.select_dialog_item,
-                getResources().getStringArray(R.array.groupeditor_item_dialog_options));
-        addActionListener  = new MemberAddActionListener(this);
-        groupListViewAdapter = new GroupListViewAdapter(this, addActionListener);
-
-        /**
-         * Load Data - End
-         */
+        groupListViewAdapter = new GroupListViewAdapter(this);
 
         //portrait stuff
         portraitScrollView = (CustomHorizontalScrollView)findViewById(R.id.portrait_scrollview);
@@ -117,7 +86,8 @@ public class GroupEditorActivity extends AppCompatActivity
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = getIntent().getParcelableExtra("member");
-                    horizontalScrollViewAdapter.getListener().onImageSelected(selectedImageUri.toString(), member);
+                    member.setImagePath(selectedImageUri.toString());
+                    horizontalScrollViewAdapter.onImageSelected(selectedImageUri);
                 }
             } else if(requestCode == SELECT_PICTURE_ADD) {
                 if(data != null && data.getData() != null) {
@@ -125,8 +95,7 @@ public class GroupEditorActivity extends AppCompatActivity
                     Member member = new Member();
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
-                    //move to ADDMemberListener
-                    groupListViewAdapter.getAddActionListener().onImageSelected(selectedImageUri);
+                    onImageSelected(selectedImageUri);
 
                 }
             }
@@ -154,120 +123,17 @@ public class GroupEditorActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        HorizontalScrollViewAdapter.HorizontalScrollViewItem item = (HorizontalScrollViewAdapter.HorizontalScrollViewItem)v;
-        openItemDialog(item);
-        return true;
-    }
-
-    private void openItemDialog(final HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        //builder.setTitle(item.getName());
-        builder.setCancelable(true);
-        builder.setAdapter(groupItemDialogAdapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DIALOG_OPTION_EDIT:
-                        onEdit(item);
-                        break;
-                    case DIALOG_OPTION_DELETE:
-                        onDelete(item);
-                        break;
-                }
-            }
-        });
-        builder.show();
-
-        /* Code Snippet for replacement wonderful dialog
-
-        CustomAlertDialog itemOptionsDialog = new CustomAlertDialog(this);
-        itemOptionsDialog.setArrayAdapter(android.R.layout.select_dialog_item, R.array.groupeditor_item_dialog_options);
-        itemOptionsDialog.setValue(item);
-        itemOptionsDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
-            @Override
-            public void onPositiveSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onNegativeSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onNeutralSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onDefaultSelection(CustomAlertDialog.Interface i) {
-                if(i.hasCallback() && i.hasValue()) {
-                    HorizontalScrollViewAdapter.HorizontalScrollViewItem item =
-                            (HorizontalScrollViewAdapter.HorizontalScrollViewItem)i.getValue();
-                    switch (i.getSelection()) {
-                        case DIALOG_OPTION_EDIT:
-                            onEdit(item);
-                            break;
-                        case DIALOG_OPTION_DELETE:
-                            onDelete(item);
-                            break;
-                    }
-                }
-            }
-        });
-        itemOptionsDialog.show();
-        */
-
-    }
-
-    private void onEdit(HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
-
-    }
-
-    private void onDelete(HorizontalScrollViewAdapter.HorizontalScrollViewItem item) {
-
-    }
-
     private void onAddGroup() {
-        //TODO Komponenten vll auslagern
-        //EditText that is on AlertDialog for input
-        EditText groupNameEditText = new EditText(this);
-        groupNameEditText.setHint(getResources().getString(R.string.groupeditor_add_action_edittext));
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        groupNameEditText.setLayoutParams(layoutParams);
-
-        //Listener for AlertDialog buttons
-        GroupEditorAddActionListener listener = new GroupEditorAddActionListener(
-                this, groupNameEditText, groupListViewAdapter);
-
-        //AlertDialog that pops up
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
-                .setCancelable(true)
-                .setPositiveButton(getResources().getString(R.string.groupeditor_add_action_posbutton), listener)
-                .setNegativeButton(getResources().getString(R.string.groupeditor_add_action_negbutton), listener);
-        alertDialog.setView(groupNameEditText);
-        alertDialog.show();
-
-
-        /*EditText groupNameEditText = new EditText(this);
-        groupNameEditText.setHint(getResources().getString(R.string.groupeditor_add_action_edittext));
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        groupNameEditText.setLayoutParams(layoutParams);
         CustomAlertDialog addGroupDialog = new CustomAlertDialog(this);
         addGroupDialog.setAdapter(groupListViewAdapter);
-        addGroupDialog.setDialogView(groupNameEditText);
-        addGroupDialog.addView(groupNameEditText);
+        addGroupDialog.setDialogView(R.layout.activity_groupeditor_edittext);
+        addGroupDialog.addView(R.id.group_add_edittext);
         addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
         addGroupDialog.setNegativeButtonTitle(R.string.groupeditor_add_action_negbutton);
         addGroupDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
             @Override
             public void onPositiveSelection(CustomAlertDialog.Interface i) {
-                EditText groupNameEditText = (EditText)i.getViewAt(0);
+                EditText groupNameEditText = i.getView(EditText.class, R.id.group_add_edittext);
                 String groupName = groupNameEditText.getText().toString();
                 DataSource source = i.getDataSource();
                 source.open();
@@ -292,221 +158,97 @@ public class GroupEditorActivity extends AppCompatActivity
             public void onDefaultSelection(CustomAlertDialog.Interface i) {
 
             }
+
+            @Override
+            public void onViewOnClick(CustomAlertDialog.Interface i) {
+
+            }
         });
         addGroupDialog.show();
-
-        */
-
     }
 
     public HorizontalScrollViewAdapter getHorizontalScrollViewAdapter() {
         return horizontalScrollViewAdapter;
     }
 
-    /**
-     * Created by Rene on 31.03.2016.
-     * This class won't be necessary anymore in future, because of the wonderful custom dialog.
-     */
-    public static class GroupEditorAddActionListener implements DialogInterface.OnClickListener {
+    @Override
+    public void onClick(View v) {
+        Button button = (Button)v;
+        Group group = (Group)button.getTag();
 
-        private Context context;
-        private EditText groupNameEditText;
-        private GroupListViewAdapter groupListViewAdapter;
+        memberAddDialog = new CustomAlertDialog(this);
+        memberAddDialog.setAdapter(horizontalScrollViewAdapter);
+        memberAddDialog.setDialogView(R.layout.activity_groupeditor_portraititem_dialog);
+        memberAddDialog.setPositiveButtonTitle(R.string.button_title_add);
+        memberAddDialog.setNegativeButtonTitle(R.string.button_title_cancel);
+        memberAddDialog.setValue(group);
+        memberAddDialog.addView(R.id.dialog_firstname);
+        memberAddDialog.addView(R.id.dialog_surname);
+        memberAddDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
+        memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image)
+                .setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
 
-        public GroupEditorAddActionListener(Context context, EditText groupNameEditText,
-                                            GroupListViewAdapter groupListViewAdapter) {
-            this.context = context;
-            this.groupNameEditText = groupNameEditText;
-            this.groupListViewAdapter = groupListViewAdapter;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch(which) {
-                case DialogInterface.BUTTON_NEGATIVE:
-                    break;
-                case DialogInterface.BUTTON_POSITIVE:
-                    String groupName = groupNameEditText.getText().toString();
-                    //retrieves the DataSource instance and inserts the new group
-                    DataSource source = DataSource.getDataSourceInstance(context);
+        memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+            @Override
+            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+                if(getIntent().getParcelableExtra("member") != null) {
+                    Group group = (Group) i.getValue();
+                    String firstname = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
+                    String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
+                    Member member = getIntent().getParcelableExtra("member");
+                    member.setFirstname(firstname);
+                    member.setSurname(surname);
+                    member.setGroupID(group.getId());
+                    getIntent().removeExtra("member");
+                    DataSource source = i.getDataSource();
                     source.open();
-                    source.insertGroup(groupName);
+                    source.insertMember(member);
                     source.close();
-                    //notifies the adapter to update
-                    groupListViewAdapter.notifyDataSetChanged();
-                    break;
+                    ((HorizontalScrollViewAdapter)(i.getAdapter())).update(group.getId());
+                    i.close();
+                } else {
+                    Toast.makeText(GroupEditorActivity.this,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
+                }
             }
-            dialog.dismiss();
-        }
 
+            @Override
+            public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onDefaultSelection(CustomAlertDialog.Interface i) {
+
+            }
+
+            @Override
+            public void onViewOnClick(CustomAlertDialog.Interface i) {
+                Intent galleryChooserIntent = new Intent();
+                galleryChooserIntent.setType("image/*");
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+                    galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
+                else
+                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                        getResources().getString(R.string.groupeditor_gallerychooser_title)),
+                        GroupEditorActivity.SELECT_PICTURE_ADD);
+            }
+        });
+        memberAddDialog.show();
 
 
     }
 
-    /**
-     * Created by Rene on 03.04.2016.
-     */
-    public static class MemberAddActionListener implements View.OnClickListener {
-
-        private GroupEditorActivity activity;
-
-        //TODO This shit belongs to past if the old AlertDialog gets replaced through the wonderful CustomDialog
-        private AlertDialog.Builder memberAddDialog;
-        private View memberAddDialogView;
-        private EditText firstnameEditText;
-        private EditText surnameEditText;
-        private ImageView previewImageView;
-
-        public MemberAddActionListener(GroupEditorActivity activity) {
-            this.activity = activity;
-        }
-
-
-        @Override
-        public void onClick(View v) {
-            Button button = (Button)v;
-            Group group = (Group)button.getTag();
-
-            CustomAlertDialog.CustomDialogOnClickListener listener = new CustomAlertDialog.CustomDialogOnClickListener(group) {
-                @Override
-                public void onClick(DialogInterface dialog, int which, Object object) {
-                    Group group = (Group)object;
-                    switch(which) {
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            dialog.dismiss();
-                            break;
-                        case DialogInterface.BUTTON_POSITIVE:
-                            Util.l(activity, "Das Extra ist Vorhanden: " + activity.getIntent().hasExtra("member"));
-                            if(activity.getIntent().getParcelableExtra("member") != null) {
-                                String firstname = firstnameEditText.getText().toString();
-                                String surname = surnameEditText.getText().toString();
-                                Member member = activity.getIntent().getParcelableExtra("member");
-                                member.setFirstname(firstname);
-                                member.setSurname(surname);
-                                member.setGroupID(group.getId());
-
-                                DataSource source = DataSource.getDataSourceInstance(activity);
-                                source.open();
-                                source.insertMember(member);
-                                source.close();
-                                activity.getHorizontalScrollViewAdapter().update(group.getId());
-                                dialog.dismiss();
-                            }else{
-                                Util.l(activity,"ISSER NULL?  a:" + (activity.getIntent().getParcelableExtra("member") == null));
-                                Toast.makeText(activity,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
-
-                            }
-                            break;
-                    }
-
-                }
-            };
-
-            LayoutInflater layoutInflater = (LayoutInflater)activity.getSystemService(LAYOUT_INFLATER_SERVICE);
-            memberAddDialogView = layoutInflater.inflate(R.layout.activity_groupeditor_portraititem_dialog, null);
-            memberAddDialog = new AlertDialog.Builder(activity)
-                    .setCancelable(true)
-                    .setPositiveButton(activity.getResources().getString(R.string.button_title_add), listener)
-                    .setNegativeButton(activity.getResources().getString(R.string.button_title_cancel), listener)
-                    .setView(memberAddDialogView);
-
-            memberAddDialog.show();
-
-
-
-            /* Code Snippet for Replacement
-
-            CustomAlertDialog dialog = new CustomAlertDialog(activity);
-            dialog.setDialogView(R.layout.activity_groupeditor_portraititem_dialog);
-            dialog.setPositiveButtonTitle(R.string.button_title_add);
-            dialog.setNegativeButtonTitle(R.string.button_title_cancel);
-            dialog.setValue(group);
-            dialog.addView(R.id.dialog_firstname);
-            dialog.addView(R.id.dialog_surname);
-            dialog.addViewIncludingOnClick(R.id.dialog_preview_image);
-            dialog.getView(ImageView.class, R.id.dialog_preview_image).
-                    setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_launcher));
-
-            dialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
-                @Override
-                public void onPositiveSelection(CustomAlertDialog.Interface i) {
-                    if(activity.getIntent().getParcelableExtra("member") != null) {
-                        Group group = (Group) i.getValue();
-                        String firstname = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
-                        String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
-                        Member member = activity.getIntent().getParcelableExtra("member");
-                        member.setFirstname(firstname);
-                        member.setSurname(surname);
-                        member.setGroupID(group.getId());
-
-                        DataSource source = i.getDataSource();
-                        source.open();
-                        source.insertMember(member);
-                        source.close();
-                        activity.getHorizontalScrollViewAdapter().update(group.getId());
-                        i.close();
-                    }else{
-                        Toast.makeText(activity,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-                @Override
-                public void onNegativeSelection(CustomAlertDialog.Interface i) {
-
-                }
-
-                @Override
-                public void onNeutralSelection(CustomAlertDialog.Interface i) {
-
-                }
-
-                @Override
-                public void onDefaultSelection(CustomAlertDialog.Interface i) {
-
-                }
-
-                @Override
-                public void onViewOnClick(CustomAlertDialog.Interface i) {
-                    ImageView previewImageView = (ImageView)i.getClickedView();
-                    Member member = (Member)previewImageView.getTag();
-                    Intent galleryChooserIntent = new Intent();
-                    activity.getIntent().putExtra("member", member);
-                    galleryChooserIntent.setType("image/*");
-                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
-                            activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
-                            GroupEditorActivity.SELECT_PICTURE_ADD);
-                }
-            });
-            dialog.show(); */
-
-
-            firstnameEditText = (EditText) memberAddDialogView.findViewById(R.id.dialog_firstname);
-            firstnameEditText.setHint(activity.getResources().getString(R.string.hint_firstname));
-            surnameEditText = (EditText) memberAddDialogView.findViewById(R.id.dialog_surname);
-            surnameEditText.setHint(activity.getResources().getString(R.string.hint_surname));
-            previewImageView = (ImageView) memberAddDialogView.findViewById(R.id.dialog_preview_image);
-            previewImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent galleryChooserIntent = new Intent();
-                    galleryChooserIntent.setType("image/*");
-                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
-                            activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
-                            SELECT_PICTURE_ADD);
-
-                }
-            });
-            previewImageView.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_action_name));
-
-
-        }
-
-        public void onImageSelected(Uri selectedImageUri) {
-            previewImageView.setImageURI(selectedImageUri);
-
+    public void onImageSelected(Uri selectedImageUri) {
+        if(memberAddDialog != null) {
+            memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image)
+                    .setImageURI(selectedImageUri);
         }
     }
+
 }

@@ -2,15 +2,11 @@ package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import go4.szut.de.nametrainer.database.DataSource;
 

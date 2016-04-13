@@ -78,8 +78,11 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
             item.setHighlightOff();
             differenceToScreenCenter.add(Math.abs(screenCenter - (item.getPosition() + (item.getWidth() / 2))));
         }
-        int minIndex = differenceToScreenCenter.indexOf(Collections.min(differenceToScreenCenter));
-        adapter.getHorizontalScrollViewItemAt(minIndex).setHighlightOn();
+        if(adapter.getSize() != 0){
+            int minIndex = differenceToScreenCenter.indexOf(Collections.min(differenceToScreenCenter));
+            adapter.getHorizontalScrollViewItemAt(minIndex).setHighlightOn();
+        }
+
 
     }
 
