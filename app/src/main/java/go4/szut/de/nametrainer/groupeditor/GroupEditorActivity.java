@@ -305,6 +305,7 @@ public class GroupEditorActivity extends AppCompatActivity
 
     /**
      * Created by Rene on 31.03.2016.
+     * This class won't be necessary anymore in future, because of the wonderful custom dialog.
      */
     public static class GroupEditorAddActionListener implements DialogInterface.OnClickListener {
 

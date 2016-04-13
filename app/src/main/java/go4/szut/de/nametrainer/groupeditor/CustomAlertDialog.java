@@ -19,25 +19,71 @@ import go4.szut.de.nametrainer.database.DataSource;
  */
 public class CustomAlertDialog implements DialogInterface.OnClickListener, View.OnClickListener {
 
+    /**
+     * constant for no selection
+     */
     public static final int NO_SELECTION = Integer.MAX_VALUE;
 
+    /**
+     * holds the context of the activity
+     */
     private Context context;
 
+    /**
+     * holds the alert dialog builder
+     */
     private AlertDialog.Builder dialogBuilder;
+
+    /**
+     * holds the view of the dialog
+     */
     private View dialogView;
 
+    /**
+     * holds the onOptionSelectionListener that is the callback for events
+     */
     private OnOptionSelectionListener optionSelectionListener;
 
+    /**
+     * holds the title for the positive button of the alert dialog
+     */
     private String positiveButtonTitle;
+
+    /**
+     * holds the title for the negative button of the alert dialog
+     */
     private String negativeButtonTitle;
 
+    /**
+     * holds views matched to keys, its like a Java HashMap
+     */
     private SparseArray<View> views;
+
+    /**
+     * is a place holder for an object that might be important for callbacks
+     */
     private Object callback;
+
+    /**
+     * is a place holder for an adapter that might be important for lists, etc.
+     */
     private Object adapter;
+
+    /**
+     * is a place holder for a certain value to store in dialog in order to pass
+     * it to the listener while an event
+     */
     private Object value;
 
+    /**
+     * holds a data source instance that has access to database
+     */
     private DataSource source;
 
+    /**
+     * Takes the context of an activity.
+     * @param context - the context
+     */
     public CustomAlertDialog(Context context) {
         this.context = context;
         dialogBuilder = new AlertDialog.Builder(context);
@@ -45,35 +91,68 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         source = DataSource.getDataSourceInstance(context);
     }
 
+    /**
+     * Sets the title of the positive button.
+     * @param positiveButtonTitle - title of the button
+     */
     public void setPositiveButtonTitle(String positiveButtonTitle) {
         this.positiveButtonTitle = positiveButtonTitle;
     }
 
+    /**
+     * Sets the title of the positive button.
+     * @param positiveButtonTitleId - id that points to a resource string
+     */
     public void setPositiveButtonTitle(int positiveButtonTitleId) {
         this.positiveButtonTitle = context.getResources().getString(positiveButtonTitleId);
     }
 
+    /**
+     * Sets the title of the negative button.
+     * @param negativeButtonTitle - the title of the button
+     */
     public void setNegativeButtonTitle(String negativeButtonTitle) {
         this.negativeButtonTitle = negativeButtonTitle;
     }
 
+    /**
+     * Sets the title of the negative button.
+     * @param negativeButtonTitleId - id that points to a resource string
+     */
     public void setNegativeButtonTitle(int negativeButtonTitleId) {
         this.negativeButtonTitle = context.getResources().getString(negativeButtonTitleId);
     }
 
+    /**
+     * Sets the title of the dialog.
+     * @param title - the title of the dialog
+     */
     public void setTitle(String title) {
         dialogBuilder.setTitle(title);
     }
 
+    /**
+     * Sets the dialog view to the passed one.
+     * @param dialogView - the dialog view
+     */
     public void setDialogView(View dialogView) {
         this.dialogView = dialogView;
     }
 
+    /**
+     * Sets the dialog view to the defined one of the passed resources id.
+     * @param dialogViewId - the resource id for dialog view layout
+     */
     public void setDialogView(int dialogViewId) {
         this.dialogView = ((LayoutInflater)context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(dialogViewId, null);
     }
 
+    /**
+     * Finds a view by id that is a child of the dialog view.
+     * @param id - the id of the view
+     * @return the view instance that belongs to the passed id, otherwise the result is null
+     */
     public View findViewById(int id) {
         if(dialogView != null) {
             return dialogView.findViewById(id);
@@ -81,6 +160,13 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         return null;
     }
 
+    /**
+     * Casts a view to the given type that is found by the passed view.
+     * @param type - the class object of the class that the view should be casted in
+     * @param id - the id that belongs to the searched view
+     * @param <T> - its the generic type of the class that type is an instance of
+     * @return the casted view, otherwise the result is null
+     */
     public <T> T getView(Class<T> type, int id) {
         View view = views.get(id);
         if(view != null) {
@@ -89,6 +175,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         return null;
     }
 
+    /**
+     * Adds a view to the list.
+     * @param viewId - the id of the view that is a child of the dialog view
+     * @return the found view by passed id, otherwise the result is null
+     */
     public View addView(int viewId) {
         View view = findViewById(viewId);
         if(view != null) {
@@ -98,6 +189,37 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         return null;
     }
 
+    /**
+     * Adds a view to the list.
+     * @param viewId - the id that the passed view should be found with
+     * @param view - the view
+     * @return the view that is stored to the list
+     */
+    public View addView(int viewId, View view) {
+        if(view != null) {
+            views.put(viewId, view);
+        }
+        return view;
+    }
+
+    /**
+     * Adds a view to the list and sets an onClick listener to
+     * the passed view.
+     * @param viewId - the id that the passed view should be found with
+     * @param view - the view
+     */
+    public void addViewIncludingOnClick(int viewId, View view) {
+        if(view != null) {
+            view.setOnClickListener(this);
+            views.put(viewId, view);
+        }
+    }
+
+    /**
+     * Adds an onClick listener to a view that is already stored
+     * in the list.
+     * @param viewId - the id that belongs to the view for onClick listener
+     */
     public void addViewIncludingOnClick(int viewId) {
         View view = addView(viewId);
         if(view != null) {
@@ -105,22 +227,44 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         }
     }
 
+    /**
+     * Sets the onOptionSelectionListener for this custom dialog.
+     * @param optionSelectionListener - the listener
+     */
     public void setOptionSelectionListener(OnOptionSelectionListener optionSelectionListener) {
         this.optionSelectionListener = optionSelectionListener;
     }
 
+    /**
+     * Sets the place holder value to the passed one.
+     * @param value - a value
+     */
     public void setValue(Object value) {
         this.value = value;
     }
 
+    /**
+     * Sets the place holder adapter to the passed one.
+     * @param adapter - an adapter
+     */
     public void setAdapter(Object adapter) {
         this.adapter = adapter;
     }
 
+    /**
+     * Sets the place holder callback to the passed one.
+     * @param callback - a callback
+     */
     public void setCallback(Object callback) {
         this.callback = callback;
     }
 
+    /**
+     * Sets an array adapter to the dialog, if a collection of options in a list is needed.
+     * @param selectionLayoutId - the layout id of the dialog
+     * @param selectionStringArrayId - the id to a resource array
+     * @return the created array adapter
+     */
     public ArrayAdapter<String> setArrayAdapter(int selectionLayoutId, int selectionStringArrayId) {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, selectionLayoutId,
                 context.getResources().getStringArray(selectionStringArrayId));
@@ -128,6 +272,9 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         return arrayAdapter;
     }
 
+    /**
+     * Shows the dialog.
+     */
     public void show() {
         if(dialogView != null) {
             dialogBuilder.setView(dialogView);
@@ -139,8 +286,19 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
     }
 
 
+    /**
+     * The onClick method of the standard alert dialog that will be called
+     * if an event is trigged by the user.
+     * @param dialog - the dialog interface
+     * @param which - indicator which options is selected
+     */
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
+        /*
+            Creation of the own interface that is passed to the callbacks
+            of the own listener. Values that should be available for access to
+            some other classes get wrapped in methods for return.
+         */
         Interface anInterface = new Interface() {
 
             @Override
@@ -203,6 +361,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
 
         };
 
+        /*
+          Triggers the different methods of the own listener. The indicator
+          which decides which option should be triggered and passes the
+          interface for access to values of this custom dialog instance.
+         */
         switch (which) {
             case DialogInterface.BUTTON_NEGATIVE:
                 if (optionSelectionListener != null) {
@@ -221,13 +384,26 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
                 break;
         }
 
+        /*
+         * Is triggered at anytime to ensure a callback if no either of
+         * the previous methods was called.
+         */
         if (optionSelectionListener != null) {
             optionSelectionListener.onDefaultSelection(anInterface);
         }
     }
 
+    /**
+     * The onClick method of an onClick listener for a view.
+     * @param v - the source view where the onClick event is coming from
+     */
     @Override
     public void onClick(final View v) {
+         /*
+            Creation of the own interface that is passed to the callbacks
+            of the own listener. Values that should be available for access to
+            some other classes get wrapped in methods for return.
+         */
         Interface anInterface = new Interface() {
 
             @Override
@@ -290,11 +466,19 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
 
         };
 
+        /*
+            Is triggered for own callback in the onOptionSelectedListener
+            when an onClick event of a certain view occurs.
+         */
         if(optionSelectionListener != null) {
             optionSelectionListener.onViewOnClick(anInterface);
         }
     }
 
+    /**
+     * Definition of the onOptionSelectionListener that is used for
+     * callback of this custom dialog instance.
+     */
     public interface OnOptionSelectionListener {
         public void onPositiveSelection(Interface i);
         public void onNegativeSelection(Interface i);
@@ -303,6 +487,10 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         public void onViewOnClick(Interface i);
     }
 
+    /**
+     * Definition of the Interface that handles the access to
+     * the values of this custom dialog instance.
+     */
     public interface Interface {
         public <T extends View> T getView(Class<T> type, int viewId);
         public View getViewAt(int index);
@@ -320,6 +508,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
 
     /**
      * Created by Rene on 03.04.2016.
+     * Will also not be necessary anymore in future.
      */
     public abstract static class CustomDialogOnClickListener implements DialogInterface.OnClickListener {
 

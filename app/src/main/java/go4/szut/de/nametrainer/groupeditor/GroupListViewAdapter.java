@@ -200,6 +200,54 @@ public class GroupListViewAdapter extends BaseAdapter {
                     .setNegativeButton(context.getResources().getString(R.string.groupeditor_edit_action_negbutton), listener);
             alertDialog.setView(groupNameEditText);
             alertDialog.show();
+
+            /* Code Snippet for replacing
+
+            CustomAlertDialog dialog = new CustomAlertDialog(context);
+            EditText groupNameEditText = new EditText(context);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            groupNameEditText.setLayoutParams(layoutParams);
+            groupNameEditText.setText(group.getName());
+            dialog.addView(1, groupNameEditText);
+            dialog.setValue(group);
+            dialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+                @Override
+                public void onPositiveSelection(CustomAlertDialog.Interface i) {
+                    Group group = (Group)i.getValue();
+                    EditText groupNameEditText = i.getView(EditText.class, 1);
+                    String groupName = groupNameEditText.getText().toString();
+                    group.setName(groupName);
+                    DataSource source = i.getDataSource();
+                    source.open();
+                    source.updateGroup(group);
+                    source.close();
+                    i.close();
+                }
+
+                @Override
+                public void onNegativeSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onNeutralSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onDefaultSelection(CustomAlertDialog.Interface i) {
+
+                }
+
+                @Override
+                public void onViewOnClick(CustomAlertDialog.Interface i) {
+
+                }
+            });
+            */
+
         }
 
         private void onDelete(Group group) {
@@ -212,6 +260,7 @@ public class GroupListViewAdapter extends BaseAdapter {
 
         /**
          * Created by Rene on 31.03.2016.
+         * This listener won't be necessary anymore in future, because of the wonderful custom dialog
          */
         public static class GroupEditorEditActionListener implements DialogInterface.OnClickListener {
 
