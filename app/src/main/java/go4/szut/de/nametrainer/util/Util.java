@@ -9,26 +9,15 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
+
 
 /**
  * Created by Rene on 24.03.2016.
  */
 public class Util {
-
-    /**
-     * Hides the ActionBar of the passed Activity, if one is present.
-     * @param activity - the activity with the corresponding ActionBar that needs to be hidden
-     * @return true if the ActionBar was hidden, or false if no ActionBar is present
-     * which can be hidden
-     */
-    public static boolean hideActionBar(Activity activity) {
-        ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.hide();
-            return true;
-        }
-        return false;
-    }
 
     /**
      * Creates an ArrayList with numberOfNonSenseItems strings.
@@ -51,13 +40,58 @@ public class Util {
         Log.d(obj.getClass().getSimpleName(), message);
     }
 
-    public static void makeUriPersistent(Intent data, Activity activity){
+    /**
+     * Wrapper method for Log.d
+     * @param obj - the obj for testing
+     * @param tag - the tag for Log.d
+     */
+    public static void n(Object obj, String tag) {
+        Log.d(tag, "Is Object null? : " + (obj == null));
+    }
 
+    /**
+     * Makes an uri persistent and life easier.
+     * @param data - the intent from onActivityResult
+     * @param activity - the activity
+     */
+    public static void makeUriPersistent(Intent data, Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int takeFlags = data.getFlags();
             takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
         }
+    }
+
+    /**
+     * ImagePicker class
+     */
+    public static class ImagePicker {
+
+        private AppCompatActivity activity;
+        private Intent galleryChooserIntent;
+
+        public ImagePicker(AppCompatActivity activity) {
+            this.activity = activity;
+            galleryChooserIntent = new Intent();
+            galleryChooserIntent.setType("image/*");
+            setAction();
+        }
+
+        public void open(int requestCode, Object data) {
+            if(requestCode == GroupEditorActivity.SELECT_PICTURE_EDIT)
+                activity.getIntent().putExtra("member", (Member)data);
+            activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
+                    activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
+                    requestCode);
+        }
+
+        private void setAction() {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+                galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
+            else
+                galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        }
+
     }
 
 }

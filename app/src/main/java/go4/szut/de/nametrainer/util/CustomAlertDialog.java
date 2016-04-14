@@ -41,6 +41,12 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
     private OnOptionSelectionListener optionSelectionListener;
 
     /**
+     * holds the onUpdateListener that is the callback for an update event
+     */
+    private OnUpdateListener updateListener;
+    private int updateIdentifier;
+
+    /**
      * holds the title for the positive button of the alert dialog
      */
     private String positiveButtonTitle;
@@ -232,6 +238,15 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
     }
 
     /**
+     * Sets the onUpdateListener for this custom dialog.
+     * @param updateListener - the listener
+     */
+    public void setUpdateListener(int updateIdentifier, OnUpdateListener updateListener) {
+        this.updateListener = updateListener;
+        this.updateIdentifier = updateIdentifier;
+    }
+
+    /**
      * Sets the place holder value to the passed one.
      * @param value - a value
      */
@@ -343,8 +358,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
             }
 
             @Override
-            public void close() {
+            public void close(Object data) {
                 dialog.dismiss();
+                if(updateListener != null) {
+                    updateListener.update(updateIdentifier, data);
+                }
             }
 
             public int getSelection() {
@@ -448,7 +466,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
             }
 
             @Override
-            public void close() {
+            public void close(Object data) {
 
             }
 
@@ -496,10 +514,16 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         public boolean hasValue();
         public Object getCallback();
         public boolean hasCallback();
-        public void close();
+        public void close(Object data);
         public int getSelection();
         public DataSource getDataSource();
         public View getClickedView();
+    }
+
+    public interface OnUpdateListener {
+
+        public void update(int updateIdentifier, Object data);
+
     }
 
     /**

@@ -20,13 +20,16 @@ import go4.szut.de.nametrainer.util.CustomAlertDialog;
 /**
  * Created by Rene on 24.03.2016.
  */
-public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClickListener
+public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClickListener,
+        CustomAlertDialog.OnUpdateListener
 {
 
     //option identifier for editing a member
     private static final int DIALOG_OPTION_EDIT = 0;
     //option identifier for deleting a member
     private static final int DIALOG_OPTION_DELETE = 1;
+
+    private static final int IDENTIFIER_GROUPLISTVIEW_ADAPTER = 0x8;
 
 
     private LayoutInflater layoutInflater;
@@ -130,7 +133,7 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
         CustomAlertDialog dialog = new CustomAlertDialog(activity);
         dialog.setDialogView(R.layout.activity_groupeditor_edittext);
         dialog.addView(R.id.group_add_edittext);
-        dialog.setAdapter(this);
+        dialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         dialog.getView(EditText.class, R.id.group_add_edittext).setText(group.getName());
         dialog.setPositiveButtonTitle(R.string.groupeditor_edit_action_posbutton);
         dialog.setNegativeButtonTitle(R.string.groupeditor_edit_action_negbutton);
@@ -146,13 +149,12 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
                 source.open();
                 source.updateGroup(group);
                 source.close();
-                ((GroupListViewAdapter)i.getAdapter()).notifyDataSetChanged();
-                i.close();
+                i.close(null);
             }
 
             @Override
             public void onNegative(CustomAlertDialog.Interface i) {
-                i.close();
+                i.close(null);
             }
 
         });
@@ -164,6 +166,15 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
         source.deleteGroup(group);
         source.close();
         this.notifyDataSetChanged();
+    }
+
+    @Override
+    public void update(int updateIdentifier, Object data) {
+        switch(updateIdentifier) {
+            case IDENTIFIER_GROUPLISTVIEW_ADAPTER:
+                notifyDataSetChanged();
+                break;
+        }
     }
 }
 

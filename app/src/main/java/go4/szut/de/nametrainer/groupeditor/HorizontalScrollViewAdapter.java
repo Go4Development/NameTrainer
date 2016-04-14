@@ -14,16 +14,19 @@ import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
 import go4.szut.de.nametrainer.util.CustomAlertDialog;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 31.03.2016.
  */
-public class HorizontalScrollViewAdapter implements View.OnLongClickListener {
+public class HorizontalScrollViewAdapter implements View.OnLongClickListener, CustomAlertDialog.OnUpdateListener {
 
     //option identifier for editing a member
     private static final int DIALOG_OPTION_EDIT = 0;
     //option identifier for deleting a member
     private static final int DIALOG_OPTION_DELETE = 1;
+
+    private static final int IDENTIFIER_HORIZONTALSCROLLVIEW_ADAPTER = 0x4;
 
     private GroupEditorActivity activity;
     private DataSource source;
@@ -118,7 +121,7 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener {
         memberEditorDialog.setPositiveButtonTitle(R.string.groupeditor_edit_action_posbutton);
         memberEditorDialog.setNegativeButtonTitle(R.string.groupeditor_edit_action_negbutton);
         memberEditorDialog.setValue(member);
-        memberEditorDialog.setAdapter(this);
+        memberEditorDialog.setUpdateListener(IDENTIFIER_HORIZONTALSCROLLVIEW_ADAPTER, this);
         memberEditorDialog.addView(R.id.dialog_firstname);
         memberEditorDialog.addView(R.id.dialog_surname);
         memberEditorDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
@@ -139,31 +142,18 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener {
                 source.open();
                 source.updateMember(member);
                 source.close();
-                ((HorizontalScrollViewAdapter)(i.getAdapter())).update(member.getGroupID());
-                i.close();
+                i.close(member);
             }
 
             @Override
             public void onNegative(CustomAlertDialog.Interface i) {
-                i.close();
+                i.close(null);
             }
 
             @Override
             public void onClick(CustomAlertDialog.Interface i) {
-                //TODO Maybe auslagern
-                //
-                Member member = (Member)i.getValue();
-                Intent galleryChooserIntent = new Intent();
-                activity.getIntent().putExtra("member", member);
-                galleryChooserIntent.setType("image/*");
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-                    galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
-                else
-                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-
-                activity.startActivityForResult(Intent.createChooser(galleryChooserIntent,
-                        activity.getResources().getString(R.string.groupeditor_gallerychooser_title)),
-                        GroupEditorActivity.SELECT_PICTURE_EDIT);
+                Util.ImagePicker picker = new Util.ImagePicker(activity);
+                picker.open(GroupEditorActivity.SELECT_PICTURE_EDIT, i.getValue());
             }
         });
         memberEditorDialog.show();
@@ -186,4 +176,15 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener {
     }
 
 
+    @Override
+    public void update(int updateIdentifier, Object data) {
+        switch(updateIdentifier) {
+            case IDENTIFIER_HORIZONTALSCROLLVIEW_ADAPTER:
+                Member member = (Member)data;
+                if(member != null) {
+                    update(member.getGroupID());
+                }
+                break;
+        }
+    }
 }

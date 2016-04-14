@@ -28,10 +28,14 @@ import go4.szut.de.nametrainer.util.Util;
 /**
  * Created by Rene on 24.03.2016.
  */
-public class GroupEditorActivity extends AppCompatActivity implements View.OnClickListener {
+public class GroupEditorActivity extends AppCompatActivity implements View.OnClickListener,
+    CustomAlertDialog.OnUpdateListener {
 
     public static final int SELECT_PICTURE_EDIT = 1337;
     public static final int SELECT_PICTURE_ADD = 1338;
+
+    private static final int IDENTIFIER_HORIZONTALSCROLLVIEW_ADAPTER = 0x4;
+    private static final int IDENTIFIER_GROUPLISTVIEW_ADAPTER = 0x8;
 
     //holds a bunch of horizontal positioned images of students of the current selected group
     private CustomHorizontalScrollView portraitScrollView;
@@ -131,9 +135,9 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
 
     private void onAddGroup() {
         CustomAlertDialog addGroupDialog = new CustomAlertDialog(this);
-        addGroupDialog.setAdapter(groupListViewAdapter);
         addGroupDialog.setDialogView(R.layout.activity_groupeditor_edittext);
         addGroupDialog.addView(R.id.group_add_edittext);
+        addGroupDialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
         addGroupDialog.setNegativeButtonTitle(R.string.groupeditor_add_action_negbutton);
         addGroupDialog.setOptionSelectionListener(new CustomAlertDialog.SimpleOnOptionSelectionListener() {
@@ -145,14 +149,12 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                 source.open();
                 source.insertGroup(groupName);
                 source.close();
-                GroupListViewAdapter adapter = (GroupListViewAdapter)i.getAdapter();
-                adapter.notifyDataSetChanged();
-                i.close();
+                i.close(null);
             }
 
             @Override
             public void onNegative(CustomAlertDialog.Interface i) {
-                i.close();
+                i.close(null);
             }
 
         });
@@ -169,7 +171,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         Group group = (Group)button.getTag();
 
         memberAddDialog = new CustomAlertDialog(this);
-        memberAddDialog.setAdapter(horizontalScrollViewAdapter);
+        memberAddDialog.setUpdateListener(IDENTIFIER_HORIZONTALSCROLLVIEW_ADAPTER, this);
         memberAddDialog.setDialogView(R.layout.activity_groupeditor_portraititem_dialog);
         memberAddDialog.setPositiveButtonTitle(R.string.button_title_add);
         memberAddDialog.setNegativeButtonTitle(R.string.button_title_cancel);
@@ -183,12 +185,12 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
             @Override
             public void onPositive(CustomAlertDialog.Interface i) {
-                if(getIntent().getParcelableExtra("member") != null) {
+                Member member = getIntent().getParcelableExtra("member");
+                if(member != null) {
                     Group group = (Group) i.getValue();
-                    String firstname = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
+                    String firstName = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
                     String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
-                    Member member = getIntent().getParcelableExtra("member");
-                    member.setFirstname(firstname);
+                    member.setFirstname(firstName);
                     member.setSurname(surname);
                     member.setGroupID(group.getId());
                     getIntent().removeExtra("member");
@@ -196,8 +198,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                     source.open();
                     source.insertMember(member);
                     source.close();
-                    ((HorizontalScrollViewAdapter)(i.getAdapter())).update(group.getId());
-                    i.close();
+                    i.close(group);
                 } else {
                     Toast.makeText(GroupEditorActivity.this,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
                 }
@@ -205,20 +206,13 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void onNegative(CustomAlertDialog.Interface i) {
-                i.close();
+                i.close(null);
             }
 
             @Override
             public void onClick(CustomAlertDialog.Interface i) {
-                Intent galleryChooserIntent = new Intent();
-                galleryChooserIntent.setType("image/*");
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-                    galleryChooserIntent.setAction(Intent.ACTION_GET_CONTENT);
-                else
-                    galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                startActivityForResult(Intent.createChooser(galleryChooserIntent,
-                        getResources().getString(R.string.groupeditor_gallerychooser_title)),
-                        GroupEditorActivity.SELECT_PICTURE_ADD);
+                Util.ImagePicker picker = new Util.ImagePicker(GroupEditorActivity.this);
+                picker.open(SELECT_PICTURE_ADD, null);
             }
         });
         memberAddDialog.show();
@@ -233,4 +227,18 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    @Override
+    public void update(int updateIdentifier, Object data) {
+        switch(updateIdentifier) {
+            case IDENTIFIER_GROUPLISTVIEW_ADAPTER:
+                groupListViewAdapter.notifyDataSetChanged();
+                break;
+            case IDENTIFIER_HORIZONTALSCROLLVIEW_ADAPTER:
+                Group group = (Group)data;
+                if(group != null) {
+                    horizontalScrollViewAdapter.update(group.getId());
+                }
+                break;
+        }
+    }
 }
