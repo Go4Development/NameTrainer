@@ -505,15 +505,12 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
     /**
      * Simple Implementation of onOptionSelectionListener
      */
-    public static abstract class SimpleOnOptionSelectionListener
+    public static abstract class AdvancedSimpleOnOptionSelectionListener
             implements OnOptionSelectionListener {
-
-        public SimpleOnOptionSelectionListener() {
-
-        }
 
         public abstract void onPositive(Interface i);
         public abstract void onNegative(Interface i);
+        public abstract void onClick(Interface i);
 
         @Override
         public void onPositiveSelection(Interface i) {
@@ -537,31 +534,51 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
 
         @Override
         public void onViewOnClick(Interface i) {
-
+            onClick(i);
         }
     }
 
-    /**
-     * Another implementation.
-     */
-    public static abstract class AdvancedSimpleOnOptionSelectionListener
-            implements OnOptionSelectionListener {
+    public static abstract class SimpleOnOptionSelectionListener
+        implements OnOptionSelectionListener {
 
-        public AdvancedSimpleOnOptionSelectionListener() {
+        public abstract void onPositive(Interface i);
+        public abstract void onNegative(Interface i);
+
+        @Override
+        public void onPositiveSelection(Interface i) {
+            onPositive(i);
+        }
+
+        @Override
+        public void onNegativeSelection(Interface i) {
+            onNegative(i);
+        }
+
+        @Override
+        public void onNeutralSelection(Interface i) {
 
         }
 
-        public abstract void onDefault(Interface i);
-        public abstract void onClickedView(Interface i);
-
         @Override
         public void onDefaultSelection(Interface i) {
-            onDefault(i);
+
         }
 
         @Override
         public void onViewOnClick(Interface i) {
-            onClickedView(i);
+
+        }
+    }
+
+
+    public static abstract class DefaultSelectionListener
+        implements OnOptionSelectionListener {
+
+        public abstract void onDefault(Interface i);
+
+        @Override
+        public void onPositiveSelection(Interface i) {
+
         }
 
         @Override
@@ -575,7 +592,12 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         }
 
         @Override
-        public void onPositiveSelection(Interface i) {
+        public void onDefaultSelection(Interface i) {
+            onDefault(i);
+        }
+
+        @Override
+        public void onViewOnClick(Interface i) {
 
         }
     }

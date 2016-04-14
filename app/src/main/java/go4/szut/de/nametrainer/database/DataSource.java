@@ -144,6 +144,8 @@ public class DataSource {
     public void deleteGroup(Group group) {
         database.delete(DatabaseHelper.TABLE_GROUP,
                 DatabaseHelper.where(DatabaseHelper.COLUMN_ID, group.getId()), null);
+        database.delete(DatabaseHelper.TABLE_MEMBER,
+                DatabaseHelper.where(Member.COLUMN_GROUP_ID, group.getId()), null);
     }
 
     /**

@@ -23,6 +23,7 @@ import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.util.CustomAlertDialog;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -66,6 +67,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
 
 
         //sets the list containing the GroupListViewItems
+        //TODO Auslagern in Adapter
         Group group;
         if(groupListViewAdapter.getCount() >= 1){
             group = groupListViewAdapter.getItem(0);
@@ -87,6 +89,8 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = getIntent().getParcelableExtra("member");
+                    Util.makeUriPersistent(data,this);
+
                     member.setImagePath(selectedImageUri.toString());
                     horizontalScrollViewAdapter.onImageSelected(selectedImageUri);
                 }
@@ -94,6 +98,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = new Member();
+                    Util.makeUriPersistent(data,this);
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
                     onImageSelected(selectedImageUri);
@@ -131,9 +136,9 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         addGroupDialog.addView(R.id.group_add_edittext);
         addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
         addGroupDialog.setNegativeButtonTitle(R.string.groupeditor_add_action_negbutton);
-        addGroupDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+        addGroupDialog.setOptionSelectionListener(new CustomAlertDialog.SimpleOnOptionSelectionListener() {
             @Override
-            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+            public void onPositive(CustomAlertDialog.Interface i) {
                 EditText groupNameEditText = i.getView(EditText.class, R.id.group_add_edittext);
                 String groupName = groupNameEditText.getText().toString();
                 DataSource source = i.getDataSource();
@@ -146,24 +151,10 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onNegativeSelection(CustomAlertDialog.Interface i) {
+            public void onNegative(CustomAlertDialog.Interface i) {
                 i.close();
             }
 
-            @Override
-            public void onNeutralSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onDefaultSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onViewOnClick(CustomAlertDialog.Interface i) {
-
-            }
         });
         addGroupDialog.show();
     }
@@ -189,9 +180,9 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image)
                 .setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
 
-        memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.OnOptionSelectionListener() {
+        memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
             @Override
-            public void onPositiveSelection(CustomAlertDialog.Interface i) {
+            public void onPositive(CustomAlertDialog.Interface i) {
                 if(getIntent().getParcelableExtra("member") != null) {
                     Group group = (Group) i.getValue();
                     String firstname = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
@@ -213,22 +204,12 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
             }
 
             @Override
-            public void onNegativeSelection(CustomAlertDialog.Interface i) {
-
+            public void onNegative(CustomAlertDialog.Interface i) {
+                i.close();
             }
 
             @Override
-            public void onNeutralSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onDefaultSelection(CustomAlertDialog.Interface i) {
-
-            }
-
-            @Override
-            public void onViewOnClick(CustomAlertDialog.Interface i) {
+            public void onClick(CustomAlertDialog.Interface i) {
                 Intent galleryChooserIntent = new Intent();
                 galleryChooserIntent.setType("image/*");
                 if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)

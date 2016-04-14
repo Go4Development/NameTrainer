@@ -1,12 +1,8 @@
 package go4.szut.de.nametrainer.util;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -55,6 +51,13 @@ public class Util {
         Log.d(obj.getClass().getSimpleName(), message);
     }
 
+    public static void makeUriPersistent(Intent data, Activity activity){
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int takeFlags = data.getFlags();
+            takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+        }
+    }
 
 }

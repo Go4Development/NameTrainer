@@ -1,6 +1,7 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by ramazan on 25.03.2016.
@@ -49,8 +51,18 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
     private void attachListViewItems() {
         if(adapter != null) {
             for (int i = 0; i < adapter.getSize(); i++) {
-                portraitLinearLayout.addView(adapter.getHorizontalScrollViewItemAt(i));
+                HorizontalScrollViewItem item = adapter.getHorizontalScrollViewItemAt(i);
+                portraitLinearLayout.addView(item);
+                if (item.getGalleryImageView().getDrawable() == null){
+                    item.getGalleryImageView()
+                            .setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_add_black_48dp));
+                }
+                Util.l(this,"Width: " + (item.getGalleryImageView().getDrawable() == null));
+
+
             }
+
+
         }
     }
 
@@ -74,7 +86,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
         Integer screenCenter = getWidth() / 2;
 
         for(int i = 0; i < adapter.getSize(); i++) {
-            HorizontalScrollViewAdapter.HorizontalScrollViewItem item = adapter.getHorizontalScrollViewItemAt(i);
+            HorizontalScrollViewItem item = adapter.getHorizontalScrollViewItemAt(i);
             item.setHighlightOff();
             differenceToScreenCenter.add(Math.abs(screenCenter - (item.getPosition() + (item.getWidth() / 2))));
         }
