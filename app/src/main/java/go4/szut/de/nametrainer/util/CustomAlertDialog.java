@@ -602,24 +602,4 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         }
     }
 
-    /**
-     * Created by Rene on 03.04.2016.
-     * Will also not be necessary anymore in future.
-     */
-    public abstract static class CustomDialogOnClickListener implements DialogInterface.OnClickListener {
-
-        public Object object;
-
-        public CustomDialogOnClickListener(Object object) {
-            this.object = object;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            this.onClick(dialog, which, object);
-        }
-
-        public abstract void onClick(DialogInterface dialog, int which, Object object);
-
-    }
 }
