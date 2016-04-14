@@ -151,6 +151,7 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener {
             @Override
             public void onClick(CustomAlertDialog.Interface i) {
                 //TODO Maybe auslagern
+                //
                 Member member = (Member)i.getValue();
                 Intent galleryChooserIntent = new Intent();
                 activity.getIntent().putExtra("member", member);
