@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
-import go4.szut.de.nametrainer.util.Util;
+import go4.szut.de.nametrainer.database.DataSource;
+import go4.szut.de.nametrainer.database.Group;
 
 /**
  * Created by Michelé on 26.03.2016.
@@ -18,23 +20,32 @@ import go4.szut.de.nametrainer.util.Util;
 public class SelectionActivityAdapter extends BaseAdapter{
 
     private LayoutInflater inflater;
-    private ArrayList<String> groupsToSelect;
     private SelectionActivity selectionActivity;
+    private DataSource source;
 
-    public SelectionActivityAdapter(SelectionActivity context){
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        groupsToSelect = Util.createArrayListWithNonSense(22);
-        selectionActivity = context;
+    private ArrayList<Group> groups;
+
+    public SelectionActivityAdapter(SelectionActivity selectionActivity) {
+        this.selectionActivity = selectionActivity;
+        inflater = (LayoutInflater)selectionActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        source = DataSource.getDataSourceInstance(selectionActivity);
+        loadGroupsFromDatabase();
+    }
+
+    private void loadGroupsFromDatabase() {
+        source.open();
+        groups = source.getAllGroups();
+        source.close();
     }
 
     @Override
     public int getCount() {
-        return groupsToSelect.size();
+        return groups.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return groupsToSelect.get(position);
+        return groups.get(position);
     }
 
     @Override
@@ -45,12 +56,22 @@ public class SelectionActivityAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            convertView = inflater.inflate(R.layout.activity_selection_textview, parent, false);
+            convertView = inflater.inflate(R.layout.activity_selection_listitem, parent, false);
         }
 
-        TextView textView = (TextView) convertView;
-        textView.setText(groupsToSelect.get(position));
-        textView.setOnClickListener(selectionActivity);
+        LinearLayout linearLayout = (LinearLayout)convertView.findViewById(R.id.list_item_layout);
+        linearLayout.setTag(groups.get(position));
+        linearLayout.setOnClickListener(selectionActivity);
+
+        TextView groupNameTextView = (TextView) convertView.findViewById(R.id.groupname_textview);
+        groupNameTextView.setText(groups.get(position).getName());
+
+        TextView memberCountTextView = (TextView)convertView.findViewById(R.id.membercount_textview);
+        memberCountTextView.setText(String.format(
+                selectionActivity.getResources().getString(R.string.prefix_students_count),
+                String.valueOf(groups.get(position).getMemberCount(selectionActivity))));
+
+
         return convertView;
     }
 }

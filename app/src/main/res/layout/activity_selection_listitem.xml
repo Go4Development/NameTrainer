@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selection_listitem_layout"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent">
+
+    <TextView
+        android:id="@+id/groupname_textview"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/membercount_textview"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+    </TextView>
+
+</LinearLayout>

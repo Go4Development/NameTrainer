@@ -1,6 +1,7 @@
 package go4.szut.de.nametrainer.database;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -32,6 +33,17 @@ public class Group implements Parcelable {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_GROUP_NAME, name);
         return contentValues;
+    }
+
+    public int getMemberCount(Context context) {
+        DataSource source = DataSource.getDataSourceInstance(context);
+        source.open();
+        int memberCount = -1;
+        if(id != null) {
+             memberCount = source.getMemberCount(id);
+        }
+        source.close();
+        return memberCount;
     }
 
     public void setName(String name) {

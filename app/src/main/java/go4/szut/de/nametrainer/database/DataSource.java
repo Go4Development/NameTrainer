@@ -185,6 +185,20 @@ public class DataSource {
         return groups;
     }
 
+    /**
+     *
+     * @param groupId
+     * @return
+     */
+    public int getMemberCount(int groupId) {
+        Cursor cursor = database.rawQuery("SELECT COUNT(" + DatabaseHelper.COLUMN_ID + " FROM " +
+                DatabaseHelper.TABLE_MEMBER + " WHERE " + DatabaseHelper.where(Member.COLUMN_GROUP_ID, groupId), null);
+        cursor.moveToFirst();
+        int memberCount = cursor.getInt(0);
+        cursor.close();
+        return memberCount;
+    }
+
     public void tables(){
         Cursor c = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         if (c.moveToFirst()) {

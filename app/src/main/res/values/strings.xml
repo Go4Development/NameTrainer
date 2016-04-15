@@ -60,4 +60,7 @@
     <string name="exit">Beenden</string>
     <string name="Group_edit">Gruppe editieren</string>
 
+    <!-- Prefix Strings -->
+    <string name="prefix_students_count">Schüler: %s</string>
+
 </resources>
