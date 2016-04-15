@@ -3,7 +3,6 @@ package go4.szut.de.nametrainer.groupeditor;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -70,17 +69,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         groupListView.setAdapter(groupListViewAdapter);
 
 
-        //sets the list containing the GroupListViewItems
-        //TODO Auslagern in Adapter
-        Group group;
-        if(groupListViewAdapter.getCount() >= 1){
-            group = groupListViewAdapter.getItem(0);
-        }else {
-            group = new Group();
-            group.setId(1);
-            group.setName("T15A");
-        }
-        horizontalScrollViewAdapter = new HorizontalScrollViewAdapter(this, portraitScrollView, group);
+        horizontalScrollViewAdapter = new HorizontalScrollViewAdapter(this, portraitScrollView);
         portraitScrollView.setAdapter(horizontalScrollViewAdapter);
 
     }
@@ -137,6 +126,8 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         CustomAlertDialog addGroupDialog = new CustomAlertDialog(this);
         addGroupDialog.setDialogView(R.layout.activity_groupeditor_edittext);
         addGroupDialog.addView(R.id.group_add_edittext);
+        Util.setTextInputFilter(addGroupDialog.getView(EditText.class,R.id.group_add_edittext));
+
         addGroupDialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
         addGroupDialog.setNegativeButtonTitle(R.string.groupeditor_add_action_negbutton);
@@ -165,6 +156,10 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         return horizontalScrollViewAdapter;
     }
 
+    public GroupListViewAdapter getGroupListViewAdapter() {
+        return groupListViewAdapter;
+    }
+
     @Override
     public void onClick(View v) {
         Button button = (Button)v;
@@ -190,6 +185,10 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                     Group group = (Group) i.getValue();
                     String firstName = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
                     String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
+
+                    Util.setTextInputFilter(i.getView(EditText.class, R.id.dialog_firstname));
+                    Util.setTextInputFilter(i.getView(EditText.class, R.id.dialog_surname));
+
                     member.setFirstname(firstName);
                     member.setSurname(surname);
                     member.setGroupID(group.getId());
@@ -200,6 +199,8 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                     source.close();
                     i.close(group);
                 } else {
+                    //TODO reopen incomplete memberADDialog with previous data
+                    //TODO dont allow saving a member/group without a name
                     Toast.makeText(GroupEditorActivity.this,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
                 }
             }

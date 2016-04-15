@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -59,6 +63,25 @@ public class Util {
             takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
         }
+    }
+
+    public static void setTextInputFilter(View view){
+        EditText editText = (EditText) view;
+        InputFilter filter = new InputFilter() {
+            public CharSequence filter(CharSequence source, int start, int end,
+                                       Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
+        editText.setFilters(new InputFilter[]{filter});
+
+
     }
 
     /**
