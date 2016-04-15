@@ -1,8 +1,6 @@
 package go4.szut.de.nametrainer.groupeditor;
 
-import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,17 +36,24 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
 
     private CustomAlertDialog memberEditorDialog;
 
-    public HorizontalScrollViewAdapter(GroupEditorActivity activity, CustomHorizontalScrollView scrollView, Group group) {
+    public HorizontalScrollViewAdapter(GroupEditorActivity activity, CustomHorizontalScrollView scrollView) {
         this.activity = activity;
         this.scrollView = scrollView;
 
-        source = DataSource.getDataSourceInstance(activity);
-        source.open();
-        members = source.getMembers(group.getId());
-        source.close();
+        Group group;
+        GroupListViewAdapter groupListViewAdapter = activity.getGroupListViewAdapter();
 
+        if (groupListViewAdapter.getCount() > 0) {
+            group = groupListViewAdapter.getItem(0);
+            source = DataSource.getDataSourceInstance(activity);
+            source.open();
+            members = source.getMembers(group.getId());
+            source.close();
+        }else {
+            members = new ArrayList<>();
+
+        }
         items = createHorizontalScrollViewItems();
-
 
     }
 
@@ -127,6 +132,8 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
         memberEditorDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
         memberEditorDialog.getView(EditText.class, R.id.dialog_firstname).setText(member.getFirstname());
         memberEditorDialog.getView(EditText.class, R.id.dialog_surname).setText(member.getSurname());
+        Util.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_firstname));
+        Util.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_surname));
         memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image)
                 .setImageURI(Uri.parse(member.getImagePath()));
 

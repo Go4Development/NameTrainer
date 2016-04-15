@@ -16,6 +16,7 @@ import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.util.CustomAlertDialog;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
@@ -105,6 +106,7 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
         CustomAlertDialog dialog = new CustomAlertDialog(activity);
         dialog.setTitle(group.getName());
         dialog.setValue(group);
+        dialog.setAdapter(this);
         dialog.setArrayAdapter(android.R.layout.select_dialog_item, R.array.groupeditor_item_dialog_options);
         dialog.setOptionSelectionListener(new CustomAlertDialog.DefaultSelectionListener() {
 
@@ -117,6 +119,12 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
                         break;
                     case DIALOG_OPTION_DELETE:
                         onDelete(group);
+                        group = i.getAdapter(GroupListViewAdapter.class).getItem(0);
+                        if(group != null) {
+                            activity.getHorizontalScrollViewAdapter().update(group.getId());
+                        } else {
+
+                        }
                         break;
                 }
             }
@@ -135,6 +143,7 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
         dialog.addView(R.id.group_add_edittext);
         dialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         dialog.getView(EditText.class, R.id.group_add_edittext).setText(group.getName());
+        Util.setTextInputFilter(dialog.getView(EditText.class, R.id.group_add_edittext));
         dialog.setPositiveButtonTitle(R.string.groupeditor_edit_action_posbutton);
         dialog.setNegativeButtonTitle(R.string.groupeditor_edit_action_negbutton);
         dialog.setValue(group);

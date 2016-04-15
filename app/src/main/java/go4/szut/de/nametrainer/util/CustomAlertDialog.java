@@ -418,87 +418,87 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
      */
     @Override
     public void onClick(final View v) {
+
          /*
             Creation of the own interface that is passed to the callbacks
             of the own listener. Values that should be available for access to
             some other classes get wrapped in methods for return.
          */
-        Interface anInterface = new Interface() {
+            Interface anInterface = new Interface() {
 
-            @Override
-            public <T extends View> T getView(Class<T> type, int viewId) {
-                return type.cast(views.get(viewId));
-            }
+                @Override
+                public <T extends View> T getView(Class<T> type, int viewId) {
+                    return type.cast(views.get(viewId));
+                }
 
-            @Override
-            public View getViewAt(int index) {
-                return views.get(index);
-            }
+                @Override
+                public View getViewAt(int index) {
+                    return views.get(index);
+                }
 
-            @Override
-            public View getClickedView() {
-                return v;
-            }
+                @Override
+                public View getClickedView() {
+                    return v;
+                }
 
-            @Override
-            public int getViewCount() {
-                return views.size();
-            }
+                @Override
+                public int getViewCount() {
+                    return views.size();
+                }
 
-            @Override
-            public Object getAdapter() {
-                return adapter;
-            }
+                @Override
+                public Object getAdapter() {
+                    return adapter;
+                }
 
-            @Override
-            public <T> T getAdapter(Class<T> type) {
-                return type.cast(adapter);
-            }
+                @Override
+                public <T> T getAdapter(Class<T> type) {
+                    return type.cast(adapter);
+                }
 
-            @Override
-            public Object getValue() {
-                return value;
-            }
+                @Override
+                public Object getValue() {
+                    return value;
+                }
 
-            @Override
-            public boolean hasValue() {
-                return value != null;
-            }
+                @Override
+                public boolean hasValue() {
+                    return value != null;
+                }
 
-            @Override
-            public Object getCallback() {
-                return callback;
-            }
+                @Override
+                public Object getCallback() {
+                    return callback;
+                }
 
-            @Override
-            public boolean hasCallback() {
-                return callback != null;
-            }
+                @Override
+                public boolean hasCallback() {
+                    return callback != null;
+                }
 
-            @Override
-            public void close(Object data) {
+                @Override
+                public void close(Object data) {
 
-            }
+                }
 
-            public int getSelection() {
-                return NO_SELECTION;
-            }
+                public int getSelection() {
+                    return NO_SELECTION;
+                }
 
-            public DataSource getDataSource() {
-                return source;
-            }
+                public DataSource getDataSource() {
+                    return source;
+                }
 
-        };
+            };
 
         /*
             Is triggered for own callback in the onOptionSelectedListener
             when an onClick event of a certain view occurs.
          */
-        if(optionSelectionListener != null) {
-            optionSelectionListener.onViewOnClick(anInterface);
-        }
+            if (optionSelectionListener != null) {
+                optionSelectionListener.onViewOnClick(anInterface);
+            }
     }
-
     /**
      * Definition of the onOptionSelectionListener that is used for
      * callback of this custom dialog instance.
