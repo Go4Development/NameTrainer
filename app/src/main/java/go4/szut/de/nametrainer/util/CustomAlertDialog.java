@@ -338,6 +338,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
             }
 
             @Override
+            public <T> T getAdapter(Class<T> type) {
+                return type.cast(adapter);
+            }
+
+            @Override
             public Object getValue() {
                 return value;
             }
@@ -446,6 +451,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
             }
 
             @Override
+            public <T> T getAdapter(Class<T> type) {
+                return type.cast(adapter);
+            }
+
+            @Override
             public Object getValue() {
                 return value;
             }
@@ -510,6 +520,7 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         public View getViewAt(int index);
         public int getViewCount();
         public Object getAdapter();
+        public <T> T getAdapter(Class<T> type);
         public Object getValue();
         public boolean hasValue();
         public Object getCallback();

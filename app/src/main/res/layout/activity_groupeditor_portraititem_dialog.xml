@@ -8,12 +8,14 @@
     <EditText
         android:id="@+id/dialog_firstname"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_firstname"/>
 
     <EditText
         android:id="@+id/dialog_surname"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_surname"/>
 
     <ImageView
         android:id="@+id/dialog_preview_image"
