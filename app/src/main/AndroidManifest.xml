@@ -38,6 +38,10 @@
             android:label="@string/selection_label">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>
+        <activity android:name=".game.GameActivity"
+            android:label="@string/game_label">
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".selection.SelectionActivity"/>
+        </activity>
     </application>
 
 </manifest>

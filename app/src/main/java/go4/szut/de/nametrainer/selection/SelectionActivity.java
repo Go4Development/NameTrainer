@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
+import go4.szut.de.nametrainer.game.GameActivity;
+import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 
 /**
@@ -47,16 +49,23 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         LinearLayout linearLayout = (LinearLayout)v;
         Group group = (Group)linearLayout.getTag();
-
+        Intent gameIntent = new Intent(this, GameActivity.class);
+        gameIntent.putExtra(GameActivity.GAME_GROUP_OBJECT, group);
+        startActivity(gameIntent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            intent = new Intent(this, OptionsActivity.class);
-            startActivity(intent);
-            return true;
+        switch(id) {
+            case R.id.action_settings:
+                intent = new Intent(this, OptionsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.group_add_action:
+                intent = new Intent(this, GroupEditorActivity.class);
+                startActivity(intent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

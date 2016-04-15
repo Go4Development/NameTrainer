@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Michelé on 26.03.2016.
@@ -35,6 +36,8 @@ public class SelectionActivityAdapter extends BaseAdapter{
     private void loadGroupsFromDatabase() {
         source.open();
         groups = source.getAllGroups();
+        Util.n(groups, "SelectionActivity");
+        Util.l(this, " Groups : " + groups);
         source.close();
     }
 
@@ -59,7 +62,7 @@ public class SelectionActivityAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.activity_selection_listitem, parent, false);
         }
 
-        LinearLayout linearLayout = (LinearLayout)convertView.findViewById(R.id.list_item_layout);
+        LinearLayout linearLayout = (LinearLayout)convertView.findViewById(R.id.selection_listitem_layout);
         linearLayout.setTag(groups.get(position));
         linearLayout.setOnClickListener(selectionActivity);
 

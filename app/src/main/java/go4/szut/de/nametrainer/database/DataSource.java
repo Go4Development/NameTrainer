@@ -186,12 +186,13 @@ public class DataSource {
     }
 
     /**
-     *
-     * @param groupId
-     * @return
+     * Returns the number of members that are in the specified group having the passed
+     * groupId
+     * @param groupId - the id that belongs to a certain group
+     * @return the number of members
      */
     public int getMemberCount(int groupId) {
-        Cursor cursor = database.rawQuery("SELECT COUNT(" + DatabaseHelper.COLUMN_ID + " FROM " +
+        Cursor cursor = database.rawQuery("SELECT COUNT(" + DatabaseHelper.COLUMN_ID + ") FROM " +
                 DatabaseHelper.TABLE_MEMBER + " WHERE " + DatabaseHelper.where(Member.COLUMN_GROUP_ID, groupId), null);
         cursor.moveToFirst();
         int memberCount = cursor.getInt(0);

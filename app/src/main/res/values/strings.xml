@@ -62,5 +62,6 @@
 
     <!-- Prefix Strings -->
     <string name="prefix_students_count">Schüler: %s</string>
+    <string name="game_label">g</string>
 
 </resources>
