@@ -13,6 +13,7 @@ import android.widget.ListView;
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.game.GameActivity;
+import go4.szut.de.nametrainer.game.GameEngine;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 
@@ -47,7 +48,7 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
         LinearLayout linearLayout = (LinearLayout)v;
         Group group = (Group)linearLayout.getTag();
         Intent gameIntent = new Intent(this, GameActivity.class);
-        gameIntent.putExtra(GameActivity.GAME_GROUP_OBJECT, group);
+        gameIntent.putExtra(GameEngine.GAME_GROUP_OBJECT, group);
         startActivity(gameIntent);
     }
 

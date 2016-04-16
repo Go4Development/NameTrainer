@@ -2,16 +2,22 @@ package go4.szut.de.nametrainer.game;
 
 import android.content.Intent;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
-import go4.szut.de.nametrainer.util.Util;
+import go4.szut.de.nametrainer.database.Member;
 
 /**
  * Created by Rene on 08.04.2016.
  */
-public class GameSetupBuilder {
+public class GameEngine {
+
+    /**
+     * key for retrieving game group object from intent extras
+     */
+    public static final String GAME_GROUP_OBJECT = "game_group";
 
     /**
      * holds the game activity instance
@@ -23,6 +29,7 @@ public class GameSetupBuilder {
      * holds the listener for game mode selected events
      */
     private OnGameModeListener gameModeListener;
+    private OnCompleteListener completeListener;
 
     /**
      * holds the source to database
@@ -33,25 +40,34 @@ public class GameSetupBuilder {
      * holds the game group object
      */
     private Group group;
+    private ArrayList<Member> members;
 
     /**
      * GameSetupBuilder sets up the game mode the user is going to play
      * @param activity - the game activity
      */
-    public GameSetupBuilder(GameActivity activity) {
+    public GameEngine(GameActivity activity) {
         this.activity = activity;
-        gameActivityIntent = activity.getIntent();
+
         this.gameModeListener = activity;
+        this.completeListener = activity;
+
         source = DataSource.getDataSourceInstance(activity);
+        gameActivityIntent = activity.getIntent();
 
-        group = retrieveGameGroupObject();
-        Util.D.t(activity, group);
-
+        loadGameData();
         startGameMode();
     }
 
+    private void loadGameData() {
+        group = retrieveGameGroupObject();
+        source.open();
+        members = source.getMembers(group.getId());
+        source.close();
+    }
+
     private Group retrieveGameGroupObject() {
-        return gameActivityIntent.getParcelableExtra(GameActivity.GAME_GROUP_OBJECT);
+        return gameActivityIntent.getParcelableExtra(GAME_GROUP_OBJECT);
     }
 
     private void startGameMode() {
@@ -59,10 +75,10 @@ public class GameSetupBuilder {
         int mode = r.nextInt(2);
         switch(mode) {
             case GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER:
-                gameModeListener.onLetterAssigningGameMode();
+                gameModeListener.onLetterAssigningGameMode(null);
                 break;
             case GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER:
-                gameModeListener.onNameAssigningGameMode();
+                gameModeListener.onNameAssigningGameMode(null);
                 break;
         }
     }
@@ -70,11 +86,19 @@ public class GameSetupBuilder {
 
     /**
      * OnGameModeListener class invokes the setup of a specific
-     * game mode that is randomly chosen by the GameSetupBuilder
+     * game mode that is randomly chosen by the GameEngine
      */
     public interface OnGameModeListener {
-        public void onLetterAssigningGameMode();
-        public void onNameAssigningGameMode();
+        public void onLetterAssigningGameMode(Member member);
+        public void onNameAssigningGameMode(ArrayList<Member> members);
+    }
+
+    /**
+     * OnCompleteListener class invokes the event of onComplete
+     * if a game of a selected group is completed
+     */
+    public interface OnCompleteListener {
+        public void onComplete();
     }
 
 
