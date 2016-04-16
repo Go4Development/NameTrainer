@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
@@ -134,8 +136,8 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
         memberEditorDialog.getView(EditText.class, R.id.dialog_surname).setText(member.getSurname());
         Util.Input.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_firstname));
         Util.Input.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_surname));
-        memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image)
-                .setImageURI(Uri.parse(member.getImagePath()));
+        ImageLoader.getInstance().displayImage(member.getImagePath(),
+                memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image));
 
         memberEditorDialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
             @Override
@@ -177,8 +179,8 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
 
     public void onImageSelected(Uri selectedImageUri) {
         if(memberEditorDialog != null) {
-            memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image)
-                    .setImageURI(selectedImageUri);
+            ImageLoader.getInstance().displayImage(selectedImageUri.toString(),
+                    memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image));
         }
     }
 

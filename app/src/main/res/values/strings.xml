@@ -52,7 +52,15 @@
 
     <!-- User Info Strings -->
     <string name="user_info_create_groups">Keine Gruppen zum Spielen gefunden! Bitte erstellen Sie welche!</string>
+    <string name="user_info_missing_member_info" formatted="false">Vornamen %s \n Nachnamen %s</string>
+    <string name="user_info_missing_image">Bild ist %s</string>
 
+    <!-- Errors -->
+    <string name="error_input_too_short">zu kurz</string>
+    <string name="error_input_okay">okay</string>
+    <string name="error_input_too_long">zu lang</string>
+    <string name="error_image_available">vorhanden</string>
+    <string name="error_image_unavailable">nicht vorhanden</string>
 
     <!-- Description -->
 

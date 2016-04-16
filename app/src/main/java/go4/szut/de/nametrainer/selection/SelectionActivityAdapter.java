@@ -68,10 +68,8 @@ public class SelectionActivityAdapter extends BaseAdapter {
         groupNameTextView.setText(groups.get(position).getName());
 
         TextView memberCountTextView = (TextView)convertView.findViewById(R.id.membercount_textview);
-        memberCountTextView.setText(String.format(
-                selectionActivity.getResources().getString(R.string.prefix_students_count),
+        memberCountTextView.setText(Util.Res.strF(selectionActivity, R.string.prefix_students_count,
                 String.valueOf(groups.get(position).getMemberCount(selectionActivity))));
-
 
         return convertView;
     }

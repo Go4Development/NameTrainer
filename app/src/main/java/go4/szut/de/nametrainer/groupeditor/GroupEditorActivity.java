@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -15,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
@@ -174,20 +178,25 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         memberAddDialog.addView(R.id.dialog_firstname);
         memberAddDialog.addView(R.id.dialog_surname);
         memberAddDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
-        memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image)
-                .setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-
+        memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image).setImageResource(R.mipmap.ic_launcher);
         memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
             @Override
             public void onPositive(CustomAlertDialog.Interface i) {
                 Member member = getIntent().getParcelableExtra("member");
-                if(member != null) {
-                    Group group = (Group) i.getValue();
-                    String firstName = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
-                    String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
+                EditText firstNameEditText = i.getView(EditText.class, R.id.dialog_firstname);
+                EditText surnameEditText = i.getView(EditText.class, R.id.dialog_surname);
+                int firstNameStatus = Util.Input.limit(firstNameEditText, 2, 20);
+                int surnameStatus = Util.Input.limit(surnameEditText, 2, 20);
 
-                    Util.Input.setTextInputFilter(i.getView(EditText.class, R.id.dialog_firstname));
-                    Util.Input.setTextInputFilter(i.getView(EditText.class, R.id.dialog_surname));
+                if(member != null && firstNameStatus == Util.Input.NAME_OK &&
+                        surnameStatus == Util.Input.NAME_OK) {
+
+                    Group group = (Group) i.getValue();
+                    String firstName = firstNameEditText.getText().toString();
+                    String surname = surnameEditText.getText().toString();
+
+                    Util.Input.setTextInputFilter(firstNameEditText);
+                    Util.Input.setTextInputFilter(surnameEditText);
 
                     member.setFirstname(firstName);
                     member.setSurname(surname);
@@ -199,9 +208,23 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                     source.close();
                     i.close(group);
                 } else {
-                    //TODO reopen incomplete memberADDialog with previous data
-                    //TODO dont allow saving a member/group without a name
-                    Toast.makeText(GroupEditorActivity.this,"Bitte zuerst Bild auswählen",Toast.LENGTH_LONG).show();
+                    ArrayMap<Integer, String> bundle = new ArrayMap<Integer, String>();
+                    bundle.put(R.id.dialog_firstname, firstNameEditText.getText().toString());
+                    bundle.put(R.id.dialog_surname, surnameEditText.getText().toString());
+
+                    String nameErrorInfo = Util.Res.strF(GroupEditorActivity.this,
+                            R.string.user_info_missing_member_info,
+                            Util.Res.str(GroupEditorActivity.this, Util.Input.ERROR_IDS[firstNameStatus]),
+                            Util.Res.str(GroupEditorActivity.this, Util.Input.ERROR_IDS[surnameStatus]));
+
+                    String imageErrorInfo = Util.Res.strF(GroupEditorActivity.this,
+                            R.string.user_info_missing_image, ((member != null)
+                                ? Util.Res.str(GroupEditorActivity.this, R.string.error_image_available)
+                                : Util.Res.str(GroupEditorActivity.this, R.string.error_image_unavailable)));
+
+                    Util.toast(GroupEditorActivity.this, nameErrorInfo + "\n" + imageErrorInfo);
+
+                    Util.Run.delay(i.reopen(bundle), 250);
                 }
             }
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -24,6 +25,10 @@ import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
  * Created by Rene on 24.03.2016.
  */
 public class Util {
+
+    public static void toast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
 
 
     public static class D {
@@ -88,13 +93,24 @@ public class Util {
         }
 
         /**
-         * Wrapper method for getting string array resources-
+         * Wrapper method for getting string array resources
          * @param activity - the activity to get the resources
          * @param resId - the resource id
          * @return the resource string array that belongs to the passed resId
          */
         public static String[] strA(AppCompatActivity activity, int resId) {
             return activity.getResources().getStringArray(resId);
+        }
+
+        /**
+         * Wrapper method for getting formatted string.
+         * @param activity - the activity to get resources
+         * @param formatStringId - the resource id for format string
+         * @param params - the params to insert in format string
+         * @return
+         */
+        public static String strF(AppCompatActivity activity, int formatStringId, Object... params) {
+            return String.format(activity.getResources().getString(formatStringId), params);
         }
 
     }
@@ -118,6 +134,16 @@ public class Util {
 
     public static class Input {
 
+        public static final int NAME_TOO_SHORT = 0;
+        public static final int NAME_OK = 1;
+        public static final int NAME_TOO_LONG = 2;
+
+        public static final int[] ERROR_IDS = {
+                R.string.error_input_too_short,
+                R.string.error_input_okay,
+                R.string.error_input_too_long
+        };
+
         public static void setTextInputFilter(View view){
             EditText editText = (EditText) view;
             InputFilter filter = new InputFilter() {
@@ -134,6 +160,16 @@ public class Util {
             editText.setFilters(new InputFilter[]{filter});
         }
 
+        public static int limit(EditText editText, int min, int max) {
+            String value = editText.getText().toString();
+            if(value.length() >= min && value.length() <= max) {
+                return NAME_OK;
+            } else if(value.length() < min) {
+                return NAME_TOO_SHORT;
+            } else {
+                return NAME_TOO_LONG;
+            }
+        }
     }
 
     public static class DB {
@@ -148,6 +184,14 @@ public class Util {
             int groupCount = source.getAllGroups().size();
             source.close();
             return groupCount != 0;
+        }
+
+    }
+
+    public static class Run {
+
+        public static void delay(Runnable runnable, long delay) {
+            new Handler().postDelayed(runnable, delay);
         }
 
     }

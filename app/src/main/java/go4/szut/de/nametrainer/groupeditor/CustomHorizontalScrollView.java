@@ -53,16 +53,11 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
             for (int i = 0; i < adapter.getSize(); i++) {
                 HorizontalScrollViewItem item = adapter.getHorizontalScrollViewItemAt(i);
                 portraitLinearLayout.addView(item);
-                if (item.getGalleryImageView().getDrawable() == null){
+                if (item.getGalleryImageView().getDrawable() == null) {
                     item.getGalleryImageView()
-                            .setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_add_black_48dp));
+                            .setImageResource(R.drawable.ic_add_black_48dp);
                 }
-                Util.D.l(this,"Width: " + (item.getGalleryImageView().getDrawable() == null));
-
-
             }
-
-
         }
     }
 

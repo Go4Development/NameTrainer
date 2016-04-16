@@ -3,10 +3,16 @@ package go4.szut.de.nametrainer.util;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 import go4.szut.de.nametrainer.database.DataSource;
 
@@ -283,11 +289,27 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         return arrayAdapter;
     }
 
+    private void reopenDialog(ArrayMap<Integer, String> bundle) {
+        Set<Integer> keySet = bundle.keySet();
+        for(Integer key : keySet) {
+            EditText editText = getView(EditText.class, key);
+            if(editText != null) {
+                String value = bundle.get(key);
+                editText.setText(value);
+            }
+        }
+        show();
+    }
+
     /**
      * Shows the dialog.
      */
     public void show() {
         if(dialogView != null) {
+            ViewGroup viewGroup = (ViewGroup)dialogView.getParent();
+            if(viewGroup != null) {
+                viewGroup.removeView(dialogView);
+            }
             dialogBuilder.setView(dialogView);
         }
         dialogBuilder.setCancelable(true);
@@ -368,6 +390,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
                 if(updateListener != null) {
                     updateListener.update(updateIdentifier, data);
                 }
+            }
+
+            @Override
+            public Delayed reopen(ArrayMap<Integer, String> bundle) {
+                return new Delayed(bundle);
             }
 
             public int getSelection() {
@@ -481,6 +508,11 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
 
                 }
 
+                @Override
+                public Delayed reopen(ArrayMap<Integer, String> bundle) {
+                    return new Delayed(bundle);
+                }
+
                 public int getSelection() {
                     return NO_SELECTION;
                 }
@@ -499,6 +531,9 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
                 optionSelectionListener.onViewOnClick(anInterface);
             }
     }
+
+
+
     /**
      * Definition of the onOptionSelectionListener that is used for
      * callback of this custom dialog instance.
@@ -525,10 +560,26 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
         public boolean hasValue();
         public Object getCallback();
         public boolean hasCallback();
+        public Delayed reopen(ArrayMap<Integer, String> bundle);
         public void close(Object data);
         public int getSelection();
         public DataSource getDataSource();
         public View getClickedView();
+    }
+
+
+    public class Delayed implements Runnable {
+
+        private ArrayMap<Integer, String> bundle;
+
+        public Delayed(ArrayMap<Integer, String> bundle) {
+            this.bundle = bundle;
+        }
+
+        @Override
+        public void run() {
+            reopenDialog(bundle);
+        }
     }
 
     public interface OnUpdateListener {
