@@ -82,7 +82,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = getIntent().getParcelableExtra("member");
-                    Util.makeUriPersistent(data,this);
+                    Util.Uri.makeUriPersistent(data,this);
 
                     member.setImagePath(selectedImageUri.toString());
                     horizontalScrollViewAdapter.onImageSelected(selectedImageUri);
@@ -91,7 +91,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                 if(data != null && data.getData() != null) {
                     Uri selectedImageUri = data.getData();
                     Member member = new Member();
-                    Util.makeUriPersistent(data,this);
+                    Util.Uri.makeUriPersistent(data,this);
                     member.setImagePath(selectedImageUri.toString());
                     getIntent().putExtra("member", member);
                     onImageSelected(selectedImageUri);
@@ -126,7 +126,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         CustomAlertDialog addGroupDialog = new CustomAlertDialog(this);
         addGroupDialog.setDialogView(R.layout.activity_groupeditor_edittext);
         addGroupDialog.addView(R.id.group_add_edittext);
-        Util.setTextInputFilter(addGroupDialog.getView(EditText.class,R.id.group_add_edittext));
+        Util.Input.setTextInputFilter(addGroupDialog.getView(EditText.class,R.id.group_add_edittext));
 
         addGroupDialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
@@ -186,8 +186,8 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                     String firstName = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
                     String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
 
-                    Util.setTextInputFilter(i.getView(EditText.class, R.id.dialog_firstname));
-                    Util.setTextInputFilter(i.getView(EditText.class, R.id.dialog_surname));
+                    Util.Input.setTextInputFilter(i.getView(EditText.class, R.id.dialog_firstname));
+                    Util.Input.setTextInputFilter(i.getView(EditText.class, R.id.dialog_surname));
 
                     member.setFirstname(firstName);
                     member.setSurname(surname);

@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="@string/Group_edit"
         android:id="@+id/sharing_button"
-        android:onClick="startGroupActivity"
+        android:onClick="startGroupEditorActivity"
         android:layout_marginTop="40dp"
         android:layout_gravity="center_horizontal" />
 

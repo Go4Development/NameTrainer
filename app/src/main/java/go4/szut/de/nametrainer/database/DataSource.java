@@ -204,7 +204,7 @@ public class DataSource {
         Cursor c = database.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         if (c.moveToFirst()) {
             while (!c.isAfterLast()) {
-                Util.l(this, "Table Name=> " + c.getString(0));
+                Util.D.l(this, "Table Name=> " + c.getString(0));
                 c.moveToNext();
             }
         }

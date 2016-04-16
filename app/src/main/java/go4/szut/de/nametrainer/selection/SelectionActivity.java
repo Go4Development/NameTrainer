@@ -9,9 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
@@ -58,11 +55,11 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id) {
-            case R.id.action_settings:
+            case R.id.selection_settings_item:
                 intent = new Intent(this, OptionsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.group_add_action:
+            case R.id.selection_editor_item:
                 intent = new Intent(this, GroupEditorActivity.class);
                 startActivity(intent);
                 return true;
@@ -72,7 +69,7 @@ public class SelectionActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_selection_activity, menu);
         return true;
     }
 

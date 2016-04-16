@@ -132,8 +132,8 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
         memberEditorDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
         memberEditorDialog.getView(EditText.class, R.id.dialog_firstname).setText(member.getFirstname());
         memberEditorDialog.getView(EditText.class, R.id.dialog_surname).setText(member.getSurname());
-        Util.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_firstname));
-        Util.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_surname));
+        Util.Input.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_firstname));
+        Util.Input.setTextInputFilter(memberEditorDialog.getView(EditText.class, R.id.dialog_surname));
         memberEditorDialog.getView(ImageView.class, R.id.dialog_preview_image)
                 .setImageURI(Uri.parse(member.getImagePath()));
 

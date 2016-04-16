@@ -7,13 +7,9 @@
     <string name="groupeditor">Gruppenauswahl</string>
 
     <string name="sound_options">Ton An/Aus</string>
-    <!--<string name="soundOn_options">Ton An</string>
-    <string name="soundOff_options">Ton Aus</string>-->
     <string name="sound_state_key">Sound_Key</string>
 
     <string name="lastName_options">Nachname Abfragen</string>
-    <!--<string name="lastNameOn_options">Nachname Abfragen An</string>
-    <string name="lastNameOff_options">Nachname Abfragen Aus</string>-->
     <string name="lastName_state_key">LastName_Key</string>
 
     <string name="on">An</string>
@@ -41,10 +37,11 @@
 
     <string name="groupeditor_gallerychooser_title">Bild auswählen</string>
 
-    <!-- SELECTION -->
+    <!-- Labels -->
     <string name="selection_label">Gruppenauswahl</string>
+    <string name="game_label">g</string>
 
-    <!-- Buttons -->
+    <!-- Button Titles -->
     <string name="button_title_cancel">Abbrechen</string>
     <string name="button_title_add">Hinzufügen</string>
 
@@ -52,6 +49,23 @@
     <string name="hint_firstname">Vorname</string>
     <string name="hint_surname">Nachname</string>
     <string name="hint_image">Bild</string>
+
+    <!-- User Info Strings -->
+    <string name="user_info_create_groups">Keine Gruppen zum Spielen gefunden! Bitte erstellen Sie welche!</string>
+
+
+    <!-- Description -->
+
+
+
+    <!-- Prefix Strings -->
+    <string name="prefix_students_count">Schüler: %s</string>
+
+    <!-- Menu Strings -->
+    <string name="menu_selection_settings">Einstellungen</string>
+    <string name="menu_selection_editor">Gruppeneditor</string>
+
+    <!-- Unorganized Strings -->
     <string name="add">add</string>
     <string name="name_trainer">Name Trainer</string>
     <string name="start">Start</string>
@@ -60,8 +74,5 @@
     <string name="exit">Beenden</string>
     <string name="Group_edit">Gruppe editieren</string>
 
-    <!-- Prefix Strings -->
-    <string name="prefix_students_count">Schüler: %s</string>
-    <string name="game_label">g</string>
 
 </resources>

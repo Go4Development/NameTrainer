@@ -143,7 +143,7 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
         dialog.addView(R.id.group_add_edittext);
         dialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         dialog.getView(EditText.class, R.id.group_add_edittext).setText(group.getName());
-        Util.setTextInputFilter(dialog.getView(EditText.class, R.id.group_add_edittext));
+        Util.Input.setTextInputFilter(dialog.getView(EditText.class, R.id.group_add_edittext));
         dialog.setPositiveButtonTitle(R.string.groupeditor_edit_action_posbutton);
         dialog.setNegativeButtonTitle(R.string.groupeditor_edit_action_negbutton);
         dialog.setValue(group);

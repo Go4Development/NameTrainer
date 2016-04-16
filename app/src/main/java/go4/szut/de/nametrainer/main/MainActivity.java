@@ -7,12 +7,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
 import go4.szut.de.nametrainer.selection.SelectionActivity;
 import go4.szut.de.nametrainer.sharing.SharingActivity;
+import go4.szut.de.nametrainer.util.Util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,13 +43,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Called when the user clicks the Send button */
     public void startSelectionActivity(View view) {
-        intent = new Intent(this, SelectionActivity.class);
-        startActivity(intent);
-
+        /*
+         * Checks if the database has groups stored, if so
+         * the SelectionActivity will run, otherwise the user has
+         * to create groups including members in GroupEditorActivity
+         * before playing.
+         */
+        if(Util.DB.databaseHasStoredGroups(this)) {
+            intent = new Intent(this, SelectionActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, Util.Res.str(this, R.string.user_info_create_groups), Toast.LENGTH_LONG).show();
+        }
     }
-    public void startGroupActivity(View view) {
+    public void startGroupEditorActivity(View view) {
         intent = new Intent(this, GroupEditorActivity.class);
         startActivity(intent);
 

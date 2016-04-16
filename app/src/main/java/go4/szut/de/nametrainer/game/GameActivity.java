@@ -1,6 +1,5 @@
 package go4.szut.de.nametrainer.game;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -16,14 +15,12 @@ public class GameActivity extends AppCompatActivity implements GameSetupBuilder.
     //layout id for game mode for assigning names to blank spaces in order to match a name to a picture
     public static final int GAME_MODE_NAME_ASSIGNING = R.layout.activity_game_mode2;
 
+    //key for retrieving game group object from intent extras
     public static final String GAME_GROUP_OBJECT = "game_group";
 
     //setup builder decides which game mode the player is going to play and builds up the corresponding views
     private GameSetupBuilder setupBuilder;
 
-    //shapes for the blank spaces where the draggable object should be put in
-    private Drawable normalBlankShape;
-    private Drawable enterBlankShape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

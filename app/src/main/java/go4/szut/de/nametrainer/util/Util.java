@@ -1,6 +1,7 @@
 package go4.szut.de.nametrainer.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -9,10 +10,12 @@ import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Member;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 
@@ -22,68 +25,124 @@ import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
  */
 public class Util {
 
-    /**
-     * Creates an ArrayList with numberOfNonSenseItems strings.
-     * @param numberOfNonSenseItems - the number of non sense items
-     */
-    public static ArrayList<String> createArrayListWithNonSense(int numberOfNonSenseItems) {
-        ArrayList<String> list = new ArrayList<String>();
-        for(int i = 0; i < numberOfNonSenseItems; i++) {
-            list.add("NonSense #" + i);
+
+    public static class D {
+
+        /**
+         * Wrapper method for Log.d
+         * @param obj - the obj for TAG
+         * @param message - the message that should be displayed
+         */
+        public static void l(Object obj, String message) {
+            Log.d(obj.getClass().getSimpleName(), message);
         }
-        return list;
-    }
 
-    /**
-     * Wrapper method for Log.d
-     * @param obj - the obj for TAG
-     * @param message - the message that should be displayed
-     */
-    public static void l(Object obj, String message) {
-        Log.d(obj.getClass().getSimpleName(), message);
-    }
-
-    /**
-     * Wrapper method for Log.d
-     * @param obj - the obj for testing
-     * @param tag - the tag for Log.d
-     */
-    public static void n(Object obj, String tag) {
-        Log.d(tag, "Is Object null? : " + (obj == null));
-    }
-
-    /**
-     * Makes an uri persistent and life easier.
-     * @param data - the intent from onActivityResult
-     * @param activity - the activity
-     */
-    public static void makeUriPersistent(Intent data, Activity activity){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int takeFlags = data.getFlags();
-            takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
+        /**
+         * Wrapper method for Log.d
+         * @param obj - the obj for testing
+         * @param tag - the tag for Log.d
+         */
+        public static void n(Object obj, String tag) {
+            Log.d(tag, "Is Object null? : " + (obj == null));
         }
+
+        /**
+         * Wrapper method for Toast.
+         * @param context - the context of the activity
+         * @param object - the object to toast a message from
+         */
+        public static void t(Context context, Object object) {
+            Toast.makeText(context, "Object Value : " + object, Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * Wrapper method for Toast including test for null.
+         * @param context - the context of the activity
+         * @param object - the object to toast a message from
+         */
+        public static void tn(Context context, Object object) {
+            Toast.makeText(context, "Is Object null? : " + (object == null), Toast.LENGTH_LONG).show();
+        }
+
     }
 
-    public static void setTextInputFilter(View view){
-        EditText editText = (EditText) view;
-        InputFilter filter = new InputFilter() {
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                for (int i = start; i < end; i++) {
-                    if (!Character.isLetterOrDigit(source.charAt(i))) {
-                        return "";
-                    }
-                }
-                return null;
+    public static class Res {
+
+        /**
+         * Wrapper method for getting string resources.
+         * @param activity - the activity to get the resources
+         * @param resId - the resource id
+         * @return the resource string that belongs to the passed resId
+         */
+        public static String str(AppCompatActivity activity, int resId) {
+            return activity.getResources().getString(resId);
+        }
+
+        /**
+         * Wrapper method for getting string array resources-
+         * @param activity - the activity to get the resources
+         * @param resId - the resource id
+         * @return the resource string array that belongs to the passed resId
+         */
+        public static String[] strA(AppCompatActivity activity, int resId) {
+            return activity.getResources().getStringArray(resId);
+        }
+
+    }
+
+    public static class Uri {
+
+        /**
+         * Makes an uri persistent and life easier.
+         * @param data - the intent from onActivityResult
+         * @param activity - the activity
+         */
+        public static void makeUriPersistent(Intent data, Activity activity){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                int takeFlags = data.getFlags();
+                takeFlags &= (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                activity.getContentResolver().takePersistableUriPermission(data.getData(), takeFlags);
             }
-        };
-
-        editText.setFilters(new InputFilter[]{filter});
-
+        }
 
     }
 
+    public static class Input {
+
+        public static void setTextInputFilter(View view){
+            EditText editText = (EditText) view;
+            InputFilter filter = new InputFilter() {
+                public CharSequence filter(CharSequence source, int start, int end,
+                                           Spanned dest, int dstart, int dend) {
+                    for (int i = start; i < end; i++) {
+                        if (!Character.isLetterOrDigit(source.charAt(i))) {
+                            return "";
+                        }
+                    }
+                    return null;
+                }
+            };
+            editText.setFilters(new InputFilter[]{filter});
+        }
+
+    }
+
+    public static class DB {
+
+        /**
+         * Returns true if the database has groups stored.
+         * @return true if there are groups stored in the database, otherwise false.
+         */
+        public static boolean databaseHasStoredGroups(Context context) {
+            DataSource source = DataSource.getDataSourceInstance(context);
+            source.open();
+            int groupCount = source.getAllGroups().size();
+            source.close();
+            return groupCount != 0;
+        }
+
+    }
+    
     /**
      * ImagePicker class
      */

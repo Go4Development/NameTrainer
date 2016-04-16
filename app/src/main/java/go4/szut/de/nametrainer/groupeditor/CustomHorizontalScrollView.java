@@ -57,7 +57,7 @@ public class CustomHorizontalScrollView extends HorizontalScrollView {
                     item.getGalleryImageView()
                             .setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.ic_add_black_48dp));
                 }
-                Util.l(this,"Width: " + (item.getGalleryImageView().getDrawable() == null));
+                Util.D.l(this,"Width: " + (item.getGalleryImageView().getDrawable() == null));
 
 
             }
