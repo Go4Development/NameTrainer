@@ -56,6 +56,15 @@ public class Util {
         }
 
         /**
+         * Wrapper method for Toast.
+         * @param context - the context of the activity
+         * @param message - the message to toast
+         */
+        public static void t(Context context, String message) {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        }
+
+        /**
          * Wrapper method for Toast including test for null.
          * @param context - the context of the activity
          * @param object - the object to toast a message from

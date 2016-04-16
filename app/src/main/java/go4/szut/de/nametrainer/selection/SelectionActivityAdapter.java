@@ -18,7 +18,7 @@ import go4.szut.de.nametrainer.util.Util;
 /**
  * Created by Michelé on 26.03.2016.
  */
-public class SelectionActivityAdapter extends BaseAdapter{
+public class SelectionActivityAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private SelectionActivity selectionActivity;

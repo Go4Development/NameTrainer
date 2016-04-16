@@ -2,6 +2,8 @@ package go4.szut.de.nametrainer.game;
 
 import android.content.Intent;
 
+import java.util.Random;
+
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.util.Util;
@@ -43,11 +45,26 @@ public class GameSetupBuilder {
         source = DataSource.getDataSourceInstance(activity);
 
         group = retrieveGameGroupObject();
+        Util.D.t(activity, group);
 
+        startGameMode();
     }
 
     private Group retrieveGameGroupObject() {
         return gameActivityIntent.getParcelableExtra(GameActivity.GAME_GROUP_OBJECT);
+    }
+
+    private void startGameMode() {
+        Random r = new Random();
+        int mode = r.nextInt(2);
+        switch(mode) {
+            case GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER:
+                gameModeListener.onLetterAssigningGameMode();
+                break;
+            case GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER:
+                gameModeListener.onNameAssigningGameMode();
+                break;
+        }
     }
 
 
