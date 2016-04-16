@@ -8,6 +8,7 @@ import java.util.Random;
 import go4.szut.de.nametrainer.database.DataSource;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 08.04.2016.
@@ -56,13 +57,13 @@ public class GameEngine {
         gameActivityIntent = activity.getIntent();
 
         loadGameData();
-        startGameMode();
     }
 
     private void loadGameData() {
         group = retrieveGameGroupObject();
         source.open();
         members = source.getMembers(group.getId());
+        Util.D.l(this, members.size() + "Members of Group " + group.getName() + " loaded!");
         source.close();
     }
 
@@ -83,6 +84,10 @@ public class GameEngine {
         }
     }
 
+    public void start() {
+
+    }
+
 
     /**
      * OnGameModeListener class invokes the setup of a specific
@@ -98,7 +103,7 @@ public class GameEngine {
      * if a game of a selected group is completed
      */
     public interface OnCompleteListener {
-        public void onComplete();
+        public void onComplete(Group group);
     }
 
 

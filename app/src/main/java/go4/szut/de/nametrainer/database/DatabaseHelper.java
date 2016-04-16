@@ -13,6 +13,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_MEMBER = "[" + Member.class.getSimpleName() + "]";
     //name of table group
     public static final String TABLE_GROUP = "[" + Group.class.getSimpleName() + "]";
+    //name of table score
+    public static final String TABLE_SCORE = "[" + Score.class.getSimpleName() + "]";
 
     //column identifier id
     public static final String COLUMN_ID = "id";
@@ -36,6 +38,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + Group.COLUMN_GROUP_NAME + " TEXT NOT NULL );";
 
+
+    //database creation statement of table score
+    private static final String DATABASE_CREATE_SCORE =
+            "CREATE TABLE " + TABLE_SCORE
+                    + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + Score.COLUMN_GROUP_ID + " INTEGER NOT NULL, "
+                    + Score.COLUMN_POINTS + " INTEGER NOT NULL );";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -44,12 +54,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(DATABASE_CREATE_GROUP);
         sqLiteDatabase.execSQL(DATABASE_CREATE_MEMBER);
+        sqLiteDatabase.execSQL(DATABASE_CREATE_SCORE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_GROUP);
         sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_MEMBER);
+        sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_SCORE);
         onCreate(sqLiteDatabase);
     }
 

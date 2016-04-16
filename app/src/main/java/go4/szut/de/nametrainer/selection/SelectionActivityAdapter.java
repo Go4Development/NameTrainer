@@ -36,8 +36,6 @@ public class SelectionActivityAdapter extends BaseAdapter {
     private void loadGroupsFromDatabase() {
         source.open();
         groups = source.getAllGroups();
-        Util.D.n(groups, "SelectionActivity");
-        Util.D.l(this, " Groups : " + groups);
         source.close();
     }
 

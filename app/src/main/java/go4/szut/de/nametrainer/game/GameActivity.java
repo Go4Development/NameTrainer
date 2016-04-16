@@ -1,12 +1,15 @@
 package go4.szut.de.nametrainer.game;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
 import go4.szut.de.nametrainer.R;
+import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
+import go4.szut.de.nametrainer.main.MainActivity;
 import go4.szut.de.nametrainer.util.Util;
 
 /**
@@ -30,8 +33,26 @@ public class GameActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         engine = new GameEngine(this);
+        engine.start();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            if(requestCode == GameResultActivity.IDENTIFIER) {
+                if(data != null && data.hasExtra(GameResultActivity.PLAY_AGAIN_DATA)) {
+                    Group group = data.getParcelableExtra(GameResultActivity.PLAY_AGAIN_DATA);
+                    Intent gameActivityIntent = new Intent(this, GameActivity.class);
+                    gameActivityIntent.putExtra(GameEngine.GAME_GROUP_OBJECT, group);
+                    startActivity(gameActivityIntent);
+                } else {
+                    Intent mainActivityIntent = new Intent(this, MainActivity.class);
+                    startActivity(mainActivityIntent);
+                }
+            }
+        }
+    }
 
     @Override
     public void onLetterAssigningGameMode(Member menber) {
@@ -46,8 +67,11 @@ public class GameActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onComplete() {
-
+    public void onComplete(Group group) {
+        Util.D.l(this, "onComplete");
+        Intent gameResultActivityIntent = new Intent(this, GameResultActivity.class);
+        gameResultActivityIntent.putExtra(GameResultActivity.PLAY_AGAIN_DATA, group);
+        startActivityForResult(gameResultActivityIntent, GameResultActivity.IDENTIFIER);
     }
 
 }

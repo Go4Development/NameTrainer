@@ -36,6 +36,13 @@ public class DataSource {
             Group.COLUMN_GROUP_NAME
     };
 
+    //all columns of table score
+    private static final String[] ALL_COLUMNS_SCORE = {
+            DatabaseHelper.COLUMN_ID,
+            Score.COLUMN_GROUP_ID,
+            Score.COLUMN_POINTS
+    };
+
 
     private static DataSource instance;
 

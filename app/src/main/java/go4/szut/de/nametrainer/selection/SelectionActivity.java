@@ -16,6 +16,7 @@ import go4.szut.de.nametrainer.game.GameActivity;
 import go4.szut.de.nametrainer.game.GameEngine;
 import go4.szut.de.nametrainer.groupeditor.GroupEditorActivity;
 import go4.szut.de.nametrainer.options.OptionsActivity;
+import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by raven on 25.03.2016.

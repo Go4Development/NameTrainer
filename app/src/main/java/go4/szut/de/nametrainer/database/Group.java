@@ -74,6 +74,7 @@ public class Group implements Parcelable {
     //PARCELABLE STUFF STARTS HERE
 
     protected Group(Parcel in) {
+        id = in.readInt();
         name = in.readString();
     }
 
@@ -91,11 +92,12 @@ public class Group implements Parcelable {
 
     @Override
     public int describeContents() {
-        return 1;
+        return 2;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
     }
 }
