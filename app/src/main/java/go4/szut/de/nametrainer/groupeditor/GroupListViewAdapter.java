@@ -1,6 +1,7 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,12 +154,23 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
                 Group group = (Group) i.getValue();
                 EditText groupNameEditText = i.getView(EditText.class, R.id.group_add_edittext);
                 String groupName = groupNameEditText.getText().toString();
-                group.setName(groupName);
-                DataSource source = i.getDataSource();
-                source.open();
-                source.updateGroup(group);
-                source.close();
-                i.close(null);
+                int status = Util.Input.limit(groupNameEditText, 2, 15);
+                if(status == Util.Input.NAME_OK) {
+                    group.setName(groupName);
+                    DataSource source = i.getDataSource();
+                    source.open();
+                    source.updateGroup(group);
+                    source.close();
+                    i.close(null);
+                } else {
+                    ArrayMap<Integer, String> bundle = new ArrayMap<Integer, String>();
+                    bundle.put(R.id.group_add_edittext, groupName);
+                    Util.Run.delay(i.reopen(bundle), 250);
+
+                    Util.toast(activity,
+                            Util.Res.strF(activity, R.string.user_info_missing_group_info,
+                                    Util.Res.str(activity, Util.Input.ERROR_IDS[status])));
+                }
             }
 
             @Override

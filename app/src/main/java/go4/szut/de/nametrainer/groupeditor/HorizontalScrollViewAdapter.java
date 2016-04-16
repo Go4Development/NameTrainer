@@ -1,6 +1,8 @@
 package go4.szut.de.nametrainer.groupeditor;
 
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.util.ArrayMap;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -143,15 +145,38 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
             @Override
             public void onPositive(CustomAlertDialog.Interface i) {
                 Member member = (Member)i.getValue();
-                String firstName = i.getView(EditText.class, R.id.dialog_firstname).getText().toString();
-                String surname = i.getView(EditText.class, R.id.dialog_surname).getText().toString();
-                member.setFirstname(firstName);
-                member.setSurname(surname);
-                DataSource source = i.getDataSource();
-                source.open();
-                source.updateMember(member);
-                source.close();
-                i.close(member);
+                EditText firstNameEditText = i.getView(EditText.class, R.id.dialog_firstname);
+                EditText surnameEditText = i.getView(EditText.class, R.id.dialog_surname);
+                String firstName = firstNameEditText.getText().toString();
+                String surname = surnameEditText.getText().toString();
+                int firstNameStatus = Util.Input.limit(firstNameEditText, 2, 20);
+                int surnameStatus = Util.Input.limit(surnameEditText, 2, 20);
+
+                if(firstNameStatus == Util.Input.NAME_OK && surnameStatus == Util.Input.NAME_OK) {
+                    member.setFirstname(firstName);
+                    member.setSurname(surname);
+                    DataSource source = i.getDataSource();
+                    source.open();
+                    source.updateMember(member);
+                    source.close();
+                    i.close(member);
+                } else {
+                    ArrayMap<Integer, String> bundle = new ArrayMap<Integer, String>();
+                    bundle.put(R.id.dialog_firstname, firstNameEditText.getText().toString());
+                    bundle.put(R.id.dialog_surname, surnameEditText.getText().toString());
+
+                    Util.Input.checkStatus(firstNameEditText, firstNameStatus);
+                    Util.Input.checkStatus(surnameEditText, surnameStatus);
+
+                    String nameErrorInfo = Util.Res.strF(activity,
+                            R.string.user_info_missing_member_info,
+                            Util.Res.str(activity, Util.Input.ERROR_IDS[firstNameStatus]),
+                            Util.Res.str(activity, Util.Input.ERROR_IDS[surnameStatus]));
+                    Util.toast(activity, nameErrorInfo);
+                    Util.Run.delay(i.reopen(bundle), 250);
+                }
+
+
             }
 
             @Override

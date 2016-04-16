@@ -7,4 +7,10 @@
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
+
+
+    <!-- Error Colors -->
+    <color name="input_mismatch_color"></color>
+    <color name="input_match_color"></color>
+
 </resources>

@@ -3,6 +3,7 @@ package go4.szut.de.nametrainer.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -170,6 +171,15 @@ public class Util {
                 return NAME_TOO_LONG;
             }
         }
+
+        public static void checkStatus(EditText editText, int status) {
+            if(status == Input.NAME_TOO_SHORT || status == Input.NAME_TOO_LONG) {
+                editText.setBackgroundColor(Color.RED);
+            } else {
+                editText.setBackgroundColor(Color.GREEN);
+            }
+        }
+
     }
 
     public static class DB {

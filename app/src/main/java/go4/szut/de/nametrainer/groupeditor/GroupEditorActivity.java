@@ -130,7 +130,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         CustomAlertDialog addGroupDialog = new CustomAlertDialog(this);
         addGroupDialog.setDialogView(R.layout.activity_groupeditor_edittext);
         addGroupDialog.addView(R.id.group_add_edittext);
-        Util.Input.setTextInputFilter(addGroupDialog.getView(EditText.class,R.id.group_add_edittext));
+        Util.Input.setTextInputFilter(addGroupDialog.getView(EditText.class, R.id.group_add_edittext));
 
         addGroupDialog.setUpdateListener(IDENTIFIER_GROUPLISTVIEW_ADAPTER, this);
         addGroupDialog.setPositiveButtonTitle(R.string.groupeditor_add_action_posbutton);
@@ -139,12 +139,24 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onPositive(CustomAlertDialog.Interface i) {
                 EditText groupNameEditText = i.getView(EditText.class, R.id.group_add_edittext);
+                int status = Util.Input.limit(groupNameEditText, 2, 15);
                 String groupName = groupNameEditText.getText().toString();
-                DataSource source = i.getDataSource();
-                source.open();
-                source.insertGroup(groupName);
-                source.close();
-                i.close(null);
+                if(status == Util.Input.NAME_OK) {
+                    DataSource source = i.getDataSource();
+                    source.open();
+                    source.insertGroup(groupName);
+                    source.close();
+                    i.close(null);
+                } else {
+                    ArrayMap<Integer, String> bundle = new ArrayMap<Integer, String>();
+                    bundle.put(R.id.group_add_edittext, groupName);
+                    Util.Run.delay(i.reopen(bundle), 250);
+
+                    Util.toast(GroupEditorActivity.this,
+                            Util.Res.strF(GroupEditorActivity.this, R.string.user_info_missing_group_info,
+                                    Util.Res.str(GroupEditorActivity.this, Util.Input.ERROR_IDS[status])));
+
+                }
             }
 
             @Override
@@ -177,6 +189,8 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         memberAddDialog.setValue(group);
         memberAddDialog.addView(R.id.dialog_firstname);
         memberAddDialog.addView(R.id.dialog_surname);
+        Util.Input.setTextInputFilter(memberAddDialog.getView(EditText.class, R.id.dialog_firstname));
+        Util.Input.setTextInputFilter(memberAddDialog.getView(EditText.class, R.id.dialog_surname));
         memberAddDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
         memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image).setImageResource(R.mipmap.ic_launcher);
         memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
@@ -194,10 +208,6 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                     Group group = (Group) i.getValue();
                     String firstName = firstNameEditText.getText().toString();
                     String surname = surnameEditText.getText().toString();
-
-                    Util.Input.setTextInputFilter(firstNameEditText);
-                    Util.Input.setTextInputFilter(surnameEditText);
-
                     member.setFirstname(firstName);
                     member.setSurname(surname);
                     member.setGroupID(group.getId());
