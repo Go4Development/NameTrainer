@@ -82,6 +82,7 @@
     <string name="share">Teilen</string>
     <string name="exit">Beenden</string>
     <string name="Group_edit">Gruppe editieren</string>
+    <string name="member_tag">tagForMemberData</string>
 
 
 </resources>

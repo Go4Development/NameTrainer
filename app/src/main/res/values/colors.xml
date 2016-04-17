@@ -10,7 +10,7 @@
 
 
     <!-- Error Colors -->
-    <color name="input_mismatch_color"></color>
+  <!--  <color name="input_mismatch_color"></color>
     <color name="input_match_color"></color>
-
+    -->
 </resources>
