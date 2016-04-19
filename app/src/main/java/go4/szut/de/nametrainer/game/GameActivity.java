@@ -26,16 +26,15 @@ public class GameActivity extends AppCompatActivity implements
     public static final int GAME_MODE_NAME_ASSIGNING = R.layout.activity_game_mode2;
     public static final int GAME_MODE_NAME_ASSIGNING_IDENTIFIER = 1;
 
-    //holds the members object in game mode
-    private ArrayList<Member> members;
-
-
+    //holds the game engine's instance that retrieves the necessary data from database in order to build up
+    //the game mode that the user is going to play
     private GameEngine engine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         engine = new GameEngine(this);
+        //starts the engine in order to select a random game mode
         engine.start();
     }
 
@@ -43,6 +42,9 @@ public class GameActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
+            //if the result is coming from GameResultActivity and has data in order
+            //to play the same selected group again, this method will restart the game
+            //activity with the already selected group
             if(requestCode == GameResultActivity.IDENTIFIER) {
                 if(data != null && data.hasExtra(GameResultActivity.PLAY_AGAIN_DATA)) {
                     Group group = data.getParcelableExtra(GameResultActivity.PLAY_AGAIN_DATA);
@@ -50,6 +52,7 @@ public class GameActivity extends AppCompatActivity implements
                     gameActivityIntent.putExtra(GameEngine.GAME_GROUP_OBJECT, group);
                     startActivity(gameActivityIntent);
                 } else {
+                    // may call: finish(); to stop the current running activity
                     Intent mainActivityIntent = new Intent(this, MainActivity.class);
                     startActivity(mainActivityIntent);
                 }
@@ -68,28 +71,23 @@ public class GameActivity extends AppCompatActivity implements
         Util.D.l(this, "Engine has chosen : Name Assigning Mode");
         setContentView(GAME_MODE_NAME_ASSIGNING);
         
-        this.members = members;
-        
+        //retrieves layouts from xml layout definition
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.initial_droptarget);
         GridLayout targetContainer = (GridLayout) findViewById(R.id.game_gridlayout);
 
+        //sets the DragListener to the linear layout
         linearLayout.setOnDragListener(new DropTargetListener());
 
         for (int i = 0; i < linearLayout.getChildCount(); i++){
-
             Member member = members.get(i);
-
             ImageView image = (ImageView) linearLayout.getChildAt(i);
             image.setOnTouchListener(new ImageTouchListener());
             image.setTag(R.string.member_tag,member.getId());
-
             LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(i);
             dropTarget.getChildAt(0).setOnDragListener(new DropTargetListener());
             dropTarget.getChildAt(0).setTag(R.string.member_tag,member.getId());
-
             TextView name = (TextView) dropTarget.getChildAt(1);
             name.setText(member.getFullName());
-
         }
 
         findViewById(R.id.game_layout).setOnDragListener(new OnDragListener() {
