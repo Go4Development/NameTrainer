@@ -26,6 +26,9 @@ public class GameActivity extends AppCompatActivity implements
     public static final int GAME_MODE_NAME_ASSIGNING = R.layout.activity_game_mode2;
     public static final int GAME_MODE_NAME_ASSIGNING_IDENTIFIER = 1;
 
+    //holds the members object in game mode
+    private ArrayList<Member> members;
+
 
     private GameEngine engine;
 
@@ -64,6 +67,42 @@ public class GameActivity extends AppCompatActivity implements
     public void onNameAssigningGameMode(ArrayList<Member> members) {
         Util.D.l(this, "Engine has chosen : Name Assigning Mode");
         setContentView(GAME_MODE_NAME_ASSIGNING);
+        
+        this.members = members;
+        
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.initial_droptarget);
+        GridLayout targetContainer = (GridLayout) findViewById(R.id.game_gridlayout);
+
+        linearLayout.setOnDragListener(new DropTargetListener());
+
+        for (int i = 0; i < linearLayout.getChildCount(); i++){
+
+            Member member = members.get(i);
+
+            ImageView image = (ImageView) linearLayout.getChildAt(i);
+            image.setOnTouchListener(new ImageTouchListener());
+            image.setTag(R.string.member_tag,member.getId());
+
+            LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(i);
+            dropTarget.getChildAt(0).setOnDragListener(new DropTargetListener());
+            dropTarget.getChildAt(0).setTag(R.string.member_tag,member.getId());
+
+            TextView name = (TextView) dropTarget.getChildAt(1);
+            name.setText(member.getFullName());
+
+        }
+
+        findViewById(R.id.game_layout).setOnDragListener(new OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                if(event.getAction() == DragEvent.ACTION_DROP){
+                    View view = (View) event.getLocalState();
+                    view.setVisibility(View.VISIBLE);
+                }
+                return true;
+            }
+        });
+        
     }
 
     @Override
@@ -72,6 +111,57 @@ public class GameActivity extends AppCompatActivity implements
         Intent gameResultActivityIntent = new Intent(this, GameResultActivity.class);
         gameResultActivityIntent.putExtra(GameResultActivity.PLAY_AGAIN_DATA, group);
         startActivityForResult(gameResultActivityIntent, GameResultActivity.IDENTIFIER);
+    }
+    
+    class DropTargetListener implements OnDragListener {
+        Drawable enterShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_droptarget, null);
+        Drawable normalShape =  ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null);
+        Drawable rightShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_rightdroptarget,null);
+        Drawable wrongShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_wrongtarget,null);
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            ViewGroup dropTarget = (ViewGroup) v;
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    if(dropTarget.getChildCount() == 0)
+                        v.setBackground(enterShape);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    if(dropTarget.getChildCount() == 0)
+                        v.setBackground(normalShape);
+                    break;
+                case DragEvent.ACTION_DROP:
+                    if(( (ViewGroup) v).getChildCount() > 0 && v != findViewById(R.id.initial_droptarget)) {
+                        View view = (View) event.getLocalState();
+                        view.setVisibility(View.VISIBLE);
+
+                    } else {
+
+                        View view = (View) event.getLocalState();
+                        ViewGroup owner = (ViewGroup) view.getParent();
+                        owner.removeView(view);
+                        LinearLayout container = (LinearLayout) v;
+                        container.addView(view);
+                        view.setVisibility(View.VISIBLE);
+                        if(view.getTag(R.string.member_tag) == v.getTag(R.string.member_tag)){
+                            v.setBackground(rightShape);
+                        }else {
+                            v.setBackground(wrongShape);
+                        }
+                    }
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    if(dropTarget.getChildCount() == 0)
+                        v.setBackground(normalShape);
+                default:
+                    break;
+            }
+            return true;
+        }
     }
 
 }
