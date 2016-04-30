@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity implements
     public void onNameAssigningGameMode(ArrayList<Member> members) {
         Util.D.l(this, "Engine has chosen : Name Assigning Mode");
         setContentView(GAME_MODE_NAME_ASSIGNING);
-        
+
         //retrieves layouts from xml layout definition
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.initial_droptarget);
         GridLayout targetContainer = (GridLayout) findViewById(R.id.game_gridlayout);
@@ -100,7 +100,7 @@ public class GameActivity extends AppCompatActivity implements
                 return true;
             }
         });
-        
+
     }
 
     @Override
@@ -110,7 +110,7 @@ public class GameActivity extends AppCompatActivity implements
         gameResultActivityIntent.putExtra(GameResultActivity.PLAY_AGAIN_DATA, group);
         startActivityForResult(gameResultActivityIntent, GameResultActivity.IDENTIFIER);
     }
-    
+
     class DropTargetListener implements OnDragListener {
         Drawable enterShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_droptarget, null);
         Drawable normalShape =  ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null);
