@@ -189,8 +189,10 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
         memberAddDialog.setValue(group);
         memberAddDialog.addView(R.id.dialog_firstname);
         memberAddDialog.addView(R.id.dialog_surname);
+
         Util.Input.setTextInputFilter(memberAddDialog.getView(EditText.class, R.id.dialog_firstname));
         Util.Input.setTextInputFilter(memberAddDialog.getView(EditText.class, R.id.dialog_surname));
+
         memberAddDialog.addViewIncludingOnClick(R.id.dialog_preview_image);
         memberAddDialog.getView(ImageView.class, R.id.dialog_preview_image).setImageResource(R.mipmap.ic_launcher);
         memberAddDialog.setOptionSelectionListener(new CustomAlertDialog.AdvancedSimpleOnOptionSelectionListener() {
