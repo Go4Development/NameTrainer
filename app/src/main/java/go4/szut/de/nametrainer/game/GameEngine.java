@@ -20,6 +20,8 @@ public class GameEngine {
      */
     public static final String GAME_GROUP_OBJECT = "game_group";
 
+    public static final int MEMBERS_COUNT = 6;
+
     /**
      * holds the game activity instance
      */
@@ -65,10 +67,22 @@ public class GameEngine {
         members = source.getMembers(group.getId());
         Util.D.l(this, members.size() + "Members of Group " + group.getName() + " loaded!");
         source.close();
+
+        members = testGenerateRandomMembers();
+        gameModeListener.onNameAssigningGameMode(members);
     }
 
     private Group retrieveGameGroupObject() {
         return gameActivityIntent.getParcelableExtra(GAME_GROUP_OBJECT);
+    }
+
+    private ArrayList<Member> testGenerateRandomMembers() {
+        ArrayList<Member> randomMembers = new ArrayList<Member>();
+        Random r = new Random();
+        for(int i = 0; i < MEMBERS_COUNT; i++) {
+            randomMembers.add(members.get(r.nextInt(members.size())));
+        }
+        return randomMembers;
     }
 
     private void startGameMode() {

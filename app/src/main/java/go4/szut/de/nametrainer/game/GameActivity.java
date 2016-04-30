@@ -1,8 +1,22 @@
 package go4.szut.de.nametrainer.game;
 
+import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayout;
+import android.view.DragEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -81,6 +95,7 @@ public class GameActivity extends AppCompatActivity implements
         for (int i = 0; i < linearLayout.getChildCount(); i++){
             Member member = members.get(i);
             ImageView image = (ImageView) linearLayout.getChildAt(i);
+            ImageLoader.getInstance().displayImage(member.getImagePath(), image);
             image.setOnTouchListener(new ImageTouchListener());
             image.setTag(R.string.member_tag,member.getId());
             LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(i);
@@ -90,7 +105,7 @@ public class GameActivity extends AppCompatActivity implements
             name.setText(member.getFullName());
         }
 
-        findViewById(R.id.game_layout).setOnDragListener(new OnDragListener() {
+        findViewById(R.id.game_layout).setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
                 if(event.getAction() == DragEvent.ACTION_DROP){
@@ -110,8 +125,11 @@ public class GameActivity extends AppCompatActivity implements
         gameResultActivityIntent.putExtra(GameResultActivity.PLAY_AGAIN_DATA, group);
         startActivityForResult(gameResultActivityIntent, GameResultActivity.IDENTIFIER);
     }
-    
-    class DropTargetListener implements OnDragListener {
+
+    /**
+     * DropTargetListener
+     */
+    private class DropTargetListener implements View.OnDragListener {
         Drawable enterShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_droptarget, null);
         Drawable normalShape =  ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null);
         Drawable rightShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_rightdroptarget,null);
@@ -160,6 +178,23 @@ public class GameActivity extends AppCompatActivity implements
             }
             return true;
         }
+    }
+
+    /**
+     * ImageTouchListener
+     */
+    private final class ImageTouchListener implements View.OnTouchListener {
+       public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                return false;
+            }
+       }
     }
 
 }
