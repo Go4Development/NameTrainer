@@ -2,16 +2,12 @@ package go4.szut.de.nametrainer.game;
 
 import android.content.ClipData;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -75,7 +71,7 @@ public class GameActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLetterAssigningGameMode(Member menber) {
+    public void onLetterAssigningGameMode(Member member) {
         Util.D.l(this, "Engine has chosen : Letter Assigning Mode");
         setContentView(GAME_MODE_LETTER_ASSIGNING);
     }
@@ -90,17 +86,17 @@ public class GameActivity extends AppCompatActivity implements
         GridLayout targetContainer = (GridLayout) findViewById(R.id.game_gridlayout);
 
         //sets the DragListener to the linear layout
-        linearLayout.setOnDragListener(new DropTargetListener());
+        linearLayout.setOnDragListener(engine.getNameAssigningModeOnDragListener());
 
         for (int i = 0; i < linearLayout.getChildCount(); i++){
             Member member = members.get(i);
             ImageView image = (ImageView) linearLayout.getChildAt(i);
             ImageLoader.getInstance().displayImage(member.getImagePath(), image);
             image.setOnTouchListener(new ImageTouchListener());
-            image.setTag(R.string.member_tag,member.getId());
+            image.setTag(R.string.member_tag, member.getId());
             LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(i);
-            dropTarget.getChildAt(0).setOnDragListener(new DropTargetListener());
-            dropTarget.getChildAt(0).setTag(R.string.member_tag,member.getId());
+            dropTarget.getChildAt(0).setOnDragListener(engine.getNameAssigningModeOnDragListener());
+            dropTarget.getChildAt(0).setTag(R.string.member_tag, member.getId());
             TextView name = (TextView) dropTarget.getChildAt(1);
             name.setText(member.getFullName());
         }
@@ -119,65 +115,13 @@ public class GameActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onComplete(Group group) {
+    public void onComplete(Group group, int rightMatches, int wrongMatches) {
         Util.D.l(this, "onComplete");
         Intent gameResultActivityIntent = new Intent(this, GameResultActivity.class);
         gameResultActivityIntent.putExtra(GameResultActivity.PLAY_AGAIN_DATA, group);
+        gameResultActivityIntent.putExtra(GameResultActivity.RIGHT_MATCHES_VALUE, rightMatches);
+        gameResultActivityIntent.putExtra(GameResultActivity.WRONG_MATCHES_VALUE, wrongMatches);
         startActivityForResult(gameResultActivityIntent, GameResultActivity.IDENTIFIER);
-    }
-
-    /**
-     * DropTargetListener
-     */
-    private class DropTargetListener implements View.OnDragListener {
-        Drawable enterShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_droptarget, null);
-        Drawable normalShape =  ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null);
-        Drawable rightShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_rightdroptarget,null);
-        Drawable wrongShape = ResourcesCompat.getDrawable(getResources(), R.drawable.shape_wrongtarget,null);
-
-        @Override
-        public boolean onDrag(View v, DragEvent event) {
-            ViewGroup dropTarget = (ViewGroup) v;
-            switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    // do nothing
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    if(dropTarget.getChildCount() == 0)
-                        v.setBackground(enterShape);
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    if(dropTarget.getChildCount() == 0)
-                        v.setBackground(normalShape);
-                    break;
-                case DragEvent.ACTION_DROP:
-                    if(( (ViewGroup) v).getChildCount() > 0 && v != findViewById(R.id.initial_droptarget)) {
-                        View view = (View) event.getLocalState();
-                        view.setVisibility(View.VISIBLE);
-
-                    } else {
-
-                        View view = (View) event.getLocalState();
-                        ViewGroup owner = (ViewGroup) view.getParent();
-                        owner.removeView(view);
-                        LinearLayout container = (LinearLayout) v;
-                        container.addView(view);
-                        view.setVisibility(View.VISIBLE);
-                        if(view.getTag(R.string.member_tag) == v.getTag(R.string.member_tag)){
-                            v.setBackground(rightShape);
-                        }else {
-                            v.setBackground(wrongShape);
-                        }
-                    }
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
-                    if(dropTarget.getChildCount() == 0)
-                        v.setBackground(normalShape);
-                default:
-                    break;
-            }
-            return true;
-        }
     }
 
     /**

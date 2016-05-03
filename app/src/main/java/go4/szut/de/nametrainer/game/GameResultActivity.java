@@ -16,6 +16,8 @@ public class GameResultActivity extends AppCompatActivity {
     public static final int IDENTIFIER = 666;
 
     public static final String PLAY_AGAIN_DATA = "play_data";
+    public static final String RIGHT_MATCHES_VALUE = "right_matches";
+    public static final String WRONG_MATCHES_VALUE = "wrong_matches";
 
 
     @Override
