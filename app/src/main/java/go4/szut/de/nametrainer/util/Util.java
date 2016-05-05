@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
@@ -236,6 +238,30 @@ public class Util {
                 galleryChooserIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         }
 
+    }
+
+    public static class Helper {
+        public static char[] scrambleChars(int shuffleCount, String... list) {
+            ArrayList<Character> allCharacters = new ArrayList<Character>();
+            for(int i = 0; i < list.length; i++) {
+                list[i] = list[i].toUpperCase();
+                char[] currentChars = list[i].toCharArray();
+                for(int j = 0; j < currentChars.length; j++) {
+                    allCharacters.add(currentChars[j]);
+                }
+            }
+            for(int k = 0; k < shuffleCount; k++) {
+                Collections.shuffle(allCharacters, new Random());
+            }
+            Character[] scrambledChars = new Character[allCharacters.size()];
+            allCharacters.toArray(scrambledChars);
+
+            char[] scrambledCharsNormal = new char[allCharacters.size()];
+            for(int l = 0; l < scrambledChars.length; l++) {
+                scrambledCharsNormal[l] = scrambledChars[l];
+            }
+            return scrambledCharsNormal;
+        }
     }
 
 }
