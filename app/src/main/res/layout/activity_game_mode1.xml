@@ -7,15 +7,36 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/game_mode_one_imageview"
         android:layout_width="350dp"
         android:layout_gravity="center"
-        android:layout_height="350dp"
-        android:src="@android:drawable/alert_dark_frame"/>
+        android:layout_height="350dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/game_mode_one_firstname_container"
+        android:orientation="horizontal"
+        >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/game_mode_one_lastname_container"
+        android:orientation="horizontal"
+        >
+
+    </LinearLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Name goes here!"/>
+        android:id="@+id/game_mode_one_initial_container"
+        >
+
+    </GridLayout>
+
 
 </LinearLayout>

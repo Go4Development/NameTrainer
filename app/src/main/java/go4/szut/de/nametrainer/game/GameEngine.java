@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.jar.Attributes;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.DataSource;
@@ -137,7 +136,7 @@ public class GameEngine {
         switch(mode) {
             case GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);
-                //gameModeListener.onLetterAssigningGameMode(null);
+                engineListener.onLetterAssigningGameMode(members.get(0));
                 break;
             case GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);

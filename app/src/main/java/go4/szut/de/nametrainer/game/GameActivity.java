@@ -1,23 +1,21 @@
 package go4.szut.de.nametrainer.game;
 
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 
 import java.util.ArrayList;
 
@@ -80,7 +78,39 @@ public class GameActivity extends AppCompatActivity implements
     public void onLetterAssigningGameMode(Member member) {
         Util.D.l(this, "Engine has chosen : Letter Assigning Mode");
         setContentView(GAME_MODE_LETTER_ASSIGNING);
+        char[] firstname = member.getFirstname().toCharArray();
+        char[] lastname = member.getSurname().toCharArray();
+        char[] scrambledChars = Util.Helper.scrambleChars(1, member.getFirstname(), member.getSurname());
+
+        LinearLayout firstnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_firstname_container);
+        firstnameContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null));
+        LinearLayout lastnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_lastname_container);
+        GridLayout initialContainer = (GridLayout) findViewById(R.id.game_mode_one_initial_container);
+        ImageView imageView = (ImageView) findViewById(R.id.game_mode_one_imageview);
+        ImageLoader.getInstance().displayImage(member.getImagePath(),imageView);
+
+        for(int i = 0; i < scrambledChars.length; i++){
+
+            LayoutInflater layoutInflater =  ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+            TextView textView = (TextView) layoutInflater.inflate(R.layout.activity_game_mode1_draggable_letter,null);
+            textView.setText(String.valueOf(scrambledChars[i]));
+            textView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_letter, null));
+            initialContainer.addView(textView);
+
+
+
+            LinearLayout dropTarget = (LinearLayout) layoutInflater.inflate(R.layout.activity_game_mode1_droptarget, null);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50,150);
+            if(i < firstname.length){
+                firstnameContainer.addView(dropTarget,layoutParams);
+            } else {
+                lastnameContainer.addView(dropTarget,layoutParams);
+            }
+        }
+        Util.D.l(this,firstnameContainer.getChildCount() + " childcount: " + lastnameContainer.getChildCount());
+
     }
+
 
     @Override
     public void onNameAssigningGameMode(ArrayList<Member> members) {
