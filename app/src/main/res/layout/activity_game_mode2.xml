@@ -194,44 +194,48 @@
 <LinearLayout
     android:id="@+id/initial_droptarget"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_margin="20dp"
     android:layout_marginTop="0dp"
     android:background="@drawable/shape"
     android:orientation="horizontal"
-    android:columnCount="3"
-    android:rowCount="2"
         >
 
     <ImageView
         android:id="@+id/image1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher" />
     <ImageView
         android:id="@+id/image2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher" />
     <ImageView
         android:id="@+id/image3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher" />
     <ImageView
         android:id="@+id/image4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher" />
     <ImageView
         android:id="@+id/image5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher" />
     <ImageView
         android:id="@+id/image6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
         android:src="@mipmap/ic_launcher" />
 
 </LinearLayout>

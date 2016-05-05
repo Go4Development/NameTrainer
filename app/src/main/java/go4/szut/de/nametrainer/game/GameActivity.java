@@ -2,6 +2,7 @@ package go4.szut.de.nametrainer.game;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
@@ -12,7 +13,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.utils.ImageSizeUtils;
 
 import java.util.ArrayList;
 
@@ -20,13 +25,14 @@ import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
 import go4.szut.de.nametrainer.database.Member;
 import go4.szut.de.nametrainer.main.MainActivity;
+import go4.szut.de.nametrainer.util.CustomAlertDialog;
 import go4.szut.de.nametrainer.util.Util;
 
 /**
  * Created by Rene on 24.03.2016.
  */
 public class GameActivity extends AppCompatActivity implements
-        GameEngine.OnGameModeListener, GameEngine.OnCompleteListener {
+        GameEngine.OnEngineListener {
 
     //layout id for game mode for assigning letters to blank spaces in order to build a persons name
     public static final int GAME_MODE_LETTER_ASSIGNING = R.layout.activity_game_mode1;
@@ -122,6 +128,26 @@ public class GameActivity extends AppCompatActivity implements
         gameResultActivityIntent.putExtra(GameResultActivity.RIGHT_MATCHES_VALUE, rightMatches);
         gameResultActivityIntent.putExtra(GameResultActivity.WRONG_MATCHES_VALUE, wrongMatches);
         startActivityForResult(gameResultActivityIntent, GameResultActivity.IDENTIFIER);
+    }
+
+    @Override
+    public void onStageCompleted() {
+        CustomAlertDialog dialog = new CustomAlertDialog(this);
+        dialog.setTitle("Stage Completed");
+        dialog.setPositiveButtonTitle("Weiter");
+        dialog.setOptionSelectionListener(new CustomAlertDialog.SimpleOnOptionSelectionListener() {
+            @Override
+            public void onPositive(CustomAlertDialog.Interface i) {
+                engine.next();
+                i.close(null);
+            }
+
+            @Override
+            public void onNegative(CustomAlertDialog.Interface i) {
+
+            }
+        });
+        dialog.show();
     }
 
     /**

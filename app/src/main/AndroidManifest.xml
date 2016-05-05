@@ -29,8 +29,8 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>
         <activity
-            android:permission="android.permission.READ_EXTERNAL_STORAGE"
             android:name=".groupeditor.GroupEditorActivity"
+            android:permission="android.permission.READ_EXTERNAL_STORAGE"
             android:label="@string/groupeditor">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>

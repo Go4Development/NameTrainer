@@ -313,8 +313,12 @@ public class CustomAlertDialog implements DialogInterface.OnClickListener, View.
             dialogBuilder.setView(dialogView);
         }
         dialogBuilder.setCancelable(true);
-        dialogBuilder.setPositiveButton(positiveButtonTitle, this);
-        dialogBuilder.setNegativeButton(negativeButtonTitle, this);
+        if(positiveButtonTitle != null) {
+            dialogBuilder.setPositiveButton(positiveButtonTitle, this);
+        }
+        if(negativeButtonTitle != null) {
+            dialogBuilder.setNegativeButton(negativeButtonTitle, this);
+        }
         dialogBuilder.show();
     }
 

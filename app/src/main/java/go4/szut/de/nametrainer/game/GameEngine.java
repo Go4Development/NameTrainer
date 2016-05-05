@@ -39,8 +39,7 @@ public class GameEngine {
     /**
      * holds the listener for game mode selected events
      */
-    private OnGameModeListener gameModeListener;
-    private OnCompleteListener completeListener;
+    private OnEngineListener engineListener;
 
     private NameAssigningModeOnDragListener nameAssigningModeOnDragListener;
     private LetterAssigningModeOnDragListener letterAssigningModeOnDragListener;
@@ -75,8 +74,7 @@ public class GameEngine {
 
         this.activity = activity;
 
-        this.gameModeListener = activity;
-        this.completeListener = activity;
+        this.engineListener = activity;
 
         nameAssigningModeOnDragListener = new NameAssigningModeOnDragListener(this, activity);
         letterAssigningModeOnDragListener = new LetterAssigningModeOnDragListener(this, activity);
@@ -143,7 +141,7 @@ public class GameEngine {
                 break;
             case GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);
-                gameModeListener.onNameAssigningGameMode(members);
+                engineListener.onNameAssigningGameMode(members);
                 break;
         }
     }
@@ -161,7 +159,7 @@ public class GameEngine {
             stageIndex++;
             startGameMode(stagePattern.get(stageIndex));
         } else {
-            completeListener.onComplete(group, rightMatches, wrongMatches);
+            engineListener.onComplete(group, rightMatches, wrongMatches);
         }
     }
 
@@ -178,20 +176,12 @@ public class GameEngine {
      * OnGameModeListener class invokes the setup of a specific
      * game mode that is randomly chosen by the GameEngine
      */
-    public interface OnGameModeListener {
+    public interface OnEngineListener {
         public void onLetterAssigningGameMode(Member member);
         public void onNameAssigningGameMode(ArrayList<Member> members);
-    }
-
-    /**
-     * OnCompleteListener class invokes the event of onComplete
-     * if a game of a selected group is completed
-     */
-    public interface OnCompleteListener {
         public void onComplete(Group group, int wrongMatches, int rightMatches);
+        public void onStageCompleted();
     }
-
-
 
     public static class NameAssigningModeOnDragListener implements View.OnDragListener {
 
@@ -214,20 +204,21 @@ public class GameEngine {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             ViewGroup dropTarget = (ViewGroup) v;
+            View initialDropTarget = activity.findViewById(R.id.initial_droptarget);
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     // do nothing
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    if(dropTarget.getChildCount() == 0)
+                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
                         v.setBackground(enterShape);
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    if(dropTarget.getChildCount() == 0)
+                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
                         v.setBackground(normalShape);
                     break;
                 case DragEvent.ACTION_DROP:
-                    if(dropTarget.getChildCount() > 0 && v != activity.findViewById(R.id.initial_droptarget)) {
+                    if(dropTarget.getChildCount() > 0 && v != initialDropTarget) {
                         View view = (View) event.getLocalState();
                         view.setVisibility(View.VISIBLE);
                     } else {
@@ -239,15 +230,18 @@ public class GameEngine {
                         view.setVisibility(View.VISIBLE);
                         if(view.getTag(R.string.member_tag) == v.getTag(R.string.member_tag)){
                             view.setOnTouchListener(null);
-                            view.setBackground(rightShape);
+                            container.setBackground(rightShape);
                             engine.rightMatches++;
+                            if(engine.rightMatches == 6) {
+                                engine.engineListener.onStageCompleted();
+                            }
                         } else {
                             engine.wrongMatches++;
                         }
                     }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    if(dropTarget.getChildCount() == 0)
+                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
                         v.setBackground(normalShape);
                 default:
                     break;
