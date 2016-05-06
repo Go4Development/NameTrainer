@@ -2,20 +2,24 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/game_mode_one_imageview"
+        android:layout_marginTop="20dp"
         android:layout_width="350dp"
         android:layout_gravity="center"
         android:layout_height="350dp" />
 
 
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:gravity="center"
         android:id="@+id/game_mode_one_firstname_container"
         android:orientation="horizontal"
         >
@@ -23,6 +27,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:layout_height="50dp"
         android:id="@+id/game_mode_one_lastname_container"
         android:orientation="horizontal"
@@ -30,13 +36,15 @@
 
     </LinearLayout>
 
-    <GridLayout
+    <android.support.v7.widget.GridLayout
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:rowCount="2"
         android:id="@+id/game_mode_one_initial_container"
         >
 
-    </GridLayout>
+    </android.support.v7.widget.GridLayout>
 
 
 </LinearLayout>

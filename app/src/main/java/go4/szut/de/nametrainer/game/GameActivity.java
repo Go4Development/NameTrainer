@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,7 +83,6 @@ public class GameActivity extends AppCompatActivity implements
         char[] scrambledChars = Util.Helper.scrambleChars(1, member.getFirstname(), member.getSurname());
 
         LinearLayout firstnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_firstname_container);
-        firstnameContainer.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null));
         LinearLayout lastnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_lastname_container);
         GridLayout initialContainer = (GridLayout) findViewById(R.id.game_mode_one_initial_container);
         ImageView imageView = (ImageView) findViewById(R.id.game_mode_one_imageview);
@@ -95,12 +94,19 @@ public class GameActivity extends AppCompatActivity implements
             TextView textView = (TextView) layoutInflater.inflate(R.layout.activity_game_mode1_draggable_letter,null);
             textView.setText(String.valueOf(scrambledChars[i]));
             textView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_letter, null));
-            initialContainer.addView(textView);
+
+            GridLayout.Spec row = GridLayout.spec(i / 10, 1);
+            GridLayout.Spec colspan = GridLayout.spec(i % 10, 1);
+            GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(row, colspan);
+            gridLayoutParam.setMargins(5,5,5,5);
+
+            initialContainer.addView(textView,gridLayoutParam);
 
 
-
+            float d = getResources().getDisplayMetrics().density;
             LinearLayout dropTarget = (LinearLayout) layoutInflater.inflate(R.layout.activity_game_mode1_droptarget, null);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50,150);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) (30 * d),(int)(30 * d));
+            layoutParams.setMargins((int)d * 5,(int)d * 5,0,0);
             if(i < firstname.length){
                 firstnameContainer.addView(dropTarget,layoutParams);
             } else {
