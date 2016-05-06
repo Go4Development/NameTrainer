@@ -241,7 +241,7 @@ public class Util {
     }
 
     public static class Helper {
-        public static char[] scrambleChars(int shuffleCount, String... list) {
+        public static char[] scrambleChars(int shuffleCount, int fillInCount, String... list) {
             ArrayList<Character> allCharacters = new ArrayList<Character>();
             for(int i = 0; i < list.length; i++) {
                 list[i] = list[i].toUpperCase();
@@ -249,6 +249,10 @@ public class Util {
                 for(int j = 0; j < currentChars.length; j++) {
                     allCharacters.add(currentChars[j]);
                 }
+            }
+            Random random = new Random();
+            for(int f = 0; f < fillInCount - allCharacters.size(); f++) {
+                allCharacters.add((char)(random.nextInt(90-65)+65));
             }
             for(int k = 0; k < shuffleCount; k++) {
                 Collections.shuffle(allCharacters, new Random());
