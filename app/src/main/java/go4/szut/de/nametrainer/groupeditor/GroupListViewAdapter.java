@@ -154,7 +154,7 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
                 Group group = (Group) i.getValue();
                 EditText groupNameEditText = i.getView(EditText.class, R.id.group_add_edittext);
                 String groupName = groupNameEditText.getText().toString();
-                int status = Util.Input.limit(groupNameEditText, 2, 15);
+                int status = Util.Input.limit(groupNameEditText, 2, 10);
                 if(status == Util.Input.NAME_OK) {
                     group.setName(groupName);
                     DataSource source = i.getDataSource();

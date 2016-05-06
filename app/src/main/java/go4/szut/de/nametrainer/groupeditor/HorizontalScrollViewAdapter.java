@@ -149,8 +149,8 @@ public class HorizontalScrollViewAdapter implements View.OnLongClickListener, Cu
                 EditText surnameEditText = i.getView(EditText.class, R.id.dialog_surname);
                 String firstName = firstNameEditText.getText().toString();
                 String surname = surnameEditText.getText().toString();
-                int firstNameStatus = Util.Input.limit(firstNameEditText, 2, 20);
-                int surnameStatus = Util.Input.limit(surnameEditText, 2, 20);
+                int firstNameStatus = Util.Input.limit(firstNameEditText, 2, 10);
+                int surnameStatus = Util.Input.limit(surnameEditText, 2, 10);
 
                 if(firstNameStatus == Util.Input.NAME_OK && surnameStatus == Util.Input.NAME_OK) {
                     member.setFirstname(firstName);

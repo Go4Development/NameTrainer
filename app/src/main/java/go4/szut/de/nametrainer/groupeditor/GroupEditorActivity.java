@@ -139,7 +139,7 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onPositive(CustomAlertDialog.Interface i) {
                 EditText groupNameEditText = i.getView(EditText.class, R.id.group_add_edittext);
-                int status = Util.Input.limit(groupNameEditText, 2, 15);
+                int status = Util.Input.limit(groupNameEditText, 2, 10);
                 String groupName = groupNameEditText.getText().toString();
                 if(status == Util.Input.NAME_OK) {
                     DataSource source = i.getDataSource();
@@ -201,8 +201,8 @@ public class GroupEditorActivity extends AppCompatActivity implements View.OnCli
                 Member member = getIntent().getParcelableExtra("member");
                 EditText firstNameEditText = i.getView(EditText.class, R.id.dialog_firstname);
                 EditText surnameEditText = i.getView(EditText.class, R.id.dialog_surname);
-                int firstNameStatus = Util.Input.limit(firstNameEditText, 2, 20);
-                int surnameStatus = Util.Input.limit(surnameEditText, 2, 20);
+                int firstNameStatus = Util.Input.limit(firstNameEditText, 2, 10);
+                int surnameStatus = Util.Input.limit(surnameEditText, 2, 10);
 
                 if(member != null && firstNameStatus == Util.Input.NAME_OK &&
                         surnameStatus == Util.Input.NAME_OK) {
