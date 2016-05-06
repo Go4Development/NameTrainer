@@ -264,4 +264,10 @@ public class Util {
         }
     }
 
+    public static class Dis {
+        public static int dp(Context context, int dpValue) {
+            return (int)(dpValue * context.getResources().getDisplayMetrics().density);
+        }
+    }
+
 }
