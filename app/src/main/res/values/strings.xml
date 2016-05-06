@@ -74,6 +74,10 @@
     <string name="menu_selection_settings">Einstellungen</string>
     <string name="menu_selection_editor">Gruppeneditor</string>
 
+    <!-- Key Strings -->
+    <string name="letter_tag_key">letter_tag</string>
+    <string name="letter_count_tag_key">letter_count</string>
+
     <!-- Unorganized Strings -->
     <string name="add">add</string>
     <string name="name_trainer">Name Trainer</string>

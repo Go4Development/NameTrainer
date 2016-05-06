@@ -1,9 +1,14 @@
 package go4.szut.de.nametrainer.game;
 
+import android.content.ClipData;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.GridLayout;
+import android.text.method.Touch;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -42,6 +47,7 @@ public class GameEngine {
 
     private NameAssigningModeOnDragListener nameAssigningModeOnDragListener;
     private LetterAssigningModeOnDragListener letterAssigningModeOnDragListener;
+    private TouchListener touchListener;
 
     /**
      * holds the source to database
@@ -77,6 +83,7 @@ public class GameEngine {
 
         nameAssigningModeOnDragListener = new NameAssigningModeOnDragListener(this, activity);
         letterAssigningModeOnDragListener = new LetterAssigningModeOnDragListener(this, activity);
+        touchListener = new TouchListener();
 
         source = DataSource.getDataSourceInstance(activity);
         gameActivityIntent = activity.getIntent();
@@ -100,11 +107,11 @@ public class GameEngine {
     private ArrayList<Integer> generateStagePattern() {
         ArrayList<Integer> stagePattern = new ArrayList<Integer>();
         int totalMemberCount = memberPool.size();
-        int nameAssigningModeCount = totalMemberCount / 6;
-        int remainMemberCount = totalMemberCount % 6;
-        if(totalMemberCount != 6 && remainMemberCount == 0) {
+        int nameAssigningModeCount = totalMemberCount / MEMBERS_COUNT;
+        int remainMemberCount = totalMemberCount % MEMBERS_COUNT;
+        if(totalMemberCount != MEMBERS_COUNT && remainMemberCount == 0) {
             nameAssigningModeCount--;
-            remainMemberCount = 6;
+            remainMemberCount = MEMBERS_COUNT;
         }
         int stageCount = nameAssigningModeCount + remainMemberCount;
         for(int i = 0; i < stageCount; i++) {
@@ -123,7 +130,7 @@ public class GameEngine {
     private ArrayList<Member> pickRandomMembers(int mode) {
         Random random = new Random();
         ArrayList<Member> randomMembers = new ArrayList<Member>();
-        int memberCount = (mode == GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER) ? 6 : 1;
+        int memberCount = (mode == GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER) ? MEMBERS_COUNT : 1;
         for(int i = 0; i < memberCount; i++) {
             Member randomMember = memberPool.remove(random.nextInt(memberPool.size()));
             randomMembers.add(randomMember);
@@ -170,6 +177,10 @@ public class GameEngine {
         return letterAssigningModeOnDragListener;
     }
 
+    public TouchListener getTouchListener() {
+        return touchListener;
+    }
+
 
     /**
      * OnGameModeListener class invokes the setup of a specific
@@ -182,7 +193,7 @@ public class GameEngine {
         public void onStageCompleted();
     }
 
-    public static class NameAssigningModeOnDragListener implements View.OnDragListener {
+    private static class NameAssigningModeOnDragListener implements View.OnDragListener {
 
         private GameActivity activity;
         private GameEngine engine;
@@ -250,19 +261,90 @@ public class GameEngine {
 
     }
 
-    public static class LetterAssigningModeOnDragListener implements View.OnDragListener {
+    private static class LetterAssigningModeOnDragListener implements View.OnDragListener {
 
         private GameEngine engine;
         private GameActivity activity;
 
+        private final Drawable enterShape;
+        private final Drawable normalShape;
+        private final Drawable rightShape;
+
         public LetterAssigningModeOnDragListener(GameEngine engine, GameActivity activity) {
             this.engine = engine;
             this.activity = activity;
+
+            enterShape = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.shape_droptarget, null);
+            normalShape = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.shape, null);
+            rightShape = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.shape_rightdroptarget, null);
         }
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
-            return false;
+            ViewGroup dropTarget = (ViewGroup)v;
+            View initialDropTarget = activity.findViewById(R.id.game_mode_one_initial_container);
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    //do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
+                        v.setBackground(enterShape);
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
+                        v.setBackground(normalShape);
+                    break;
+                case DragEvent.ACTION_DROP:
+                    if(dropTarget.getChildCount() > 0 && v != initialDropTarget) {
+                        View view = (View) event.getLocalState();
+                        view.setVisibility(View.VISIBLE);
+                    } else {
+                        View view = (View) event.getLocalState();
+                        ViewGroup owner = (ViewGroup) view.getParent();
+                        owner.removeView(view);
+                        ViewGroup container = (ViewGroup) v;
+                        container.addView(view);
+                        view.setVisibility(View.VISIBLE);
+                        if(v != initialDropTarget) {
+                            if (view.getTag(R.string.letter_tag_key).toString().equals(
+                                    v.getTag(R.string.letter_tag_key).toString())) {
+                                view.setOnTouchListener(null);
+                                container.setBackground(rightShape);
+                            engine.rightMatches++;
+                            if (engine.rightMatches == Integer.parseInt(
+                                    initialDropTarget.getTag(R.string.letter_count_tag_key).toString())) {
+                                engine.engineListener.onStageCompleted();
+                                engine.rightMatches = 0;
+                            }
+                            } else {
+                                engine.wrongMatches++;
+                            }
+                        }
+                    }
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
+                        v.setBackground(normalShape);
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+    }
+
+    private static class TouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 

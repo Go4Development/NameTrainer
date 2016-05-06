@@ -1,8 +1,8 @@
 package go4.szut.de.nametrainer.game;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,6 @@ import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,12 +44,26 @@ public class GameActivity extends AppCompatActivity implements
     //the game mode that the user is going to play
     private GameEngine engine;
 
+    private LinearLayout gameLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         engine = new GameEngine(this);
         //starts the engine in order to select a random game mode
         engine.start();
+
+        gameLayout = (LinearLayout)findViewById(R.id.game_layout);
+        gameLayout.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                if(event.getAction() == DragEvent.ACTION_DROP){
+                    View view = (View) event.getLocalState();
+                    view.setVisibility(View.VISIBLE);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -79,21 +92,26 @@ public class GameActivity extends AppCompatActivity implements
     public void onLetterAssigningGameMode(Member member) {
         Util.D.l(this, "Engine has chosen : Letter Assigning Mode");
         setContentView(GAME_MODE_LETTER_ASSIGNING);
-        char[] firstname = member.getFirstname().toCharArray();
-        char[] lastname = member.getSurname().toCharArray();
-        char[] scrambledChars = Util.Helper.scrambleChars(1, member.getFirstname(), member.getSurname());
+        char[] firstname = member.getFirstname().toUpperCase().toCharArray();
+        char[] lastname = member.getSurname().toUpperCase().toCharArray();
+        char[] scrambledChars = Util.Helper.scrambleChars(1, 20, member.getFirstname(), member.getSurname());
 
         LinearLayout firstnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_firstname_container);
         LinearLayout lastnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_lastname_container);
         GridLayout initialContainer = (GridLayout) findViewById(R.id.game_mode_one_initial_container);
+        initialContainer.setTag(R.string.letter_count_tag_key, (firstname.length + lastname.length));
+        initialContainer.setOnDragListener(engine.getLetterAssigningModeOnDragListener());
         ImageView imageView = (ImageView) findViewById(R.id.game_mode_one_imageview);
-        ImageLoader.getInstance().displayImage(member.getImagePath(),imageView);
+        ImageLoader.getInstance().displayImage(member.getImagePath(), imageView);
 
         for(int i = 0; i < scrambledChars.length; i++){
-            int[] dpValues = Util.Dis.dp(this,5,30,2);
+            int[] dpValues = Util.Dis.dp(this, 5, 40, 2);
             LayoutInflater layoutInflater =  ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            TextView textView = (TextView) layoutInflater.inflate(R.layout.activity_game_mode1_draggable_letter,null);
+            TextView textView = (TextView) layoutInflater.inflate(R.layout.activity_game_mode1_draggable_letter, null);
+            textView.setOnTouchListener(engine.getTouchListener());
             textView.setText(String.valueOf(scrambledChars[i]));
+            textView.setTextColor(Color.argb(255, 255, 255, 255));
+            textView.setTag(R.string.letter_tag_key, String.valueOf(scrambledChars[i]));
             textView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_letter, null));
 
             GridLayout.Spec row = GridLayout.spec(i / 10, 1);
@@ -101,22 +119,30 @@ public class GameActivity extends AppCompatActivity implements
             GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(row, colspan);
             gridLayoutParam.setMargins(dpValues[2],dpValues[2],dpValues[2],dpValues[2]);
 
-
-            initialContainer.addView(textView,gridLayoutParam);
-
+            if(initialContainer != null)
+                initialContainer.addView(textView,gridLayoutParam);
 
             LinearLayout dropTarget = (LinearLayout) layoutInflater.inflate(R.layout.activity_game_mode1_droptarget, null);
+            dropTarget.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null));
+            dropTarget.setOnDragListener(engine.getLetterAssigningModeOnDragListener());
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpValues[1],dpValues[1]);
-            layoutParams.setMargins(dpValues[0],dpValues[0],0,0);
+            layoutParams.gravity = Gravity.CENTER;
+            layoutParams.setMargins(dpValues[0],dpValues[0], 0, 0);
 
-            if(i < firstname.length){
-                firstnameContainer.addView(dropTarget,layoutParams);
-            } else {
-                lastnameContainer.addView(dropTarget,layoutParams);
+            if(i < firstname.length + lastname.length) {
+                if(i < firstname.length) {
+                    if(firstnameContainer != null) {
+                        firstnameContainer.addView(dropTarget, layoutParams);
+                        dropTarget.setTag(R.string.letter_tag_key, firstname[i]);
+                    }
+                } else {
+                    if(lastnameContainer != null) {
+                        lastnameContainer.addView(dropTarget, layoutParams);
+                        dropTarget.setTag(R.string.letter_tag_key, lastname[i - firstname.length]);
+                    }
+                }
             }
         }
-        Util.D.l(this,firstnameContainer.getChildCount() + " childcount: " + lastnameContainer.getChildCount());
-
     }
 
 
@@ -130,13 +156,14 @@ public class GameActivity extends AppCompatActivity implements
         GridLayout targetContainer = (GridLayout) findViewById(R.id.game_gridlayout);
 
         //sets the DragListener to the linear layout
-        linearLayout.setOnDragListener(engine.getNameAssigningModeOnDragListener());
+        if(linearLayout != null)
+            linearLayout.setOnDragListener(engine.getNameAssigningModeOnDragListener());
 
         for (int i = 0; i < linearLayout.getChildCount(); i++){
             Member member = members.get(i);
             ImageView image = (ImageView) linearLayout.getChildAt(i);
             ImageLoader.getInstance().displayImage(member.getImagePath(), image);
-            image.setOnTouchListener(new ImageTouchListener());
+            image.setOnTouchListener(engine.getTouchListener());
             image.setTag(R.string.member_tag, member.getId());
             LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(i);
             dropTarget.getChildAt(0).setOnDragListener(engine.getNameAssigningModeOnDragListener());
@@ -144,17 +171,6 @@ public class GameActivity extends AppCompatActivity implements
             TextView name = (TextView) dropTarget.getChildAt(1);
             name.setText(member.getFullName());
         }
-
-        findViewById(R.id.game_layout).setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                if(event.getAction() == DragEvent.ACTION_DROP){
-                    View view = (View) event.getLocalState();
-                    view.setVisibility(View.VISIBLE);
-                }
-                return true;
-            }
-        });
         
     }
 
@@ -186,23 +202,6 @@ public class GameActivity extends AppCompatActivity implements
             }
         });
         dialog.show();
-    }
-
-    /**
-     * ImageTouchListener
-     */
-    private final class ImageTouchListener implements View.OnTouchListener {
-       public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
-                view.startDrag(data, shadowBuilder, view, 0);
-                view.setVisibility(View.INVISIBLE);
-                return true;
-            } else {
-                return false;
-            }
-       }
     }
 
 }
