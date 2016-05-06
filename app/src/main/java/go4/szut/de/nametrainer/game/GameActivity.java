@@ -8,6 +8,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -89,7 +90,7 @@ public class GameActivity extends AppCompatActivity implements
         ImageLoader.getInstance().displayImage(member.getImagePath(),imageView);
 
         for(int i = 0; i < scrambledChars.length; i++){
-
+            int[] dpValues = Util.Dis.dp(this,5,30,2);
             LayoutInflater layoutInflater =  ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             TextView textView = (TextView) layoutInflater.inflate(R.layout.activity_game_mode1_draggable_letter,null);
             textView.setText(String.valueOf(scrambledChars[i]));
@@ -98,15 +99,16 @@ public class GameActivity extends AppCompatActivity implements
             GridLayout.Spec row = GridLayout.spec(i / 10, 1);
             GridLayout.Spec colspan = GridLayout.spec(i % 10, 1);
             GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(row, colspan);
-            gridLayoutParam.setMargins(5,5,5,5);
+            gridLayoutParam.setMargins(dpValues[2],dpValues[2],dpValues[2],dpValues[2]);
+
 
             initialContainer.addView(textView,gridLayoutParam);
 
 
-            float d = getResources().getDisplayMetrics().density;
             LinearLayout dropTarget = (LinearLayout) layoutInflater.inflate(R.layout.activity_game_mode1_droptarget, null);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) (30 * d),(int)(30 * d));
-            layoutParams.setMargins((int)d * 5,(int)d * 5,0,0);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpValues[1],dpValues[1]);
+            layoutParams.setMargins(dpValues[0],dpValues[0],0,0);
+
             if(i < firstname.length){
                 firstnameContainer.addView(dropTarget,layoutParams);
             } else {
