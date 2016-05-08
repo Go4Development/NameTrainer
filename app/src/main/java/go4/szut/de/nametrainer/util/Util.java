@@ -251,7 +251,8 @@ public class Util {
                 }
             }
             Random random = new Random();
-            for(int f = 0; f < fillInCount - allCharacters.size(); f++) {
+            int allCharactersSize = allCharacters.size();
+            for(int f = 0; f < fillInCount - allCharactersSize; f++) {
                 allCharacters.add((char)(random.nextInt(90-65)+65));
             }
             for(int k = 0; k < shuffleCount; k++) {

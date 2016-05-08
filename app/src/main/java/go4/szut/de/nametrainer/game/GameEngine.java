@@ -147,17 +147,10 @@ public class GameEngine {
         switch(mode) {
             case GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);
-                if(members.size() != 0) {
-                    engineListener.onLetterAssigningGameMode(members.get(0));
-                } else {
-                    engineListener.onComplete(group, totalRightMatches, totalWrongMatches);
-                }
+                engineListener.onLetterAssigningGameMode(members.get(0));
                 break;
             case GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);
-                if(members.size() != 0) {
-                    engineListener.onComplete(group, totalRightMatches, totalWrongMatches);
-                }
                 engineListener.onNameAssigningGameMode(members);
                 break;
         }
@@ -175,7 +168,7 @@ public class GameEngine {
             stageIndex++;
             startGameMode(stagePattern.get(stageIndex));
         } else {
-            engineListener.onComplete(group, rightMatches, wrongMatches);
+            engineListener.onComplete(group, totalRightMatches, totalWrongMatches);
         }
     }
 
@@ -294,21 +287,23 @@ public class GameEngine {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             ViewGroup dropTarget = (ViewGroup)v;
-            View initialDropTarget = activity.findViewById(R.id.game_mode_one_initial_container);
+            ViewGroup initialDropTarget = (ViewGroup)activity.findViewById(R.id.game_mode_one_initial_container);
+            ViewGroup initialDropTargetChildOne = (ViewGroup) initialDropTarget.getChildAt(0);
+            ViewGroup initialDropTargetChildTwo = (ViewGroup) initialDropTarget.getChildAt(1);
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     //do nothing
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
+                    if(dropTarget.getChildCount() == 0 && (v != initialDropTargetChildOne) && (v != initialDropTargetChildTwo))
                         v.setBackground(enterShape);
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
+                    if(dropTarget.getChildCount() == 0 && (v != initialDropTargetChildOne) && (v != initialDropTargetChildTwo))
                         v.setBackground(normalShape);
                     break;
                 case DragEvent.ACTION_DROP:
-                    if(dropTarget.getChildCount() > 0 && v != initialDropTarget) {
+                    if(dropTarget.getChildCount() > 0 && (v != initialDropTargetChildOne) && (v != initialDropTargetChildTwo)) {
                         View view = (View) event.getLocalState();
                         view.setVisibility(View.VISIBLE);
                     } else {
@@ -316,9 +311,21 @@ public class GameEngine {
                         ViewGroup owner = (ViewGroup) view.getParent();
                         owner.removeView(view);
                         ViewGroup container = (ViewGroup) v;
-                        container.addView(view);
+                        if(v == initialDropTargetChildOne && initialDropTargetChildOne.getChildCount() == 10){
+
+                            initialDropTargetChildTwo.addView(view);
+
+                        } else if(v == initialDropTargetChildTwo && initialDropTargetChildTwo.getChildCount() == 10){
+
+                            initialDropTargetChildOne.addView(view);
+
+                        } else{
+
+                            container.addView(view);
+
+                        }
                         view.setVisibility(View.VISIBLE);
-                        if(v != initialDropTarget) {
+                        if((v != initialDropTargetChildOne) && (v != initialDropTargetChildTwo)) {
                             if (view.getTag(R.string.letter_tag_key).toString().equals(
                                     v.getTag(R.string.letter_tag_key).toString())) {
                                 view.setOnTouchListener(null);
@@ -338,7 +345,7 @@ public class GameEngine {
                     }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    if(dropTarget.getChildCount() == 0 && v != initialDropTarget)
+                    if(dropTarget.getChildCount() == 0 && (v != initialDropTargetChildOne) && (v != initialDropTargetChildTwo))
                         v.setBackground(normalShape);
                     break;
                 default:

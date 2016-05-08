@@ -1,6 +1,7 @@
 package go4.szut.de.nametrainer.groupeditor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,11 +121,11 @@ public class GroupListViewAdapter extends BaseAdapter implements View.OnLongClic
                         break;
                     case DIALOG_OPTION_DELETE:
                         onDelete(group);
-                        group = i.getAdapter(GroupListViewAdapter.class).getItem(0);
-                        if(group != null) {
+                        if(i.getAdapter(GroupListViewAdapter.class).getCount() != 0) {
+                            group = i.getAdapter(GroupListViewAdapter.class).getItem(0);
                             activity.getHorizontalScrollViewAdapter().update(group.getId());
                         } else {
-
+                            activity.startActivity(new Intent(activity,GroupEditorActivity.class));
                         }
                         break;
                 }

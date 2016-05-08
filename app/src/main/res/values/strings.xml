@@ -40,10 +40,15 @@
     <!-- Labels -->
     <string name="selection_label">Gruppenauswahl</string>
     <string name="game_label">g</string>
+    <string name="label_total_score">Punkte:</string>
+    <string name="label_wrong_matches_title">Falsche Aktionen:</string>
+    <string name="label_group_title">Gruppennamen:</string>
 
     <!-- Button Titles -->
     <string name="button_title_cancel">Abbrechen</string>
     <string name="button_title_add">Hinzufügen</string>
+    <string name="button_title_back_menu">Zum Menü</string>
+    <string name="button_title_play_again">Nochmal Spielen</string>
 
     <!-- Hints -->
     <string name="hint_firstname">Vorname</string>

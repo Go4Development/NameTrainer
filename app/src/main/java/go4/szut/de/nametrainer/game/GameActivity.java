@@ -8,7 +8,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayout;
 import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,8 +43,6 @@ public class GameActivity extends AppCompatActivity implements
     //the game mode that the user is going to play
     private GameEngine engine;
 
-    private LinearLayout gameLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,17 +50,6 @@ public class GameActivity extends AppCompatActivity implements
         //starts the engine in order to select a random game mode
         engine.start();
 
-        gameLayout = (LinearLayout)findViewById(R.id.game_layout);
-        gameLayout.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                if(event.getAction() == DragEvent.ACTION_DROP){
-                    View view = (View) event.getLocalState();
-                    view.setVisibility(View.VISIBLE);
-                }
-                return true;
-            }
-        });
     }
 
     @Override
@@ -74,15 +60,21 @@ public class GameActivity extends AppCompatActivity implements
             //to play the same selected group again, this method will restart the game
             //activity with the already selected group
             if(requestCode == GameResultActivity.IDENTIFIER) {
-                if(data != null && data.hasExtra(GameResultActivity.PLAY_AGAIN_DATA)) {
+                if(data != null) {
                     Group group = data.getParcelableExtra(GameResultActivity.PLAY_AGAIN_DATA);
-                    Intent gameActivityIntent = new Intent(this, GameActivity.class);
-                    gameActivityIntent.putExtra(GameEngine.GAME_GROUP_OBJECT, group);
-                    startActivity(gameActivityIntent);
-                } else {
-                    // may call: finish(); to stop the current running activity
-                    Intent mainActivityIntent = new Intent(this, MainActivity.class);
-                    startActivity(mainActivityIntent);
+                    if(group != null) {
+                        Intent gameActivityIntent = new Intent(this, GameActivity.class);
+                        gameActivityIntent.putExtra(GameEngine.GAME_GROUP_OBJECT, group);
+                        startActivity(gameActivityIntent);
+                        finish();
+                        Util.D.l(this, "GameActivtiy Play Again");
+                    } else {
+                        // may call: finish(); to stop the current running activity
+                        Intent mainActivityIntent = new Intent(this, MainActivity.class);
+                        startActivity(mainActivityIntent);
+                        finish();
+                        Util.D.l(this, "To Menu");
+                    }
                 }
             }
         }
@@ -92,20 +84,23 @@ public class GameActivity extends AppCompatActivity implements
     public void onLetterAssigningGameMode(Member member) {
         Util.D.l(this, "Engine has chosen : Letter Assigning Mode");
         setContentView(GAME_MODE_LETTER_ASSIGNING);
+        LinearLayout gameLayout = (LinearLayout) findViewById(R.id.game_layout);
+        setupOnDragListener(gameLayout);
         char[] firstname = member.getFirstname().toUpperCase().toCharArray();
         char[] lastname = member.getSurname().toUpperCase().toCharArray();
         char[] scrambledChars = Util.Helper.scrambleChars(1, 20, member.getFirstname(), member.getSurname());
 
         LinearLayout firstnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_firstname_container);
         LinearLayout lastnameContainer = (LinearLayout) findViewById(R.id.game_mode_one_lastname_container);
-        GridLayout initialContainer = (GridLayout) findViewById(R.id.game_mode_one_initial_container);
+        LinearLayout initialContainer = (LinearLayout) findViewById(R.id.game_mode_one_initial_container);
         initialContainer.setTag(R.string.letter_count_tag_key, (firstname.length + lastname.length));
-        initialContainer.setOnDragListener(engine.getLetterAssigningModeOnDragListener());
+        initialContainer.getChildAt(0).setOnDragListener(engine.getLetterAssigningModeOnDragListener());
+        initialContainer.getChildAt(1).setOnDragListener(engine.getLetterAssigningModeOnDragListener());
         ImageView imageView = (ImageView) findViewById(R.id.game_mode_one_imageview);
         ImageLoader.getInstance().displayImage(member.getImagePath(), imageView);
 
         for(int i = 0; i < scrambledChars.length; i++){
-            int[] dpValues = Util.Dis.dp(this, 5, 40, 2);
+            int[] dpValues = Util.Dis.dp(this, 3, 32, 2, 42);
             LayoutInflater layoutInflater =  ((LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE));
             TextView textView = (TextView) layoutInflater.inflate(R.layout.activity_game_mode1_draggable_letter, null);
             textView.setOnTouchListener(engine.getTouchListener());
@@ -114,19 +109,14 @@ public class GameActivity extends AppCompatActivity implements
             textView.setTag(R.string.letter_tag_key, String.valueOf(scrambledChars[i]));
             textView.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape_letter, null));
 
-            GridLayout.Spec row = GridLayout.spec(i / 10, 1);
-            GridLayout.Spec colspan = GridLayout.spec(i % 10, 1);
-            GridLayout.LayoutParams gridLayoutParam = new GridLayout.LayoutParams(row, colspan);
-            gridLayoutParam.setMargins(dpValues[2],dpValues[2],dpValues[2],dpValues[2]);
+            ((LinearLayout) initialContainer.getChildAt(i/10)).addView(textView);
 
-            if(initialContainer != null)
-                initialContainer.addView(textView,gridLayoutParam);
 
             LinearLayout dropTarget = (LinearLayout) layoutInflater.inflate(R.layout.activity_game_mode1_droptarget, null);
             dropTarget.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.shape, null));
             dropTarget.setOnDragListener(engine.getLetterAssigningModeOnDragListener());
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpValues[1],dpValues[1]);
-            layoutParams.gravity = Gravity.CENTER;
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpValues[1],dpValues[3]);
+
             layoutParams.setMargins(dpValues[0],dpValues[0], 0, 0);
 
             if(i < firstname.length + lastname.length) {
@@ -150,7 +140,9 @@ public class GameActivity extends AppCompatActivity implements
     public void onNameAssigningGameMode(ArrayList<Member> members) {
         Util.D.l(this, "Engine has chosen : Name Assigning Mode");
         setContentView(GAME_MODE_NAME_ASSIGNING);
-        
+        LinearLayout gameLayout = (LinearLayout) findViewById(R.id.game_layout);
+        setupOnDragListener(gameLayout);
+
         //retrieves layouts from xml layout definition
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.initial_droptarget);
         GridLayout targetContainer = (GridLayout) findViewById(R.id.game_gridlayout);
@@ -202,6 +194,19 @@ public class GameActivity extends AppCompatActivity implements
             }
         });
         dialog.show();
+    }
+    public void setupOnDragListener(LinearLayout gameLayout){
+
+        gameLayout.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                if(event.getAction() == DragEvent.ACTION_DROP){
+                    View view = (View) event.getLocalState();
+                    view.setVisibility(View.VISIBLE);
+                }
+                return true;
+            }
+        });
     }
 
 }
