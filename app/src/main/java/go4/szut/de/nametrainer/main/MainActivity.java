@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, Util.Res.str(this, R.string.user_info_create_groups), Toast.LENGTH_LONG).show();
         }
     }
+
     public void startGroupEditorActivity(View view) {
         intent = new Intent(this, GroupEditorActivity.class);
         startActivity(intent);

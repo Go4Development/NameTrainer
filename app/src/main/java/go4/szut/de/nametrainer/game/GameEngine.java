@@ -68,6 +68,8 @@ public class GameEngine {
     private int stageIndex;
     private ArrayList<Integer> stagePattern;
 
+    private int totalWrongMatches;
+    private int totalRightMatches;
     private int wrongMatches;
     private int rightMatches;
 
@@ -131,9 +133,11 @@ public class GameEngine {
         Random random = new Random();
         ArrayList<Member> randomMembers = new ArrayList<Member>();
         int memberCount = (mode == GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER) ? MEMBERS_COUNT : 1;
-        for(int i = 0; i < memberCount; i++) {
-            Member randomMember = memberPool.remove(random.nextInt(memberPool.size()));
-            randomMembers.add(randomMember);
+        if(memberPool.size() != 0) {
+            for(int i = 0; i < memberCount; i++) {
+                Member randomMember = memberPool.remove(random.nextInt(memberPool.size()));
+                randomMembers.add(randomMember);
+            }
         }
         return randomMembers;
     }
@@ -143,15 +147,21 @@ public class GameEngine {
         switch(mode) {
             case GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);
-                engineListener.onLetterAssigningGameMode(members.get(0));
+                if(members.size() != 0) {
+                    engineListener.onLetterAssigningGameMode(members.get(0));
+                } else {
+                    engineListener.onComplete(group, totalRightMatches, totalWrongMatches);
+                }
                 break;
             case GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER:
                 members = pickRandomMembers(mode);
+                if(members.size() != 0) {
+                    engineListener.onComplete(group, totalRightMatches, totalWrongMatches);
+                }
                 engineListener.onNameAssigningGameMode(members);
                 break;
         }
     }
-
 
 
     public void start() {
@@ -242,11 +252,13 @@ public class GameEngine {
                             view.setOnTouchListener(null);
                             container.setBackground(rightShape);
                             engine.rightMatches++;
+                            engine.totalRightMatches++;
                             if(engine.rightMatches == 6) {
                                 engine.engineListener.onStageCompleted();
                             }
                         } else {
                             engine.wrongMatches++;
+                            engine.totalWrongMatches++;
                         }
                     }
                     break;
@@ -311,7 +323,8 @@ public class GameEngine {
                                     v.getTag(R.string.letter_tag_key).toString())) {
                                 view.setOnTouchListener(null);
                                 container.setBackground(rightShape);
-                            engine.rightMatches++;
+                                engine.rightMatches++;
+                                engine.totalRightMatches++;
                             if (engine.rightMatches == Integer.parseInt(
                                     initialDropTarget.getTag(R.string.letter_count_tag_key).toString())) {
                                 engine.engineListener.onStageCompleted();
@@ -319,6 +332,7 @@ public class GameEngine {
                             }
                             } else {
                                 engine.wrongMatches++;
+                                engine.totalWrongMatches++;
                             }
                         }
                     }
