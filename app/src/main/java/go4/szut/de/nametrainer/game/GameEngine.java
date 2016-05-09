@@ -120,16 +120,16 @@ public class GameEngine {
             if(nameAssigningModeCount != 0) {
                 stagePattern.add(GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER);
                 nameAssigningModeCount--;
-            }
-            if(totalMemberCount != 0) {
+            } else {
                 stagePattern.add(GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER);
-                totalMemberCount--;
             }
         }
+        Util.D.l(this, "Generated Stage Pattern : " + stagePattern.size());
         return stagePattern;
     }
 
     private ArrayList<Member> pickRandomMembers(int mode) {
+        Util.D.l(this, "Pick Random Members For Mode : " + mode);
         Random random = new Random();
         ArrayList<Member> randomMembers = new ArrayList<Member>();
         int memberCount = (mode == GameActivity.GAME_MODE_NAME_ASSIGNING_IDENTIFIER) ? MEMBERS_COUNT : 1;
@@ -143,6 +143,7 @@ public class GameEngine {
     }
 
     private void startGameMode(int mode) {
+        Util.D.l(this, "Start Next Game Mode!");
         ArrayList<Member> members;
         switch(mode) {
             case GameActivity.GAME_MODE_LETTER_ASSIGNING_IDENTIFIER:
@@ -163,8 +164,8 @@ public class GameEngine {
     }
 
     public void next() {
-        //TODO check inputs
-        if(stageIndex + 1 < stagePattern.size()) {
+        Util.D.l(this, "Next Stage Pattern Requested!");
+        if((stageIndex + 1) < stagePattern.size()) {
             stageIndex++;
             startGameMode(stagePattern.get(stageIndex));
         } else {
@@ -248,6 +249,7 @@ public class GameEngine {
                             engine.totalRightMatches++;
                             if(engine.rightMatches == 6) {
                                 engine.engineListener.onStageCompleted();
+                                engine.rightMatches = 0;
                             }
                         } else {
                             engine.wrongMatches++;

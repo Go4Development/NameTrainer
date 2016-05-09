@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import go4.szut.de.nametrainer.util.Util;
+
 /**
  * Created by ramazan on 26.03.2016.
  */
@@ -55,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DATABASE_CREATE_GROUP);
         sqLiteDatabase.execSQL(DATABASE_CREATE_MEMBER);
         sqLiteDatabase.execSQL(DATABASE_CREATE_SCORE);
+        Util.D.l(this, "Database Tables Created!");
     }
 
     @Override
@@ -63,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_MEMBER);
         sqLiteDatabase.execSQL("DROP TABLE " + DatabaseHelper.TABLE_SCORE);
         onCreate(sqLiteDatabase);
+        Util.D.l(this, "Database Tables Updated!");
     }
 
     /**

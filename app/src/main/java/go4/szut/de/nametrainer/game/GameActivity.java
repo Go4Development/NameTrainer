@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import go4.szut.de.nametrainer.R;
 import go4.szut.de.nametrainer.database.Group;
@@ -151,13 +152,20 @@ public class GameActivity extends AppCompatActivity implements
         if(linearLayout != null)
             linearLayout.setOnDragListener(engine.getNameAssigningModeOnDragListener());
 
-        for (int i = 0; i < linearLayout.getChildCount(); i++){
+        for (int i = 0; i < linearLayout.getChildCount(); i++) {
             Member member = members.get(i);
             ImageView image = (ImageView) linearLayout.getChildAt(i);
             ImageLoader.getInstance().displayImage(member.getImagePath(), image);
             image.setOnTouchListener(engine.getTouchListener());
             image.setTag(R.string.member_tag, member.getId());
-            LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(i);
+
+        }
+
+        Collections.shuffle(members);
+
+        for(int j = 0; j < linearLayout.getChildCount(); j++) {
+            Member member = members.get(j);
+            LinearLayout dropTarget = (LinearLayout) targetContainer.getChildAt(j);
             dropTarget.getChildAt(0).setOnDragListener(engine.getNameAssigningModeOnDragListener());
             dropTarget.getChildAt(0).setTag(R.string.member_tag, member.getId());
             TextView name = (TextView) dropTarget.getChildAt(1);

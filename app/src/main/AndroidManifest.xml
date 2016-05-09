@@ -10,10 +10,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/appName"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".main.MainActivity"
-            android:label="@string/appName" >
+            android:label="@string/appName"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,24 +23,29 @@
         <activity
             android:name=".options.OptionsActivity"
             android:label="@string/options"
+            android:screenOrientation="portrait"
             android:parentActivityName=".selection.SelectionActivity">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>
         <activity
             android:name=".groupeditor.GroupEditorActivity"
+            android:screenOrientation="portrait"
             android:permission="android.permission.READ_EXTERNAL_STORAGE"
             android:label="@string/groupeditor">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>
         <activity android:name=".selection.SelectionActivity"
-            android:label="@string/selection_label">
+            android:label="@string/selection_label"
+            android:screenOrientation="portrait">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>
-        <activity android:name=".game.GameResultActivity">
+        <activity android:name=".game.GameResultActivity"
+            android:screenOrientation="portrait">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".main.MainActivity"/>
         </activity>
         <activity android:name=".game.GameActivity"
-            android:label="@string/game_label">
+            android:label="@string/game_label"
+            android:screenOrientation="portrait">
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".selection.SelectionActivity"/>
         </activity>
         <meta-data

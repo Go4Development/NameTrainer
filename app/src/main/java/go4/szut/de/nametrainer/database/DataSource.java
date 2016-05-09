@@ -56,6 +56,7 @@ public class DataSource {
      */
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
+        Util.D.l(this, "Open Database");
     }
 
     /**
@@ -63,6 +64,7 @@ public class DataSource {
      */
     public void close() {
         dbHelper.close();
+        Util.D.l(this, "Close Database");
     }
 
     /**
@@ -74,6 +76,7 @@ public class DataSource {
      * @return a complete member object instance containing the id of row entry
      */
     public Member insertMember(Integer groupID, String surname, String firstname, String imagePath) {
+        Util.D.l(this, "Insert Member To Database");
         Member preMember = Member.toMember(groupID, firstname, surname, imagePath);
         ContentValues values = preMember.getContentValues();
         long insertId = database.insert(DatabaseHelper.TABLE_MEMBER, null,
@@ -87,7 +90,7 @@ public class DataSource {
         return member;
     }
 
-    public Member insertMember(Member member){
+    public Member insertMember(Member member) {
         return insertMember(member.getGroupID(), member.getSurname(),member.getFirstname(), member.getImagePath());
     }
 
@@ -97,6 +100,7 @@ public class DataSource {
      * @return the passed member object
      */
     public Member updateMember(Member member) {
+        Util.D.l(this, "Update Member To Database");
         ContentValues values = member.getContentValues();
         database.update(DatabaseHelper.TABLE_MEMBER, values,
                 DatabaseHelper.where(DatabaseHelper.COLUMN_ID, member.getId()), null);
@@ -108,6 +112,7 @@ public class DataSource {
      * @param member - the member to delete
      */
     public void deleteMember(Member member) {
+        Util.D.l(this, "Delete Member From Database");
         database.delete(DatabaseHelper.TABLE_MEMBER,
                 DatabaseHelper.where(DatabaseHelper.COLUMN_ID, member.getId()), null);
     }
@@ -117,7 +122,8 @@ public class DataSource {
      * @param name - the name of the group
      * @return a complete group object instance containing the id of row entry
      */
-    public Group insertGroup(String name){
+    public Group insertGroup(String name) {
+        Util.D.l(this, "Insert Group To Database");
         Group preGroup = Group.toGroup(name);
         ContentValues values = preGroup.getContentValues();
         long insertId = database.insert(DatabaseHelper.TABLE_GROUP, null,
